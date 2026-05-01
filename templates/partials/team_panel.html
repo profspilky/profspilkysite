@@ -1,0 +1,28 @@
+{% load i18n %}
+<section class="team" aria-labelledby="team-title">
+  <header class="team__head">
+    <h2 id="team-title" class="team__title">{% trans "Наша команда" %}</h2>
+    <p class="team__subtitle">{% trans "Люди, які щодня відстоюють права українських працівників" %}</p>
+  </header>
+
+  <ul class="team__grid">
+    {% for member in team_members %}
+      <li class="team-card">
+        <div class="team-card__avatar">
+          {% if member.photo_url %}
+            <img src="{{ member.photo_url }}" alt="{{ member.full_name }}" loading="lazy">
+          {% else %}
+            <span class="team-card__initials" aria-hidden="true">{{ member.initials }}</span>
+          {% endif %}
+        </div>
+        <div class="team-card__body">
+          <h3 class="team-card__name">{{ member.full_name }}</h3>
+          <p class="team-card__role">{{ member.role }}</p>
+          {% if member.bio %}
+            <p class="team-card__bio">{{ member.bio }}</p>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</section>

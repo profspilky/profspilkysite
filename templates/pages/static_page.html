@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ page.effective_meta_title }} — {% trans "Федерація Профспілок України" %}{% endblock %}
+
+{% block page_banner %}
+{# ── Page banner — full-width, above the two-column site-layout grid ──────── #}
+<div class="page-banner">
+  <div class="page-banner__inner">
+
+    {% if breadcrumbs %}
+    <nav class="page-banner__breadcrumb breadcrumb" aria-label="{% trans 'Навігація' %}">
+      <ol class="breadcrumb__list">
+        {% for crumb in breadcrumbs %}
+          <li class="breadcrumb__item">
+            {% if not forloop.last %}
+              <a class="breadcrumb__link" href="{{ crumb.url }}">{{ crumb.title }}</a>
+            {% else %}
+              <span class="breadcrumb__current" aria-current="page">{{ crumb.title }}</span>
+            {% endif %}
+          </li>
+        {% endfor %}
+        <li class="breadcrumb__item">
+          <span class="breadcrumb__current" aria-current="page">{{ page.title }}</span>
+        </li>
+      </ol>
+    </nav>
+    {% endif %}
+
+    <h1 class="page-banner__title">{{ page.title }}</h1>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{# ── Two-column content grid ──────────────────────────────────────────────── #}
+<div class="page-layout">
+
+  {# Main content #}
+  <main class="page-layout__main">
+    {% if page.body %}
+      <div class="article__body static-page__body">
+        {# body очищається bleach при імпорті (tools/clean_html.py) — safe #}
+        {{ page.body|safe }}
+      </div>
+    {% else %}
+      <p class="page-empty-notice">{% trans "Вміст сторінки оновлюється." %}</p>
+    {% endif %}
+  </main>
+
+  {# Sticky sidebar #}
+  <aside class="page-layout__sidebar" aria-label="{% trans 'Бокова панель' %}">
+
+    {# Recent news widget #}
+    {% if recent_articles %}
+    <div class="sidebar-widget">
+      <h2 class="sidebar-widget__title">{% trans "Останні новини" %}</h2>
+      <ul class="sidebar-news" role="list">
+        {% for article in recent_articles %}
+          <li class="sidebar-news__item">
+            <a class="sidebar-news__link" href="{{ article.get_absolute_url }}">
+              {{ article.title }}
+            </a>
+            <time class="sidebar-news__date" datetime="{{ article.published_at|date:'Y-m-d' }}">
+              {{ article.display_date }}
+            </time>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+  </aside>
+</div>
+
+{% endblock %}

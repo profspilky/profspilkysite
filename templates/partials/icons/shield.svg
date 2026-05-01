@@ -1,0 +1,7 @@
+<svg width="36" height="36" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <path d="M16 3 L26 7 V15 C26 21 21 26 16 29 C11 26 6 21 6 15 V7 Z"/>
+  <path d="M12 8 V12 H10 V18 H22 V12 H20 V8 Z"/>
+  <line x1="14" y1="8" x2="14" y2="12"/>
+  <line x1="18" y1="8" x2="18" y2="12"/>
+  <circle cx="16" cy="22" r="1.4" fill="currentColor"/>
+</svg>

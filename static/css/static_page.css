@@ -1,0 +1,223 @@
+/* Static page layout — page-banner + two-column content grid + sidebar.
+ *
+ * Mirrors the home-grid structure (layout.css) so static pages feel
+ * visually consistent with the home page.
+ */
+
+/* ── Page banner ─────────────────────────────────────────────────────────── */
+
+.page-banner {
+  background: var(--c-panel);
+  color: var(--c-text-on-dark);
+  padding: var(--sp-32) var(--sp-24) var(--sp-40);
+}
+
+.page-banner__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+
+.page-banner__breadcrumb {
+  margin-bottom: var(--sp-16);
+}
+
+.page-banner__breadcrumb .breadcrumb__list {
+  color: var(--c-text-on-dark-muted);
+  font-size: var(--fs-14);
+}
+
+.page-banner__breadcrumb .breadcrumb__link {
+  color: var(--c-text-on-dark-muted);
+}
+
+.page-banner__breadcrumb .breadcrumb__link:hover {
+  color: var(--c-text-on-dark);
+}
+
+.page-banner__breadcrumb .breadcrumb__current {
+  color: var(--c-text-on-dark);
+}
+
+.page-banner__breadcrumb .breadcrumb__item + .breadcrumb__item::before {
+  color: var(--c-text-on-dark-muted);
+}
+
+.page-banner__title {
+  font-size: clamp(var(--fs-24), 4vw, var(--fs-40));
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* ── Page layout grid ────────────────────────────────────────────────────── */
+
+.page-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  column-gap: var(--sp-32);
+  align-items: start;
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-40) var(--sp-24) var(--sp-64);
+}
+
+.page-layout__main {
+  min-width: 0;
+}
+
+.page-layout__sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + var(--sp-16));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-24);
+}
+
+/* ── Sidebar widgets ─────────────────────────────────────────────────────── */
+
+.sidebar-widget {
+  background: var(--c-bg-soft);
+  border-radius: var(--r-lg);
+  padding: var(--sp-20) var(--sp-24);
+  border: 1px solid var(--c-border);
+}
+
+.sidebar-widget__title {
+  font-size: var(--fs-14);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-primary);
+  margin: 0 0 var(--sp-16);
+  padding-bottom: var(--sp-12);
+  border-bottom: 2px solid var(--c-border);
+}
+
+/* ── Sidebar: recent news list ───────────────────────────────────────────── */
+
+.sidebar-news {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+}
+
+.sidebar-news__item {
+  padding-bottom: var(--sp-12);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.sidebar-news__item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.sidebar-news__link {
+  display: block;
+  font-size: var(--fs-14);
+  font-weight: 600;
+  color: var(--c-text);
+  line-height: 1.4;
+  margin-bottom: var(--sp-4);
+  transition: color var(--transition-fast);
+}
+
+.sidebar-news__link:hover {
+  color: var(--c-primary);
+}
+
+.sidebar-news__date {
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+}
+
+/* ── Section page body: intro + nav list ────────────────────────────────── */
+
+.section-intro {
+  font-size: var(--fs-18);
+  line-height: 1.7;
+  color: var(--c-text);
+  margin: 0 0 var(--sp-32);
+  padding-left: var(--sp-16);
+  border-left: 4px solid var(--c-accent);
+}
+
+.section-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.section-nav li a {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  padding: var(--sp-12) var(--sp-16);
+  background: var(--c-bg-soft);
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--c-primary);
+  text-decoration: none;
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.section-nav li a::before {
+  content: "→";
+  font-size: var(--fs-16);
+  color: var(--c-accent);
+  flex-shrink: 0;
+}
+
+.section-nav li a:hover {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.section-nav li a:hover::before {
+  color: var(--c-accent);
+}
+
+/* ── Empty body notice ───────────────────────────────────────────────────── */
+
+.page-empty-notice {
+  padding: var(--sp-40) var(--sp-24);
+  text-align: center;
+  color: var(--c-text-muted);
+  font-style: italic;
+}
+
+/* ── Responsive: collapse to single column ───────────────────────────────── */
+
+@media (max-width: 1180px) {
+  .page-layout {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    column-gap: var(--sp-24);
+  }
+}
+
+@media (max-width: 1023px) {
+  .page-layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--sp-24) var(--sp-16) var(--sp-48);
+  }
+
+  .page-layout__sidebar {
+    position: static;
+    top: auto;
+  }
+
+  .page-banner {
+    padding: var(--sp-24) var(--sp-16) var(--sp-32);
+  }
+}

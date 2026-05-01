@@ -1,0 +1,91 @@
+{% load i18n %}
+<aside class="priorities-panel" aria-labelledby="priorities-title">
+
+  {# ── Заголовок ──────────────────────────────────────────────────────────── #}
+  <div class="pp-header">
+    <span class="pp-header__emblem" aria-hidden="true">
+      {% include 'partials/icons/logo_round.svg' %}
+    </span>
+    <div class="pp-header__text">
+      <p class="pp-header__brand">{% trans "ФПУ" %}</p>
+      <h2 id="priorities-title" class="pp-header__title">{% trans "Наші пріоритети" %}</h2>
+    </div>
+  </div>
+
+  {# ── Картки пріоритетів ─────────────────────────────────────────────────── #}
+  <ul class="pp-priorities" aria-label="{% trans 'Пріоритети' %}">
+    {% for p in priorities %}
+      <li class="pp-priority">
+        <span class="pp-priority__icon" aria-hidden="true">
+          {% if p.icon_key == 'shield' %}{% include 'partials/icons/shield.svg' %}
+          {% elif p.icon_key == 'hard_hat' %}{% include 'partials/icons/hard_hat.svg' %}
+          {% elif p.icon_key == 'dialog' %}{% include 'partials/icons/dialog.svg' %}
+          {% elif p.icon_key == 'heart' %}{% include 'partials/icons/heart.svg' %}
+          {% else %}{% include 'partials/icons/shield.svg' %}{% endif %}
+        </span>
+        <span class="pp-priority__label">{{ p.title }}</span>
+        {% if p.description %}
+          <span class="pp-priority__desc">{{ p.description }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  {# ── Швидкі посилання ───────────────────────────────────────────────────── #}
+  <nav class="pp-links" aria-label="{% trans 'Швидкі посилання' %}">
+    <p class="pp-links__title">{% trans "Швидкий перехід" %}</p>
+    <ul class="pp-links__list">
+      <li><a href="/pro-fpu/chlenski-organizatsiji">{% trans "Членські організації" %}</a></li>
+      <li><a href="/napryamki-diyalnosti/pravovij-zakhist">{% trans "Правовий захист" %}</a></li>
+      <li><a href="/gallery/">{% trans "Фотогалерея" %}</a></li>
+      <li><a href="/documents/">{% trans "Документи" %}</a></li>
+      <li><a href="{% url 'core:contact' %}">{% trans "Написати нам" %}</a></li>
+    </ul>
+  </nav>
+
+  {# ── Контакти ───────────────────────────────────────────────────────────── #}
+  <div class="pp-contacts">
+    <ul class="pp-contacts__list">
+      <li>
+        <span class="pp-contacts__icon" aria-hidden="true">{% include 'partials/icons/phone.svg' %}</span>
+        <a href="tel:+380443557790">{% if site_settings and site_settings.contact_phone %}{{ site_settings.contact_phone }}{% else %}044 355-77-90{% endif %}</a>
+      </li>
+      <li>
+        <span class="pp-contacts__icon" aria-hidden="true">{% include 'partials/icons/pin.svg' %}</span>
+        <span>{% if site_settings and site_settings.address %}{{ site_settings.address|truncatewords:5 }}{% else %}Будинок Профспілок, Київ{% endif %}</span>
+      </li>
+      <li>
+        <span class="pp-contacts__icon" aria-hidden="true">{% include 'partials/icons/mail.svg' %}</span>
+        <a href="mailto:{% if site_settings and site_settings.contact_email %}{{ site_settings.contact_email }}{% else %}fpsu@fpsu.org.ua{% endif %}">
+          {% if site_settings and site_settings.contact_email %}{{ site_settings.contact_email }}{% else %}fpsu@fpsu.org.ua{% endif %}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  {# ── Підвал панелі ─────────────────────────────────────────────────────── #}
+  <div class="pp-footer">
+    <ul class="pp-social" aria-label="{% trans 'Соціальні мережі' %}">
+      <li>
+        <a class="pp-social__link" href="{% if site_settings and site_settings.facebook_url %}{{ site_settings.facebook_url }}{% else %}https://www.facebook.com/fpsu.org.ua{% endif %}"
+           target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          {% include 'partials/icons/social_facebook.svg' %}
+        </a>
+      </li>
+      <li>
+        <a class="pp-social__link" href="{% if site_settings and site_settings.youtube_url %}{{ site_settings.youtube_url }}{% else %}https://www.youtube.com{% endif %}"
+           target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          {% include 'partials/icons/social_youtube.svg' %}
+        </a>
+      </li>
+      <li>
+        <a class="pp-social__link" href="{% if site_settings and site_settings.telegram_url %}{{ site_settings.telegram_url }}{% else %}https://t.me{% endif %}"
+           target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+          {% include 'partials/icons/social_telegram.svg' %}
+        </a>
+      </li>
+    </ul>
+    <p class="pp-footer__copy">&copy; {{ site_year }} {% trans "ФПУ" %}</p>
+  </div>
+
+</aside>

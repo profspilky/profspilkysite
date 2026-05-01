@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 700" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e3a8a"/>
+      <stop offset="1" stop-color="#0a1f4a"/>
+    </linearGradient>
+    <linearGradient id="building" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a5db8"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="flag" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0057b7"/>
+      <stop offset="0.5" stop-color="#0057b7"/>
+      <stop offset="0.5" stop-color="#ffd700"/>
+      <stop offset="1" stop-color="#ffd700"/>
+    </linearGradient>
+    <pattern id="windows" x="0" y="0" width="40" height="60" patternUnits="userSpaceOnUse">
+      <rect x="6" y="6" width="28" height="48" fill="#0a1f4a" opacity="0.7"/>
+      <rect x="8" y="8" width="24" height="20" fill="#7fa9e8" opacity="0.55"/>
+      <rect x="8" y="32" width="24" height="20" fill="#7fa9e8" opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="1440" height="700" fill="url(#sky)"/>
+  <g opacity="0.85">
+    <rect x="120" y="160" width="900" height="540" fill="url(#building)"/>
+    <rect x="160" y="220" width="820" height="440" fill="url(#windows)"/>
+    <rect x="540" y="120" width="60" height="60" fill="#3a5db8"/>
+    <rect x="565" y="60" width="10" height="80" fill="#fff" opacity="0.6"/>
+  </g>
+  <g transform="translate(900,180)">
+    <rect x="0" y="0" width="14" height="380" fill="#cbd5e1"/>
+    <rect x="14" y="0" width="320" height="220" fill="url(#flag)"/>
+    <path d="M14 0 L334 30 L334 220 L14 250 Z" fill="url(#flag)" opacity="0.85"/>
+  </g>
+  <g transform="translate(720,420)" opacity="0.95">
+    <ellipse cx="160" cy="280" rx="320" ry="60" fill="#0a1f4a" opacity="0.5"/>
+    <circle cx="60" cy="120" r="55" fill="#f4c997"/>
+    <rect x="20" y="170" width="80" height="160" rx="12" fill="#1e88e5"/>
+    <circle cx="200" cy="120" r="55" fill="#f4c997"/>
+    <rect x="155" y="170" width="90" height="160" rx="12" fill="#f4c430"/>
+    <rect x="155" y="100" width="90" height="36" rx="18" fill="#f97316"/>
+    <circle cx="340" cy="120" r="55" fill="#f4c997"/>
+    <rect x="295" y="170" width="90" height="160" rx="12" fill="#cbd5e1"/>
+    <circle cx="480" cy="120" r="55" fill="#f4c997"/>
+    <rect x="435" y="170" width="90" height="160" rx="12" fill="#1e3a8a"/>
+  </g>
+</svg>

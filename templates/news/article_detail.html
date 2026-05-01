@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ page_meta_title }} — {% trans "Федерація Профспілок України" %}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "{{ article.title|escapejs }}",
+  "description": "{{ page_meta_description|escapejs }}",
+  "datePublished": "{{ article.published_at|date:'c' }}",
+  "dateModified": "{{ article.published_at|date:'c' }}",
+  "url": "{{ canonical_url|escapejs }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Федерація Профспілок України",
+    "url": "https://www.fpsu.org.ua"
+  }{% if og_image %},
+  "image": "{{ og_image|escapejs }}"{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/article.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrap">
+  <nav class="breadcrumb" aria-label="{% trans 'Навігація' %}">
+    <ol class="breadcrumb__list">
+      {% for crumb in breadcrumbs %}
+      <li class="breadcrumb__item">
+        {% if not forloop.last %}
+        <a class="breadcrumb__link" href="{{ crumb.url }}">{{ crumb.title }}</a>
+        {% else %}
+        <span class="breadcrumb__current" aria-current="page">{{ crumb.title }}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+      <li class="breadcrumb__item">
+        <span class="breadcrumb__current" aria-current="page">{{ article.title }}</span>
+      </li>
+    </ol>
+  </nav>
+
+  <article class="article">
+    <header class="article__header">
+      <h1 class="article__title">{{ article.title }}</h1>
+      <time class="article__date" datetime="{{ article.published_at|date:'Y-m-d' }}">
+        {{ article.display_date }}
+      </time>
+    </header>
+
+    {% if article.image_url %}
+    <figure class="article__figure">
+      <img class="article__image" src="{{ article.image_url }}" alt="{{ article.title }}" loading="lazy" width="800"
+        height="450">
+    </figure>
+    {% endif %}
+
+    {% if article.summary %}
+    <p class="article__summary">{{ article.summary }}</p>
+    {% endif %}
+
+    <div class="article__body">
+      {# body очищається bleach при імпорті (tools/clean_html.py) — safe #}
+      {{ article.body|safe }}
+    </div>
+
+    {# ── Кнопки "Поділитися" ─────────────────────────────────────────── #}
+    <div class="article__share">
+      <p class="article__share-label">{% trans "Поділитися:" %}</p>
+      <a class="share-btn share-btn--facebook"
+         href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url|urlencode }}"
+         target="_blank" rel="noopener noreferrer"
+         aria-label="{% trans 'Поділитися в Facebook' %}">
+        Facebook
+      </a>
+      <a class="share-btn share-btn--telegram"
+         href="https://t.me/share/url?url={{ canonical_url|urlencode }}&text={{ article.title|urlencode }}"
+         target="_blank" rel="noopener noreferrer"
+         aria-label="{% trans 'Поділитися в Telegram' %}">
+        Telegram
+      </a>
+      <button type="button" class="share-btn share-btn--copy"
+              data-copy-url="{{ canonical_url }}"
+              aria-label="{% trans 'Скопіювати посилання' %}"
+              onclick="navigator.clipboard&&navigator.clipboard.writeText(this.dataset.copyUrl).then(()=>{this.textContent='✓ Скопійовано'})">
+        {% trans "Скопіювати" %}
+      </button>
+    </div>
+  </article>
+</div>
+{% endblock %}

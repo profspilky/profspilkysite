@@ -1,0 +1,207 @@
+/* Форми: контакти, пошук, авторизація. */
+
+/* ── Контакт-сторінка ────────────────────────────────────────────────────── */
+.contact-page {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: var(--sp-40) var(--sp-24) var(--sp-64);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-48);
+}
+
+/* ── Контактна інформація ────────────────────────────────────────────────── */
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-20);
+}
+
+.contact-info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-16);
+  padding: var(--sp-24);
+  background: var(--c-bg-soft);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+}
+
+.contact-info-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.contact-info-card__label {
+  font-size: var(--fs-12);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-text-muted);
+  margin: 0 0 var(--sp-6);
+}
+
+.contact-info-card__value {
+  font-size: var(--fs-16);
+  color: var(--c-text);
+  margin: 0;
+}
+
+.contact-info-card__value--link {
+  color: var(--c-primary);
+  text-decoration: none;
+  font-weight: 600;
+  display: block;
+}
+
+.contact-info-card__value--link:hover {
+  color: var(--c-primary-700);
+  text-decoration: underline;
+}
+
+.contact-info-card__sub {
+  font-size: var(--fs-14);
+  color: var(--c-text-muted);
+  margin: var(--sp-6) 0 0;
+}
+
+.contact-info-card__sub a {
+  color: var(--c-primary);
+}
+
+/* ── Секція форми ────────────────────────────────────────────────────────── */
+.contact-form-section__title {
+  font-size: var(--fs-24);
+  font-weight: 800;
+  color: var(--c-primary-700);
+  margin: 0 0 var(--sp-24);
+}
+
+/* ── Загальні стилі форм ─────────────────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-20);
+}
+
+.form-row--2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-20);
+}
+
+.form-label {
+  font-size: var(--fs-14);
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.form-label span {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--sp-12) var(--sp-16);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-md);
+  font-size: var(--fs-16);
+  font-family: inherit;
+  color: var(--c-text);
+  background: #fff;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  /* iOS Safari: без автозуму при фокусі */
+  font-size: var(--fs-16);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(19, 58, 124, 0.12);
+}
+
+.form-control::placeholder {
+  color: var(--c-text-muted);
+}
+
+.form-control--textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+.has-error .form-control {
+  border-color: #dc2626;
+}
+
+.form-error-msg {
+  font-size: var(--fs-12);
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.form-error-banner {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  border-radius: var(--r-md);
+  padding: var(--sp-12) var(--sp-16);
+  font-size: var(--fs-14);
+  margin-bottom: var(--sp-20);
+}
+
+.form-success {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+  border-radius: var(--r-md);
+  padding: var(--sp-16) var(--sp-20);
+  font-size: var(--fs-16);
+  font-weight: 600;
+}
+
+.form-submit {
+  margin-top: var(--sp-8);
+  padding: var(--sp-14, 0.875rem) var(--sp-32);
+  font-size: var(--fs-16);
+}
+
+/* ── Адаптив форм ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .contact-page {
+    padding: var(--sp-24) var(--sp-16) var(--sp-48);
+    gap: var(--sp-32);
+  }
+
+  .contact-info-grid {
+    grid-template-columns: 1fr;
+    gap: var(--sp-12);
+  }
+
+  .form-row--2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-info-card {
+    padding: var(--sp-16);
+    gap: var(--sp-12);
+  }
+
+  .form-submit {
+    width: 100%;
+    justify-content: center;
+  }
+}

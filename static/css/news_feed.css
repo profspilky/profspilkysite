@@ -1,0 +1,279 @@
+/* Featured card (перша новина під hero) + вертикальний feed (решта новин).
+ * iOS Safari: явний display:block на img, aspect-ratio з padding-trick фолбеком,
+ * gap лише в grid (не у flex) для сумісності з iOS < 14.5.
+ */
+
+/* ── Featured (перша новина, вертикальна велика) ─────────────────────── */
+
+.news-card--featured {
+  display: grid;
+  grid-template-rows: 200px 1fr;
+  height: 300px;
+  background: #fff;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  border-top: 3px solid var(--c-accent);
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.news-card--featured:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--c-shadow);
+}
+
+.news-card__media--featured {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-700) 100%);
+  width: 100%;
+}
+
+.news-card__media--featured img {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Feed section ────────────────────────────────────────────────────── */
+
+.news-feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-20);
+}
+
+.news-feed__head {
+  display: flex;
+  align-items: center;
+}
+
+.news-feed__title {
+  font-size: var(--fs-24);
+  font-weight: 800;
+  color: var(--c-primary-700);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.news-feed__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-16);
+}
+
+.news-feed__item { min-width: 0; }
+
+/* ── Row card (картки списку) ────────────────────────────────────────── */
+
+.news-card--row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  background: #fff;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  overflow: hidden;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.news-card--row:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--c-shadow);
+}
+
+.news-card__media--row {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-700) 100%);
+}
+
+.news-card__media--row::before {
+  content: "";
+  display: block;
+  padding-top: 75%;
+}
+
+@supports (aspect-ratio: 4/3) {
+  .news-card__media--row::before { display: none; }
+  .news-card__media--row { aspect-ratio: 4/3; }
+}
+
+.news-card__media--row img {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@supports (aspect-ratio: 4/3) {
+  .news-card__media--row img {
+    position: static;
+    inset: auto;
+  }
+}
+
+.news-card--featured .news-card__body,
+.news-card--row .news-card__body {
+  padding: var(--sp-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  min-width: 0;
+}
+
+.news-card--featured .news-card__body {
+  padding: var(--sp-20) var(--sp-20) var(--sp-16);
+  gap: var(--sp-10);
+  justify-content: space-between;
+}
+
+.news-card--featured .news-card__title {
+  margin: 0;
+  font-size: var(--fs-24);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--c-primary-900);
+}
+
+.news-card--row .news-card__title {
+  margin: 0;
+  font-size: var(--fs-16);
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--c-primary-700);
+}
+
+.news-card--featured .news-card__title a,
+.news-card--row .news-card__title a { color: inherit; }
+
+.news-card--featured .news-card__title a:hover,
+.news-card--row .news-card__title a:hover { color: var(--c-primary); }
+
+.news-card--featured .news-card__date,
+.news-card--row .news-card__date {
+  margin: 0;
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+}
+
+.news-card--featured .news-card__summary {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--c-text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.news-card--row .news-card__summary {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--c-text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Read-more link (featured) ───────────────────────────────────────── */
+
+.news-card__read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-size: var(--fs-13, 0.8125rem);
+  font-weight: 600;
+  color: var(--c-primary);
+  text-decoration: none;
+  margin-top: auto;
+  padding-top: var(--sp-8);
+  border-top: 1px solid var(--c-border);
+  transition: color var(--transition-fast);
+}
+.news-card__read-more:hover { color: var(--c-accent-600); }
+
+/* ── Placeholder ─────────────────────────────────────────────────────── */
+
+.news-card--featured .news-card__placeholder,
+.news-card--row .news-card__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Featured без фото — заголовок на градієнті */
+
+.news-card__placeholder--text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--sp-20);
+  background:
+    linear-gradient(160deg, var(--c-primary) 0%, var(--c-primary-900) 100%);
+  gap: var(--sp-8);
+}
+
+.news-card__placeholder-label {
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.news-card__placeholder-heading {
+  font-size: clamp(var(--fs-16), 1.6vw, var(--fs-24));
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Адаптив ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .news-card--row {
+    grid-template-columns: 1fr;
+  }
+
+  .news-card__media--row {
+    aspect-ratio: 16/9;
+  }
+
+  .news-card__media--row::before {
+    padding-top: 56.25%;
+  }
+
+  .news-card--featured {
+    grid-template-rows: 160px 1fr;
+    height: auto;
+  }
+}

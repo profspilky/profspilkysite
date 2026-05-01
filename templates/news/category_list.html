@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ category.title }} — {% trans "Федерація Профспілок України" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/news_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content-wrap">
+  <header class="page-header">
+    <h1 class="page-header__title">{{ category.title }}</h1>
+    {% if category.meta_description %}
+    <p class="page-header__desc">{{ category.meta_description }}</p>
+    {% endif %}
+  </header>
+
+  {% if articles %}
+  <ul class="news-list" aria-label="{{ category.title }}">
+    {% for art in articles %}
+    <li class="news-list__item">
+      <article class="news-card">
+        {% if art.image_url %}
+        <a class="news-card__img-link" href="{{ art.get_absolute_url }}" tabindex="-1" aria-hidden="true">
+          <img class="news-card__img" src="{{ art.image_url }}" alt="{{ art.title }}" loading="lazy" width="400"
+            height="225">
+        </a>
+        {% endif %}
+        <div class="news-card__body">
+          <time class="news-card__date" datetime="{{ art.published_at|date:'Y-m-d' }}">
+            {{ art.display_date }}
+          </time>
+          <h2 class="news-card__title">
+            <a class="news-card__link" href="{{ art.get_absolute_url }}">{{ art.title }}</a>
+          </h2>
+          {% if art.summary %}
+          <p class="news-card__summary">{{ art.summary }}</p>
+          {% endif %}
+        </div>
+      </article>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty-notice">{% trans "У цій категорії поки немає матеріалів." %}</p>
+  {% endif %}
+</div>
+{% endblock %}

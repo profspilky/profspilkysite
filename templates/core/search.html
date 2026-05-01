@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if query %}{% trans "Пошук" %}: {{ query }}{% else %}{% trans "Пошук" %}{% endif %} — {% trans "Федерація Профспілок України" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+{% endblock %}
+
+{% block page_banner %}
+<div class="page-banner">
+  <div class="page-banner__inner">
+    <nav class="page-banner__breadcrumb breadcrumb" aria-label="{% trans 'Навігація' %}">
+      <ol class="breadcrumb__list">
+        <li class="breadcrumb__item">
+          <a class="breadcrumb__link" href="/">{% trans "Головна" %}</a>
+        </li>
+        <li class="breadcrumb__item">
+          <span class="breadcrumb__current">{% trans "Пошук" %}</span>
+        </li>
+      </ol>
+    </nav>
+    <h1 class="page-banner__title">{% trans "Пошук по сайту" %}</h1>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="search-wrap">
+
+  <form class="search-form" action="{% url 'core:search' %}" method="get" role="search">
+    <label class="sr-only" for="search-input">{% trans "Пошуковий запит" %}</label>
+    <input
+      class="search-form__input"
+      type="search"
+      id="search-input"
+      name="q"
+      value="{{ query }}"
+      placeholder="{% trans 'Введіть ключове слово…' %}"
+      autofocus
+      autocomplete="off">
+    <button class="search-form__btn btn btn--primary" type="submit">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      {% trans "Знайти" %}
+    </button>
+  </form>
+
+  {% if query %}
+    {% if results %}
+      <p class="search-meta">
+        {% blocktrans with count=total q=query %}
+          Знайдено {{ count }} результатів для «{{ q }}»
+        {% endblocktrans %}
+      </p>
+
+      <ul class="search-results" aria-label="{% trans 'Результати пошуку' %}">
+        {% for result in results %}
+          <li class="search-result">
+            {% if result.get_absolute_url %}
+              <a class="search-result__link" href="{{ result.get_absolute_url }}">
+                <h2 class="search-result__title">{{ result.title }}</h2>
+              </a>
+              {% if result.published_at %}
+                <time class="search-result__date" datetime="{{ result.published_at|date:'Y-m-d' }}">
+                  {{ result.published_at|date:"d.m.Y" }}
+                </time>
+              {% endif %}
+              {% if result.summary %}
+                <p class="search-result__excerpt">{{ result.summary|truncatewords:30 }}</p>
+              {% elif result.body %}
+                <p class="search-result__excerpt">{{ result.body|striptags|truncatewords:30 }}</p>
+              {% endif %}
+            {% else %}
+              <a class="search-result__link" href="{{ result.url_path }}">
+                <h2 class="search-result__title">{{ result.title }}</h2>
+              </a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if results.has_other_pages %}
+        <nav class="pagination" aria-label="{% trans 'Пагінація' %}">
+          {% if results.has_previous %}
+            <a class="pagination__link" href="?q={{ query }}&page={{ results.previous_page_number }}">‹</a>
+          {% endif %}
+          {% for num in results.paginator.page_range %}
+            {% if results.number == num %}
+              <span class="pagination__current" aria-current="page">{{ num }}</span>
+            {% elif num > results.number|add:"-3" and num < results.number|add:"3" %}
+              <a class="pagination__link" href="?q={{ query }}&page={{ num }}">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+          {% if results.has_next %}
+            <a class="pagination__link" href="?q={{ query }}&page={{ results.next_page_number }}">›</a>
+          {% endif %}
+        </nav>
+      {% endif %}
+
+    {% else %}
+      <p class="search-empty">
+        {% blocktrans with q=query %}
+          За запитом «{{ q }}» нічого не знайдено.
+        {% endblocktrans %}
+      </p>
+      <p class="search-suggestion">
+        {% trans "Спробуйте скоротити запит або переглянути" %}
+        <a href="/">{% trans "головну сторінку" %}</a>.
+      </p>
+    {% endif %}
+  {% endif %}
+
+</div>
+{% endblock %}

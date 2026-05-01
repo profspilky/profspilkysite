@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Фотогалерея" %} — {% trans "Федерація Профспілок України" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gallery.css' %}">
+{% endblock %}
+
+{% block page_banner %}
+<div class="page-banner">
+  <div class="page-banner__inner">
+    <nav class="page-banner__breadcrumb breadcrumb" aria-label="{% trans 'Навігація' %}">
+      <ol class="breadcrumb__list">
+        {% for crumb in breadcrumbs %}
+          <li class="breadcrumb__item">
+            {% if not forloop.last %}
+              <a class="breadcrumb__link" href="{{ crumb.url }}">{{ crumb.title }}</a>
+            {% else %}
+              <span class="breadcrumb__current" aria-current="page">{{ crumb.title }}</span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+    <h1 class="page-banner__title">{% trans "Фотогалерея" %}</h1>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="gallery-wrap">
+
+  {% if page_obj.object_list %}
+    <ul class="album-grid" aria-label="{% trans 'Список альбомів' %}">
+      {% for album in page_obj %}
+        <li class="album-card">
+          <a class="album-card__link" href="{{ album.get_absolute_url }}">
+            <div class="album-card__cover">
+              {% if album.cover_url %}
+                <img src="{{ album.cover_url }}" alt="{{ album.title }}" loading="lazy">
+              {% else %}
+                <span class="album-card__placeholder" aria-hidden="true">📷</span>
+              {% endif %}
+              <span class="album-card__count">
+                {{ album.photo_count }} {% trans "фото" %}
+              </span>
+            </div>
+            <div class="album-card__body">
+              <h2 class="album-card__title">{{ album.title }}</h2>
+              {% if album.event_date %}
+                <time class="album-card__date" datetime="{{ album.event_date|date:'Y-m-d' }}">
+                  {{ album.event_date|date:"d.m.Y" }}
+                </time>
+              {% endif %}
+            </div>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% if page_obj.has_other_pages %}
+      <nav class="pagination" aria-label="{% trans 'Пагінація' %}">
+        {% if page_obj.has_previous %}
+          <a class="pagination__link" href="?page={{ page_obj.previous_page_number }}"
+             aria-label="{% trans 'Попередня сторінка' %}">‹</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <span class="pagination__current" aria-current="page">{{ num }}</span>
+          {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+            <a class="pagination__link" href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a class="pagination__link" href="?page={{ page_obj.next_page_number }}"
+             aria-label="{% trans 'Наступна сторінка' %}">›</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <p class="empty-notice">{% trans "Фотогалерея поповнюється." %}</p>
+  {% endif %}
+
+</div>
+{% endblock %}

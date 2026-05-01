@@ -1,0 +1,102 @@
+/* ── Global page layout ───────────────────────────────────────────────────── */
+
+/* Ширина фіксованої панелі пріоритетів */
+:root {
+  --panel-w: 360px;
+  --panel-gap: var(--sp-40);
+}
+
+/*
+  .site-layout — основна зона контенту.
+  Праворуч зарезервовано місце для фіксованої панелі пріоритетів,
+  яка знаходиться поза grid-ом і позиціонується fixed.
+*/
+.site-layout {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-32) var(--sp-24) var(--sp-64);
+  /* Правий відступ = ширина панелі + gap + padding контейнера */
+  padding-right: calc(var(--panel-w) + var(--panel-gap) + var(--sp-24));
+}
+
+/*
+  Фіксована панель пріоритетів — завжди видима при скролі.
+  Розміщена справа від контенту всередині ширини контейнера.
+  right: max() забезпечує правильну позицію як у вузьких (≤ 1280px),
+  так і у широких вьюпортах (> 1280px).
+*/
+.priorities-panel {
+  position: fixed;
+  top: var(--header-h);
+  right: max(
+    var(--sp-24),
+    calc((100vw - var(--container-max)) / 2 + var(--sp-24))
+  );
+  width: var(--panel-w);
+  height: calc(100dvh - var(--header-h));
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: var(--z-priorities);
+  /* Плавний скрол на iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Тонка смужка скролу — не заважає дизайну */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+/* ── 1180px ────────────────────────────────────────────────────────────────── */
+@media (max-width: 1180px) {
+  :root {
+    --panel-w: 320px;
+    --panel-gap: var(--sp-32);
+  }
+}
+
+/* ── 1023px (tablet/mobile) — панель ховається ──────────────────────────── */
+@media (max-width: 1023px) {
+  .site-layout {
+    padding: var(--sp-16) var(--sp-16) var(--sp-48);
+    /* Прибираємо правий відступ — панель прихована */
+    padding-right: var(--sp-16);
+  }
+
+  .priorities-panel {
+    /* На планшеті/мобільному — фіксована панель прихована.
+       Замість неї контакти і пріоритети з'являються у footer. */
+    display: none;
+  }
+}
+
+/* ── Home page inner grid: hero + news + team ─────────────────────────────── */
+
+.home-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-48);
+}
+
+.hero-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-20);
+  min-width: 0;
+  min-height: calc(100dvh - var(--header-h) - var(--sp-32) - var(--sp-64));
+}
+
+.hero-stack > .hero {
+  flex: 1 1 auto;
+}
+
+/* ── Адаптив home-grid ─────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .home-grid { gap: var(--sp-32); }
+  .hero-stack {
+    min-height: 0;
+    gap: var(--sp-16);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-grid { gap: var(--sp-24); }
+}

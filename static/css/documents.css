@@ -1,0 +1,226 @@
+/* Сторінки документів — список категорій та перелік файлів. */
+
+/* ── Wrap ────────────────────────────────────────────────────────────────── */
+.docs-wrap {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: var(--sp-40) var(--sp-24) var(--sp-64);
+}
+
+.docs-intro {
+  font-size: var(--fs-18);
+  color: var(--c-text-muted);
+  margin: 0 0 var(--sp-32);
+  padding-left: var(--sp-16);
+  border-left: 4px solid var(--c-accent);
+  line-height: 1.7;
+}
+
+/* ── Категорії документів ────────────────────────────────────────────────── */
+.doc-categories {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+}
+
+.doc-category-card__link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-20);
+  padding: var(--sp-20) var(--sp-24);
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: var(--c-text);
+  min-height: var(--tap-min);
+  transition: border-color var(--transition-fast), transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.doc-category-card__link:hover {
+  border-color: var(--c-primary);
+  transform: translateX(4px);
+  box-shadow: var(--c-shadow);
+}
+
+.doc-category-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--c-bg-soft);
+  color: var(--c-primary);
+  flex-shrink: 0;
+}
+
+.doc-category-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc-category-card__title {
+  font-size: var(--fs-16);
+  font-weight: 700;
+  color: var(--c-primary);
+  margin: 0 0 var(--sp-4);
+  line-height: 1.3;
+}
+
+.doc-category-card__count {
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+  font-weight: 500;
+}
+
+.doc-category-card__desc {
+  font-size: var(--fs-14);
+  color: var(--c-text-muted);
+  margin: var(--sp-4) 0 0;
+}
+
+.doc-category-card__arrow {
+  font-size: var(--fs-18);
+  color: var(--c-text-muted);
+  transition: color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.doc-category-card__link:hover .doc-category-card__arrow {
+  color: var(--c-primary);
+}
+
+/* ── Список документів ───────────────────────────────────────────────────── */
+.doc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+}
+
+.doc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-16);
+  padding: var(--sp-20) var(--sp-24);
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  transition: box-shadow var(--transition-fast);
+}
+
+.doc-item:hover {
+  box-shadow: 0 4px 16px -4px rgba(15, 44, 102, 0.12);
+}
+
+.doc-item__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-6);
+  flex-shrink: 0;
+  min-width: 56px;
+}
+
+.doc-item__type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4) var(--sp-8);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-12);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--c-bg-soft);
+  color: var(--c-text-muted);
+}
+
+.doc-item__type--pdf { background: #fee2e2; color: #dc2626; }
+.doc-item__type--doc { background: #dbeafe; color: #2563eb; }
+.doc-item__type--xls { background: #d1fae5; color: #059669; }
+
+.doc-item__date {
+  font-size: var(--fs-11, 0.6875rem);
+  color: var(--c-text-muted);
+  text-align: center;
+}
+
+.doc-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc-item__title {
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: var(--c-text);
+  margin: 0 0 var(--sp-4);
+  line-height: 1.4;
+}
+
+.doc-item__desc {
+  font-size: var(--fs-14);
+  color: var(--c-text-muted);
+  margin: 0;
+}
+
+.doc-item__download {
+  flex-shrink: 0;
+  background: var(--c-primary);
+  color: #fff;
+  border-radius: var(--r-md);
+  padding: var(--sp-8) var(--sp-16);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  white-space: nowrap;
+  transition: background var(--transition-fast);
+}
+
+.doc-item__download:hover {
+  background: var(--c-primary-700);
+  color: #fff;
+}
+
+/* ── Адаптив ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .docs-wrap {
+    padding: var(--sp-24) var(--sp-16) var(--sp-48);
+  }
+
+  .doc-item {
+    flex-wrap: wrap;
+    padding: var(--sp-16);
+  }
+
+  .doc-item__meta {
+    flex-direction: row;
+    min-width: auto;
+  }
+
+  .doc-category-card__link {
+    padding: var(--sp-16);
+    gap: var(--sp-12);
+  }
+}
+
+@media (max-width: 480px) {
+  .doc-item {
+    gap: var(--sp-12);
+  }
+
+  .doc-item__download {
+    width: 100%;
+    justify-content: center;
+  }
+}

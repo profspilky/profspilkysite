@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ album.title }} — {% trans "Фотогалерея" %} — {% trans "Федерація Профспілок України" %}{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ImageGallery",
+  "name": "{{ album.title|escapejs }}",
+  "description": "{{ page_meta_description|escapejs }}",
+  "url": "{{ canonical_url|escapejs }}"{% if og_image %},
+  "thumbnailUrl": "{{ og_image|escapejs }}"{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gallery.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/lightbox.js' %}" defer></script>
+{% endblock %}
+
+{% block page_banner %}
+<div class="page-banner">
+  <div class="page-banner__inner">
+    <nav class="page-banner__breadcrumb breadcrumb" aria-label="{% trans 'Навігація' %}">
+      <ol class="breadcrumb__list">
+        {% for crumb in breadcrumbs %}
+          <li class="breadcrumb__item">
+            {% if not forloop.last %}
+              <a class="breadcrumb__link" href="{{ crumb.url }}">{{ crumb.title }}</a>
+            {% else %}
+              <span class="breadcrumb__current" aria-current="page">{{ crumb.title }}</span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+    <h1 class="page-banner__title">{{ album.title }}</h1>
+    {% if album.event_date %}
+      <time class="page-banner__meta" datetime="{{ album.event_date|date:'Y-m-d' }}">
+        {{ album.event_date|date:"d.m.Y" }}
+      </time>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="gallery-wrap">
+
+  {% if album.description %}
+    <p class="gallery-desc">{{ album.description }}</p>
+  {% endif %}
+
+  {% if photos %}
+    <ul class="photo-grid" id="gallery-grid" aria-label="{{ album.title }}">
+      {% for photo in photos %}
+        <li class="photo-grid__item">
+          <a class="photo-grid__link"
+             href="{{ photo.image_url }}"
+             data-lightbox="{{ album.slug }}"
+             data-caption="{{ photo.title }}"
+             data-index="{{ forloop.counter0 }}">
+            <img
+              class="photo-grid__img"
+              src="{{ photo.image_url }}"
+              alt="{{ photo.title|default:album.title }}"
+              loading="lazy"
+              width="400"
+              height="300">
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {# Кількість фото #}
+    <p class="gallery-meta">
+      {% blocktrans with count=photos|length %}{{ count }} фотографій{% endblocktrans %}
+    </p>
+
+  {% else %}
+    <p class="empty-notice">{% trans "Фотографії до цього альбому ще не додано." %}</p>
+  {% endif %}
+
+  {# Lightbox dialog — заповнюється через JS #}
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true"
+       aria-label="{% trans 'Перегляд фото' %}" hidden>
+    <button type="button" class="lightbox__close" id="lb-close"
+            aria-label="{% trans 'Закрити' %}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <button type="button" class="lightbox__nav lightbox__nav--prev" id="lb-prev"
+            aria-label="{% trans 'Попереднє фото' %}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+
+    <div class="lightbox__stage">
+      <img id="lb-img" class="lightbox__img" src="" alt="" loading="eager">
+    </div>
+
+    <button type="button" class="lightbox__nav lightbox__nav--next" id="lb-next"
+            aria-label="{% trans 'Наступне фото' %}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <div class="lightbox__footer">
+      <p id="lb-caption" class="lightbox__caption"></p>
+      <span id="lb-counter" class="lightbox__counter" aria-live="polite"></span>
+    </div>
+  </div>
+  <div id="lightbox-overlay" class="lightbox__overlay" hidden aria-hidden="true"></div>
+
+</div>
+{% endblock %}

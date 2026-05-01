@@ -1,0 +1,180 @@
+/* Site footer — мінімальна базова реалізація (розширення в Фазі 4). */
+
+.site-footer {
+  background: var(--c-panel-2);
+  color: var(--c-text-on-dark);
+  padding-bottom: var(--safe-bottom);
+}
+
+/* ── Верхня частина (сітка колонок) ────────────────────────────────────── */
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-40) var(--sp-32);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-48) var(--sp-24) var(--sp-40);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Нижня рядок (copyright + посилання) ────────────────────────────────── */
+.site-footer__bottom {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-20) var(--sp-24);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-16);
+  flex-wrap: wrap;
+  font-size: var(--fs-12);
+  color: var(--c-text-on-dark-muted);
+}
+
+.site-footer__brand,
+.site-footer__copy { margin: 0; }
+
+/* ── Footer-колонка ──────────────────────────────────────────────────────── */
+.footer-col__title {
+  font-size: var(--fs-12);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c-text-on-dark);
+  margin: 0 0 var(--sp-16);
+}
+
+.footer-col__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+.footer-col__list a {
+  font-size: var(--fs-14);
+  color: var(--c-text-on-dark-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  min-height: var(--tap-min);
+}
+
+.footer-col__list a:hover { color: var(--c-text-on-dark); }
+
+.footer-social {
+  display: flex;
+  gap: var(--sp-12);
+  flex-wrap: wrap;
+}
+
+.footer-social__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.footer-social__link:hover {
+  background: var(--c-accent);
+  color: var(--c-primary-900);
+  transform: translateY(-2px);
+}
+
+/* ── Зворотна сумісність (старий footer до Фази 4) ──────────────────────── */
+.site-footer__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-20) var(--sp-24);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-16);
+  flex-wrap: wrap;
+  font-size: var(--fs-12);
+  color: var(--c-text-on-dark-muted);
+}
+
+/* ── Stub (заглушка "в розробці") ───────────────────────────────────────── */
+.stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - var(--header-h) - 80px);
+  padding: var(--sp-48) var(--sp-24);
+}
+.stub__inner {
+  text-align: center;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-20);
+  padding: var(--sp-48) var(--sp-32);
+  background: var(--c-bg-soft);
+  border-radius: var(--r-xl);
+  box-shadow: var(--c-shadow);
+}
+.stub__title { font-size: var(--fs-32); color: var(--c-primary-700); margin: 0; }
+.stub__lead  { color: var(--c-text-muted); margin: 0; }
+
+/* ── Адаптив ─────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .site-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-32) var(--sp-24);
+  }
+}
+
+@media (max-width: 480px) {
+  .site-footer__grid {
+    grid-template-columns: 1fr;
+    padding: var(--sp-32) var(--sp-16) var(--sp-24);
+    gap: var(--sp-24);
+  }
+
+  .site-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--sp-16);
+  }
+}
+
+/* Stub page (under-construction). */
+.stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-h) - 80px);
+  padding: var(--sp-48) var(--sp-24);
+}
+.stub__inner {
+  text-align: center;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-20);
+  padding: var(--sp-48) var(--sp-32);
+  background: var(--c-bg-soft);
+  border-radius: var(--r-xl);
+  box-shadow: var(--c-shadow);
+}
+.stub__title {
+  font-size: var(--fs-32);
+  color: var(--c-primary-700);
+  margin: 0;
+}
+.stub__lead {
+  color: var(--c-text-muted);
+  margin: 0;
+}

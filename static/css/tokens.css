@@ -1,0 +1,80 @@
+/* Design tokens — single source of truth for colors, spacing, type, z-index. */
+:root {
+  /* Breakpoints (для документування; в CSS використовується у media-queries) */
+  --bp-xs:  375px;
+  --bp-sm:  480px;
+  --bp-md:  768px;
+  --bp-lg:  1024px;
+  --bp-xl:  1280px;
+  --bp-2xl: 1440px;
+
+  /* Мінімальний tap-target (Apple HIG 44px) */
+  --tap-min: 44px;
+
+  /* Safe area для iOS (home indicator, notch) */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+  --c-primary: #133a7c;
+  --c-primary-700: #0f2c66;
+  --c-primary-900: #0a1f4a;
+  --c-accent: #f4c430;
+  --c-accent-600: #e3b41a;
+  --c-text: #1a2238;
+  --c-text-muted: #5b6378;
+  --c-text-on-dark: #eef3ff;
+  --c-text-on-dark-muted: #b6c2da;
+  --c-bg: #ffffff;
+  --c-bg-soft: #f5f7fb;
+  --c-panel: #0f2c66;
+  --c-panel-2: #0a1f4a;
+  --c-border: #e3e7f0;
+  --c-shadow: 0 12px 32px -12px rgba(15, 44, 102, 0.25);
+  --c-shadow-lg: 0 24px 48px -16px rgba(15, 44, 102, 0.35);
+
+  --ff-base: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --fs-12: 0.75rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-20: 1.25rem;
+  --fs-24: 1.5rem;
+  --fs-32: 2rem;
+  --fs-40: 2.5rem;
+  --fs-48: 3rem;
+
+  --sp-2: 0.125rem;
+  --sp-4: 0.25rem;
+  --sp-6: 0.375rem;
+  --sp-8: 0.5rem;
+  --sp-12: 0.75rem;
+  --sp-16: 1rem;
+  --sp-20: 1.25rem;
+  --sp-24: 1.5rem;
+  --sp-32: 2rem;
+  --sp-40: 2.5rem;
+  --sp-48: 3rem;
+  --sp-64: 4rem;
+  --sp-80: 5rem;
+
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  --header-h: 72px;
+
+  --z-base: 1;
+  --z-priorities: 30;
+  --z-hero-emblem: 25;
+  --z-header: 50;
+  --z-mobile-nav: 60;
+  --z-modal: 100;
+
+  --container-max: 1280px;
+  --transition-fast: 160ms ease;
+  --transition-med: 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}

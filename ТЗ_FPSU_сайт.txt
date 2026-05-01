@@ -1,0 +1,831 @@
+════════════════════════════════════════════════════════════════════════════════
+ТЕХНІЧНЕ ЗАВДАННЯ
+Сайт Федерації профспілок України (ФПУ / fpsu.org.ua)
+Міграція Joomla → Django + Розробка нового сайту
+════════════════════════════════════════════════════════════════════════════════
+Версія: 1.0
+Дата: 30 квітня 2026
+Проект: /Sites/Профспілки
+════════════════════════════════════════════════════════════════════════════════
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ЗМІСТ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1.  Контекст проекту
+  2.  Поточний стан (аналіз)
+  3.  Цілі та завдання
+  4.  БЛОК A — Викачування та обробка даних
+  5.  БЛОК B — Моделі даних нового сайту
+  6.  БЛОК C — Архітектура бекенду
+  7.  БЛОК D — Функціональні вимоги (сторінки та розділи)
+  8.  БЛОК E — Фронтенд та дизайн
+  9.  БЛОК F — Адмін-панель
+  10. БЛОК G — SEO та перенаправлення
+  11. БЛОК H — Безпека
+  12. БЛОК I — Тестування та якість
+  13. БЛОК J — Деплой та інфраструктура
+  14. План розробки (фази)
+  15. Критичні ризики
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. КОНТЕКСТ ПРОЕКТУ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Замовник:  Федерація профспілок України (ФПУ)
+Домен:     www.fpsu.org.ua
+Тип:       Офіційний інформаційний портал
+
+Призначення сайту:
+  — Публікація новин, заяв та офіційних документів ФПУ
+  — Інформування про діяльність членських організацій
+  — Представлення пріоритетів, команди та структури ФПУ
+  — Зберігання фотогалереї заходів
+  — Двомовний контент (українська / англійська)
+
+Поточна платформа: Joomla (стара, MySQL-база)
+Нова платформа:    Django 5.x + PostgreSQL (розробка вже розпочата)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. ПОТОЧНИЙ СТАН (АНАЛІЗ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2.1 Що вже зроблено
+────────────────────
+  [+] Django 5.1.4 проект з налаштуваннями prod/dev/test
+  [+] 4 Django-застосунки: core, news, pages, accounts
+  [+] Базові шаблони: base, home, article_detail, static_page, header, footer
+  [+] CSS-система: токени, base, header, hero, news, footer, utilities
+  [+] Деплой на Render.com (render.yaml): PostgreSQL + Gunicorn + WhiteNoise
+  [+] Cloudinary для медіафайлів
+  [+] Двомовність uk/en (django.po)
+  [+] Sitemap, robots.txt, healthz-endpoint
+  [+] Набір інструментів міграції (tools/*.py)
+  [+] SEO-інвентаризація: 25 943 статей, 199 категорій
+  [+] Management-команди: import_joomla, import_bodies, import_images, тощо
+  [+] pytest + factory-boy + ruff + mypy
+
+2.2 Обсяг даних для міграції
+──────────────────────────────
+  Статті (articles):        25 943
+  Тіла статей (bodies):     27 814 (JSON, з HTML-вмістом)
+  Категорії контенту:          199
+  Фото (JoomGallery):        1 752
+  Категорії галереї:            67
+  Статичні сторінки Joomla: за menu.tsv (не підраховано точно)
+  Теги:                    tags.json (7 рядків — мало/відсутній)
+  Хронологія контенту:      2012–2026 (пік: 2013–2014, ~2600–2730/рік)
+
+2.3 Топ категорій новин (за кількістю матеріалів)
+───────────────────────────────────────────────────
+  novini-chlenskikh-organizatsij       5 437
+  materiali                            5 284
+  mizhnarodna-robota                   1 785
+  sotsialnij-zakhist                   1 665
+  zagalni-novini                       1 320
+  informatsijna-robota                 1 304
+  nasha-borotba                          951
+  sotsialnij-dialog                      695
+  pravovij-zakhist                       668
+  okhorona-pratsi-i-zdorov-ya            626
+
+2.4 Що потребує доопрацювання
+───────────────────────────────
+  [!] Немає README.md у корені
+  [!] key_dig_priv.pem — приватний ключ у репозиторії (КРИТИЧНО)
+  [!] _server_dump.py — захардкожені облікові дані БД (КРИТИЧНО)
+  [!] DRF підключений, але API не реалізований
+  [!] gallery.json не підключений до шаблонів (галерея не відображається)
+  [!] menu.tsv порожній у seo_inventory (menu: 0)
+  [!] CSS: немає системної адаптації для планшетів/мобільних/iOS Safari
+  [!] JS: лише header.js, без будь-якої інтерактивності
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. ЦІЛІ ТА ЗАВДАННЯ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ціль 1: Повна міграція контенту з Joomla у Django без втрати SEO
+Ціль 2: Сучасний, адаптивний (mobile-first) інтерфейс
+Ціль 3: Зручна CMS-адмінка для редакторів ФПУ
+Ціль 4: Продуктивний, надійний деплой на Render.com
+Ціль 5: Фотогалерея з повноцінним відображенням
+Ціль 6: REST API для майбутніх інтеграцій (мобільний застосунок тощо)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК A — ВИКАЧУВАННЯ ТА ОБРОБКА ДАНИХ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A1. Вихідні дані (вже наявні)
+──────────────────────────────
+  tools/fpsu_full_dump.sql     — повний MySQL-дамп Joomla-бази
+  tools/fpsu_seo_dump.sql      — дамп з тілами статей (introtext + fulltext)
+  tools/seo_inventory.json     — 25 943 статей + 199 категорій (без тіл)
+  tools/content_bodies.json    — 27 814 записів з HTML-тілами статей
+  tools/gallery.json           — 1 752 фото з метаданими
+  tools/gallery_cats.json      — 67 категорій галереї
+  tools/tags.json              — теги (мінімально)
+  tools/image_paths.txt        — шляхи зображень з HTML статей
+  tools/verify_report.json     — звіт перевірки URL
+
+A2. Скрипти (вже написані, потребують фіналізації)
+────────────────────────────────────────────────────
+  tools/extract_tsv.py         — парсинг SQL → TSV/JSON (ГОТОВО)
+  tools/parse_joomla_dump.py   — TSV → seo_inventory.json (ГОТОВО)
+  tools/parse_bodies.py        — SQL → content_bodies.json (ГОТОВО)
+  tools/_server_dump.py        — mysqldump на сервері (НЕБЕЗПЕЧНИЙ, видалити крейди)
+  tools/_server_dump2.py       — варіант для FreeBSD (НЕБЕЗПЕЧНИЙ)
+  tools/_build_image_list.py   — збір шляхів зображень (ГОТОВО)
+  tools/convert_to_webp.py     — конвертація зображень у WebP (ГОТОВО)
+  tools/verify_urls.py         — перевірка URL-збігів (ГОТОВО)
+
+A3. Задачі з обробки даних (необхідно виконати)
+─────────────────────────────────────────────────
+  A3.1 Очищення HTML у тілах статей
+        — Видалити застарілі Joomla-теги ({loadposition}, {module}, тощо)
+        — Нормалізувати відносні URL зображень → абсолютні або Cloudinary
+        — Замінити теги <font>, <center> на сучасну розмітку або strip
+        — Прибрати inline-стилі (font-size, font-family, color) де надмірні
+        — Скрипт: tools/clean_html.py (НОВИЙ)
+
+  A3.2 Збіг статей і тіл
+        — seo_inventory.json (25 943) vs content_bodies.json (27 814)
+        — Об'єднати по id: якщо тіло є — заповнити body, інакше — NULL
+        — Скрипт: tools/merge_articles.py (НОВИЙ)
+        — Результат: tools/articles_full.json
+
+  A3.3 Завантаження зображень на Cloudinary
+        — Завантажити всі зображення з media/joomla_images/ на Cloudinary
+        — Зберегти маппінг: original_path → cloudinary_url
+        — Скрипт: tools/upload_images_cloudinary.py (НОВИЙ)
+        — Результат: tools/image_map.json
+
+  A3.4 Замінити шляхи зображень у HTML тілах
+        — Пройти articles_full.json, замінити всі src зображень
+        — Використати image_map.json для маппінгу
+        — Скрипт: tools/replace_image_paths.py (НОВИЙ)
+
+  A3.5 Фіналізація gallery.json
+        — Об'єднати gallery.json + gallery_cats.json у структуру для імпорту
+        — Перевірити published=1 (фільтрувати непубліковані)
+        — Скрипт: tools/prepare_gallery.py (НОВИЙ)
+
+  A3.6 Валідація перед імпортом
+        — Перевірити унікальність alias (slug) статей
+        — Перевірити цілісність cat_id → категорія існує
+        — Перевірити довжину title (max 500 символів)
+        — Скрипт: tools/validate_data.py (НОВИЙ)
+        — Результат: tools/validation_report.json
+
+A4. Management-команди Django (вже є, потребують огляду)
+──────────────────────────────────────────────────────────
+  news/management/commands/import_joomla.py       — імпорт статей
+  news/management/commands/import_bodies.py       — імпорт тіл
+  news/management/commands/import_images.py       — прив'язка зображень
+  news/management/commands/import_body_images.py  — зображення з тіл
+  news/management/commands/import_missing_articles.py
+  news/management/commands/link_article_covers.py
+  news/management/commands/fix_local_images.py
+  pages/management/commands/import_pages.py       — статичні сторінки
+  pages/management/commands/fill_page_bodies.py
+  core/management/commands/seed_priorities.py
+  core/management/commands/seed_section_pages.py
+
+  Нова команда:
+  gallery/management/commands/import_gallery.py   — імпорт фотогалереї (НОВИЙ)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК B — МОДЕЛІ ДАНИХ НОВОГО САЙТУ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+B1. apps/news — Новини
+───────────────────────
+  Category
+    id, title, slug (unique), description, parent (FK self, null),
+    meta_description, meta_keywords, order, is_active
+
+  Article
+    id, joomla_id (int, unique, null), title, slug (unique),
+    category (FK Category), summary (text), body (HTMLField),
+    cover_image (CloudinaryField, null), published_at (datetime),
+    is_published (bool), is_featured (bool),
+    meta_description (255), meta_keywords (255),
+    views_count (int, default=0),
+    created_at, updated_at
+
+  ArticleImage
+    article (FK Article), image (CloudinaryField),
+    caption (150), order (int)
+
+B2. apps/pages — Статичні сторінки
+────────────────────────────────────
+  StaticPage  (вже є, розширити)
+    id, joomla_id (int, unique, null), title, slug (unique),
+    body (HTMLField), banner_image (CloudinaryField, null),
+    parent (FK self, null), menu_order (int),
+    show_in_nav (bool), show_in_footer (bool),
+    section (choices: about/activities/documents/contacts),
+    meta_description, meta_keywords,
+    created_at, updated_at
+
+B3. apps/gallery — НОВИЙ застосунок
+─────────────────────────────────────
+  GalleryAlbum
+    id, joomla_id (int, unique, null), title, slug (unique),
+    cover_photo (FK GalleryPhoto, null, related='cover_of'),
+    description (text), event_date (date, null),
+    is_published (bool, default=True),
+    created_at, updated_at
+
+  GalleryPhoto
+    id, joomla_id (int, unique, null), album (FK GalleryAlbum),
+    image (CloudinaryField), thumb (CloudinaryField, null),
+    title (200), description (text), order (int),
+    is_published (bool, default=True)
+
+B4. apps/core — Сторінка головна, пріоритети, команда
+───────────────────────────────────────────────────────
+  Priority  (вже є)
+    id, title, icon (SVG-клас або файл), description, order, is_active
+
+  TeamMember  (вже є)
+    id, name, position, photo (CloudinaryField), bio (text),
+    order, is_active, show_on_home (bool)
+
+  SiteSettings  (НОВИЙ — синглтон)
+    id, site_name, tagline, contact_email, contact_phone,
+    address, facebook_url, youtube_url, telegram_url,
+    footer_text, hero_title, hero_subtitle
+
+B5. apps/documents — НОВИЙ застосунок (документи для скачування)
+──────────────────────────────────────────────────────────────────
+  DocumentCategory
+    id, title, slug, order
+
+  Document
+    id, title, category (FK DocumentCategory), file (FileField/Cloudinary),
+    file_type (choices: pdf/doc/xls/other), description (text),
+    published_at (date), is_published (bool)
+
+B6. apps/accounts — Авторизація (вже є)
+─────────────────────────────────────────
+  CustomUser  (розширити AbstractUser за потреби)
+    — стандартні поля + role (choices: admin/editor/viewer)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК C — АРХІТЕКТУРА БЕКЕНДУ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+C1. Структура Django-застосунків
+──────────────────────────────────
+  apps/
+  ├── accounts/       — авторизація (вже є)
+  ├── core/           — головна, пріоритети, команда, SiteSettings (вже є + розширити)
+  ├── news/           — новини та категорії (вже є + доопрацювати)
+  ├── pages/          — статичні сторінки (вже є + доопрацювати)
+  ├── gallery/        — фотогалерея (НОВИЙ)
+  └── documents/      — документи для скачування (НОВИЙ)
+
+C2. URL-структура
+──────────────────
+  /                                   — головна
+  /uk/                                — головна (uk)
+  /en/                                — головна (en)
+  /news/                              — список новин (всі категорії)
+  /news/<cat-slug>/                   — новини по категорії
+  /<cat-slug>/<id>-<article-slug>.html — SEF-URL Joomla (redirect → новий URL)
+  /news/<cat-slug>/<article-slug>/    — новий URL статті
+  /gallery/                           — список альбомів
+  /gallery/<album-slug>/              — альбом
+  /documents/                         — документи
+  /documents/<cat-slug>/              — категорія документів
+  /about/                             — про ФПУ (статична сторінка)
+  /contacts/                          — контакти
+  /search/                            — пошук
+  /admin/                             — Django admin
+  /api/v1/                            — REST API (DRF)
+  /healthz/                           — health check (вже є)
+  /sitemap.xml                        — sitemap (вже є)
+  /robots.txt                         — robots (вже є)
+
+C3. REST API (DRF — резерв для майбутнього)
+─────────────────────────────────────────────
+  GET /api/v1/news/               — список статей (pagination, filter by category)
+  GET /api/v1/news/<slug>/        — одна стаття
+  GET /api/v1/news/categories/    — список категорій
+  GET /api/v1/gallery/            — список альбомів
+  GET /api/v1/gallery/<slug>/     — один альбом з фото
+  GET /api/v1/pages/<slug>/       — статична сторінка
+  Аутентифікація: Token або Session (лише для запису, якщо потрібно)
+
+C4. Пошук
+──────────
+  Базовий пошук: Django ORM icontains по title + summary + body
+  Майбутнє: PostgreSQL full-text search (SearchVector, SearchQuery)
+  Результати: Article + StaticPage, з пагінацією, підсвітка тексту
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК D — ФУНКЦІОНАЛЬНІ ВИМОГИ (СТОРІНКИ ТА РОЗДІЛИ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+D1. Головна сторінка
+─────────────────────
+  — Hero-секція: заголовок ФПУ + підзаголовок + CTA-кнопка
+  — Головна новина (featured=True): велика картка з обкладинкою
+  — Блок «Актуальні новини»: до 10 останніх, у вигляді сітки
+  — Блок «Пріоритети ФПУ»: іконки + короткий опис (5–7 пунктів)
+  — Блок «Команда»: фото + ім'я + посада (show_on_home=True)
+  — Блок «Фотогалерея»: 4–6 останніх альбомів з обкладинками
+  — Банер або стрічка новин членських організацій
+
+D2. Сторінка списку новин
+───────────────────────────
+  — Ліва панель (sidebar): категорії з кількістю матеріалів
+  — Права частина: карточки статей (обкладинка, дата, категорія, заголовок, summary)
+  — Пагінація: 20 статей на сторінку
+  — Фільтр по категорії (через sidebar або URL-параметр)
+  — Хлібні крихти: Головна → Новини → [Категорія]
+
+D3. Сторінка статті
+────────────────────
+  — Хлібні крихти
+  — Заголовок, дата публікації, категорія (посилання)
+  — Обкладинка (якщо є)
+  — HTML-тіло статті (очищений Joomla-HTML)
+  — Галерея зображень статті (ArticleImage, якщо є)
+  — Кнопки «Поділитися» (Facebook, Telegram, копіювати посилання)
+  — Блок «Читайте також» (3–5 статей тієї ж категорії)
+  — JSON-LD Schema: NewsArticle (вже є)
+
+D4. Фотогалерея
+────────────────
+  — Список альбомів: сітка з обкладинками, назва, дата заходу, кількість фото
+  — Сторінка альбому: lightbox-галерея фотографій (CSS/JS без важких бібліотек)
+  — Навігація: Головна → Фотогалерея → [Назва альбому]
+
+D5. Статичні сторінки
+──────────────────────
+  — Банер з H1 і хлібними крихтами (вже є)
+  — Двоколонковий макет: тіло сторінки + сайдбар «Останні новини»
+  — Підтримка вкладених сторінок (parent → child)
+  — Навігація: показ в основному меню або footer (show_in_nav, show_in_footer)
+
+D6. Документи
+──────────────
+  — Список категорій документів
+  — Список документів у категорії: назва, тип файлу, дата, кнопка «Завантажити»
+  — Прямий download-URL (Cloudinary або WhiteNoise)
+
+D7. Пошук
+──────────
+  — Поле у хедері (кнопка пошуку → expand, вже є)
+  — Сторінка результатів: article + page, із сортуванням за релевантністю
+  — Якщо результатів немає — текст «Нічого не знайдено» + посилання на категорії
+
+D8. Контакти
+─────────────
+  — Адреса, телефон, email (з SiteSettings)
+  — Форма зворотного зв'язку (name, email, subject, message)
+  — SMTP-відправка (вже налаштовано в settings)
+  — Google Maps embed або OpenStreetMap iframe
+
+D9. Авторизація
+────────────────
+  — Кнопка «Увійти» у хедері (вже є)
+  — Форма входу за username/email + пароль (Argon2)
+  — Вихід
+  — Заборона реєстрації ззовні — тільки через адмінку
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК E — ФРОНТЕНД ТА ДИЗАЙН
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+E1. Технологічний підхід
+──────────────────────────
+  — Чистий CSS (вже є система з tokens.css) + vanilla JS
+  — БЕЗ React / Vue / важких фреймворків
+  — БЕЗ Bootstrap (власна система токенів)
+  — БЕЗ !important у CSS
+  — Mobile-first підхід
+
+E2. CSS-архітектура (розширення існуючої)
+──────────────────────────────────────────
+  static/css/
+  ├── tokens.css         — змінні: кольори, шрифти, відступи, breakpoints
+  ├── base.css           — reset, типографіка, scrollbar
+  ├── layout.css         — контейнери, grid, flex-утиліти
+  ├── header.css         — хедер, навігація, мобільне меню
+  ├── hero.css           — hero-секція головної
+  ├── news_feed.css      — блок новин на головній
+  ├── news_list.css      — сторінка списку новин (НОВИЙ або наявний)
+  ├── article.css        — сторінка статті (НОВИЙ)
+  ├── priorities.css     — блок пріоритетів
+  ├── team.css           — блок команди
+  ├── gallery.css        — фотогалерея (НОВИЙ)
+  ├── documents.css      — документи (НОВИЙ)
+  ├── static_page.css    — статичні сторінки
+  ├── search.css         — результати пошуку (НОВИЙ)
+  ├── forms.css          — форми (контакти, пошук, логін) (НОВИЙ)
+  ├── footer.css         — футер
+  └── utilities.css      — helper-класи
+
+E3. Breakpoints (з tokens.css)
+───────────────────────────────
+  --bp-xs:  375px   (iPhone SE / small phones)
+  --bp-sm:  480px   (large phones)
+  --bp-md:  768px   (tablets portrait / iPad mini)
+  --bp-lg:  1024px  (tablets landscape / iPad Pro)
+  --bp-xl:  1280px  (small laptops)
+  --bp-2xl: 1440px  (desktop)
+
+E4. iOS Safari — спеціальні вимоги
+────────────────────────────────────
+  — Використовувати dvh замість vh для hero і full-height елементів
+  — -webkit-overflow-scrolling: touch для горизонтального scroll
+  — Мінімальний tap-target: 44px × 44px (Apple HIG)
+  — position: sticky тестувати на iOS Safari 16+
+  — input type="search" — прибрати appearance:none, -webkit-appearance
+  — Avoid fixed-bottom елементів, що перекриваються home indicator
+  — Тест на Safari 16, 17, 18 (BrowserStack)
+
+E5. Lightbox для галереї
+──────────────────────────
+  — Власна реалізація на vanilla JS (без Swiper, Fancybox тощо)
+  — Підтримка swipe на touch-пристроях
+  — Lazy-loading зображень (loading="lazy" + IntersectionObserver)
+  — Клавіатурна навігація (←/→/Esc)
+  — ARIA: role="dialog", aria-label, aria-modal
+
+E6. Продуктивність
+───────────────────
+  — Всі зображення у форматі WebP (convert_to_webp.py вже є)
+  — srcset та sizes для адаптивних зображень Cloudinary
+  — Critical CSS inline (для head секції)
+  — defer/async для JS
+  — Core Web Vitals: LCP < 2.5s, CLS < 0.1, FID < 100ms
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК F — АДМІН-ПАНЕЛЬ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+F1. Django Admin — налаштування
+────────────────────────────────
+  — Кастомний admin-сайт: назва «Адмінпанель ФПУ», логотип
+  — Для Article: list_display (title, category, published_at, is_published, is_featured)
+                 list_filter (category, is_published, is_featured, published_at__year)
+                 search_fields (title, body, summary)
+                 prepopulated_fields ({slug: (title,)})
+                 date_hierarchy (published_at)
+                 Inline: ArticleImageInline
+  — Для GalleryAlbum: Inline GalleryPhotoInline
+  — Для StaticPage: list_display + tree-вигляд (mptt або ordering)
+  — Для SiteSettings: singleton (одна запис, без кнопки «Add»)
+  — Для Document: list_display + filter by category + file preview
+
+F2. Права доступу
+──────────────────
+  admin  — повний доступ до всього
+  editor — доступ до Article, StaticPage, GalleryAlbum, Document (без Users/Settings)
+  viewer — read-only
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК G — SEO ТА ПЕРЕНАПРАВЛЕННЯ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+G1. URL-перенаправлення з Joomla
+──────────────────────────────────
+  Старий Joomla SEF формат:
+    /<cat-alias>/<joomla_id>-<article-alias>.html
+
+  Новий Django URL:
+    /news/<cat-slug>/<article-slug>/
+
+  Реалізація:
+    — Middleware або URLconf: регекс /<str:cat>/\d+-<str:slug>\.html$
+    — Знайти Article по joomla_id або alias
+    — 301 redirect на /news/<cat-slug>/<article-slug>/
+    — Якщо не знайдено → 404
+
+G2. Статичні сторінки Joomla
+──────────────────────────────
+  — Зберегти оригінальні slug-и у StaticPage
+  — 301 redirect зі старих Joomla URL
+
+G3. Метатеги
+─────────────
+  — <title>: {article.title} | ФПУ
+  — <meta name="description">: article.meta_description або перші 160 символів summary
+  — Open Graph: og:title, og:description, og:image (cover або default)
+  — Twitter Card: summary_large_image
+  — Canonical URL на кожній сторінці
+  — hreflang: uk та en
+
+G4. Sitemap
+────────────
+  — DjangoSitemapView: Article (публічні), StaticPage, GalleryAlbum
+  — Оновлення: динамічне (lastmod = updated_at)
+  — robots.txt: Sitemap: https://fpsu.org.ua/sitemap.xml
+
+G5. Schema.org
+───────────────
+  — NewsArticle (вже є) — доповнити image, author, publisher
+  — BreadcrumbList — на всіх сторінках із хлібними крихтами
+  — Organization — на головній та сторінці контактів
+  — ImageGallery — на сторінках альбомів
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК H — БЕЗПЕКА
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+H1. КРИТИЧНІ завдання (зробити негайно)
+─────────────────────────────────────────
+  [!!!] Видалити key_dig_priv.pem з репозиторію та з git-history (git filter-repo)
+  [!!!] Видалити захардкожені креди з _server_dump.py та _server_dump2.py
+  [!!!] Перенести всі секрети у .env (змінні оточення)
+  [!!!] Ротувати скомпрометовані паролі та ключі
+  [!!!] Перевірити .gitignore: додати .env, *.pem, *.key, tools/*_dump.sql
+
+H2. Стандартні налаштування Django (production.py)
+────────────────────────────────────────────────────
+  SECURE_HSTS_SECONDS = 31536000
+  SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+  SECURE_SSL_REDIRECT = True
+  SESSION_COOKIE_SECURE = True
+  CSRF_COOKIE_SECURE = True
+  X_FRAME_OPTIONS = 'DENY'
+  SECURE_CONTENT_TYPE_NOSNIFF = True
+  SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
+H3. Rate limiting
+──────────────────
+  — Форма контактів: max 5 запитів/год на IP (django-ratelimit або кастомний middleware)
+  — Форма входу: max 10 спроб/год
+
+H4. CSRF
+─────────
+  — Всі POST-форми з {% csrf_token %} (вже є в Django)
+  — AJAX-запити: передача csrftoken через заголовок
+
+H5. SQL ін'єкції
+─────────────────
+  — Тільки ORM Django (параметризовані запити), без raw SQL з user-input
+
+H6. XSS
+────────
+  — Django auto-escaping у шаблонах для всіх даних
+  — article.body — рендерити через |safe ТІЛЬКИ після очищення bleach/sanitize
+  — Додати bleach або html-sanitizer до requirements.txt
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК I — ТЕСТУВАННЯ ТА ЯКІСТЬ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+I1. Одиничні тести (pytest)
+────────────────────────────
+  — apps/news/tests/: test_models.py (вже є), test_views.py, test_urls.py (вже є)
+  — apps/gallery/tests/: test_models.py, test_views.py (НОВИЙ)
+  — apps/pages/tests/: test_views.py (НОВИЙ)
+  — apps/core/tests/: test_home.py (вже є), test_i18n.py (вже є)
+  — tools/tests/: test_clean_html.py (НОВИЙ), test_merge_articles.py (НОВИЙ)
+  — Покриття: мінімум 80% для apps/
+
+I2. Функціональні тести
+────────────────────────
+  — Перевірка 301 redirect для всіх Joomla URL (verify_urls.py вже є)
+  — Перевірка sitemap: всі URL з sitemap.xml відповідають 200
+  — Перевірка SEO-метатегів: title, description, og:image — не порожні
+
+I3. Лінтери
+────────────
+  — ruff: вже є у requirements.txt
+  — mypy: вже є
+  — CI: GitHub Actions або Render pre-deploy hook
+
+I4. Перевірка браузерів
+────────────────────────
+  — Chrome (latest), Firefox (latest), Safari (macOS + iOS 16/17/18)
+  — Chrome Android (latest), Samsung Internet
+  — Перевірка через BrowserStack (або реальні пристрої)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+БЛОК J — ДЕПЛОЙ ТА ІНФРАСТРУКТУРА
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+J1. Поточний деплой (Render.com)
+──────────────────────────────────
+  — render.yaml: web service + PostgreSQL (вже є)
+  — build.sh: pip install + collectstatic + migrate + compilemessages
+  — Gunicorn + WhiteNoise + Cloudinary (вже налаштовано)
+
+J2. Оточення
+─────────────
+  development:  SQLite + DEBUG=True + local media
+  staging:      PostgreSQL (Render staging) + DEBUG=False + Cloudinary
+  production:   PostgreSQL (Render prod) + DEBUG=False + Cloudinary + HSTS
+
+J3. Змінні оточення (.env — НЕ комітити)
+──────────────────────────────────────────
+  SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASE_URL,
+  CLOUDINARY_URL, EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD,
+  EMAIL_PORT, DEFAULT_FROM_EMAIL
+
+J4. Моніторинг
+───────────────
+  — /healthz/ endpoint (вже є)
+  — Render built-in alerting (HTTP 5xx, downtime)
+  — Додатково: Sentry (django-sentry-sdk) для error tracking
+
+J5. Бекап
+──────────
+  — Render автоматичний бекап PostgreSQL (щоденний)
+  — Cloudinary: зображення зберігаються у хмарі (вже вирішено)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ПЛАН РОЗРОБКИ (ФАЗИ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 0 — БЕЗПЕКА (1–2 дні)                                   ПРІОРИТЕТ: !!!│
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 0.1  Видалити key_dig_priv.pem з git history                                │
+│ 0.2  Очистити _server_dump.py, _server_dump2.py від кредів                 │
+│ 0.3  Оновити .gitignore                                                     │
+│ 0.4  Ротація компрометованих ключів                                         │
+│ 0.5  README.md у корені                                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 1 — ОБРОБКА ДАНИХ (3–5 днів)                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 1.1  tools/clean_html.py         — очищення HTML                            │
+│ 1.2  tools/merge_articles.py     — об'єднання seo_inventory + content_bodies│
+│ 1.3  tools/validate_data.py      — валідація перед імпортом                 │
+│ 1.4  tools/upload_images_cloudinary.py — завантаження зображень             │
+│ 1.5  tools/replace_image_paths.py — патч URL зображень у HTML               │
+│ 1.6  tools/prepare_gallery.py    — підготовка gallery.json                  │
+│ 1.7  Результат: articles_full.json, image_map.json, gallery_ready.json      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 2 — МОДЕЛІ ТА МІГРАЦІЇ (2–3 дні)                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 2.1  Розширити apps/news/models.py (ArticleImage, нові поля)                │
+│ 2.2  Розширити apps/pages/models.py (show_in_nav, show_in_footer, section)  │
+│ 2.3  Створити apps/gallery/ (GalleryAlbum, GalleryPhoto, migrations, admin) │
+│ 2.4  Створити apps/documents/ (DocumentCategory, Document)                  │
+│ 2.5  Додати core/models.py: SiteSettings                                    │
+│ 2.6  Запустити makemigrations + migrate                                     │
+│ 2.7  Оновити admin.py для всіх моделей                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 3 — ІМПОРТ ДАНИХ (2–4 дні)                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 3.1  Оновити import_joomla.py під нові поля моделі                          │
+│ 3.2  Оновити import_bodies.py (тепер з articles_full.json)                  │
+│ 3.3  Оновити import_images.py (тепер з image_map.json)                      │
+│ 3.4  Створити gallery/management/commands/import_gallery.py                 │
+│ 3.5  Запустити всі import-команди на staging                                │
+│ 3.6  Запустити verify_urls.py — перевірити що всі 25 943 URL є 200 або 301 │
+│ 3.7  Ручна перевірка вибіркових статей (100 шт.)                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 4 — БЕКЕНД (VIEWS, URLS, REDIRECTS) (3–4 дні)                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 4.1  apps/news/views.py: ArticleListView, ArticleDetailView, CategoryView   │
+│ 4.2  apps/gallery/views.py: AlbumListView, AlbumDetailView                  │
+│ 4.3  apps/documents/views.py: DocumentListView                              │
+│ 4.4  apps/core/views.py: SearchView, ContactView                            │
+│ 4.5  project/urls.py: Middleware redirect Joomla URL → Django URL           │
+│ 4.6  apps/*/urls.py: нові маршрути                                          │
+│ 4.7  apps/*/sitemaps.py: GalleryAlbum sitemap                               │
+│ 4.8  context_processors.py: SiteSettings → всі шаблони                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 5 — ФРОНТЕНД (5–8 днів)                                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 5.1  Аудит tokens.css: додати breakpoint-змінні, dvh, touch-targets         │
+│ 5.2  Адаптивна навігація: header.css + header.js (mобільне меню, iOS-фікси)│
+│ 5.3  Головна: hero, news_feed, priorities, team, gallery preview            │
+│ 5.4  Список новин: news_list.css + шаблон + sidebar                        │
+│ 5.5  Стаття: article.css + шаблон + соц-кнопки + «Читайте також»          │
+│ 5.6  Галерея: gallery.css + lightbox.js (vanilla) + lazy loading           │
+│ 5.7  Документи: documents.css + шаблон                                     │
+│ 5.8  Статичні сторінки: static_page.css (вже є, доопрацювати адаптив)      │
+│ 5.9  Форми: forms.css (пошук, контакти, логін)                             │
+│ 5.10 Футер: footer.css (вже є, доопрацювати адаптив + iOS)                 │
+│ 5.11 Перевірка iOS Safari (14, 15, 16, 17, 18)                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 6 — API (DRF) (2–3 дні, може бути відкладено)                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 6.1  Serializers: Article, Category, GalleryAlbum, StaticPage               │
+│ 6.2  ViewSets + Router: /api/v1/                                            │
+│ 6.3  Pagination, filtering (django-filter)                                  │
+│ 6.4  Документація: drf-spectacular або drf-yasg (OpenAPI)                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 7 — ТЕСТУВАННЯ ТА QA (2–3 дні)                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 7.1  pytest: покриття views, models, redirects                              │
+│ 7.2  verify_urls.py: 25 943 URL → 200/301 (без 404)                        │
+│ 7.3  Lighthouse: Performance ≥85, SEO=100, Accessibility ≥90               │
+│ 7.4  Перевірка у 6 браузерах (Chrome, Firefox, Safari, iOS Safari ×3)      │
+│ 7.5  Ручний QA: вибіркові 200 статей, 20 альбомів, 10 статичних сторінок  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ФАЗА 8 — ДЕПЛОЙ PRODUCTION (1–2 дні)                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 8.1  Перевірка render.yaml, build.sh                                        │
+│ 8.2  Встановити Sentry (error tracking)                                     │
+│ 8.3  Налаштувати HSTS, SSL, security headers у production.py               │
+│ 8.4  DNS: перемикання fpsu.org.ua → Render                                 │
+│ 8.5  Моніторинг після запуску: 24 год спостереження                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+КРИТИЧНІ РИЗИКИ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ РИЗИК 1: Приватний ключ у git-репозиторії                   КРИТИЧНИЙ  │
+  │ key_dig_priv.pem присутній у коді.                                       │
+  │ ДІЯ: git filter-repo або BFG + ротація ключа                            │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ РИЗИК 2: Паролі бази даних у коді (_server_dump.py)         КРИТИЧНИЙ  │
+  │ ДІЯ: Видалити, ротувати пароль, перенести у .env                        │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────────┘
+  │ РИЗИК 3: Якість HTML із Joomla                              ВИСОКИЙ    │
+  │ Тіла статей містять застарілі теги, inline-стилі, зламані зображення.   │
+  │ ДІЯ: clean_html.py + ручна перевірка ТОП-50 статей                     │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ РИЗИК 4: SEO-регресія після міграції                        ВИСОКИЙ    │
+  │ 25 943 сторінок можуть стати 404 без правильних редиректів.             │
+  │ ДІЯ: verify_urls.py + middleware redirect ПЕРЕД запуском production     │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ РИЗИК 5: Обсяг даних vs. Render free tier                   СЕРЕДНІЙ   │
+  │ 25 943 статей + зображення — перевірити ліміти Cloudinary free tier.   │
+  │ ДІЯ: Підрахувати обсяг зображень, обрати відповідний тариф Cloudinary  │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │ РИЗИК 6: iOS Safari несумісності                            СЕРЕДНІЙ   │
+  │ ДІЯ: Тестування на реальних пристроях або BrowserStack з Фаза 5.11     │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ЗАГАЛЬНА ОЦІНКА ТЕРМІНІВ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Фаза 0 (Безпека):           1–2 дні
+  Фаза 1 (Обробка даних):     3–5 днів
+  Фаза 2 (Моделі):            2–3 дні
+  Фаза 3 (Імпорт):            2–4 дні
+  Фаза 4 (Бекенд/views):      3–4 дні
+  Фаза 5 (Фронтенд):          5–8 днів
+  Фаза 6 (API):               2–3 дні (опційно, може бути паралельно)
+  Фаза 7 (Тестування):        2–3 дні
+  Фаза 8 (Деплой):            1–2 дні
+  ─────────────────────────────────────
+  РАЗОМ (оптимістично):       ~21 день (3 тижні)
+  РАЗОМ (реалістично):        ~30 днів (4–5 тижнів)
+
+
+════════════════════════════════════════════════════════════════════════════════
+Документ складено на основі аналізу:
+  — структури проекту /Sites/Профспілки
+  — tools/seo_inventory.json (25 943 статей, 199 категорій)
+  — tools/content_bodies.json (27 814 записів)
+  — tools/gallery.json (1 752 фото) та tools/gallery_cats.json (67 категорій)
+  — Django-застосунків: core, news, pages, accounts
+  — render.yaml, requirements.txt, build.sh
+════════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,6 @@
+<svg class="brand__logo" width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+  <circle cx="32" cy="32" r="30" fill="#0f2c66"/>
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#f4c430" stroke-width="2"/>
+  <path d="M22 18 L26 18 L32 30 L38 18 L42 18 L34 34 L34 46 L30 46 L30 34 Z" fill="#f4c430"/>
+  <text x="32" y="58" text-anchor="middle" font-family="Open Sans, sans-serif" font-size="6" font-weight="700" fill="#f4c430">ФПУ</text>
+</svg>

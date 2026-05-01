@@ -1,0 +1,253 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: FPU 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-20 16:14+0300\n"
+"PO-Revision-Date: 2026-04-20 16:30+0300\n"
+"Last-Translator: FPU <noreply@fpu.org.ua>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Користувачі"
+msgstr "Users"
+
+msgid "Увійти"
+msgstr "Sign in"
+
+msgid "Ядро сайту"
+msgstr "Site core"
+
+msgid "Про нас"
+msgstr "About"
+
+msgid "Членство"
+msgstr "Membership"
+
+msgid "Новини"
+msgstr "News"
+
+msgid "Захист Прав"
+msgstr "Rights Protection"
+
+msgid "Ресурси"
+msgstr "Resources"
+
+msgid "Контакти"
+msgstr "Contacts"
+
+msgid "ФПУ"
+msgstr "FPU"
+
+msgid "Щит (захист прав)"
+msgstr "Shield (rights protection)"
+
+msgid "Каска (безпека праці)"
+msgstr "Hard hat (workplace safety)"
+
+msgid "Діалог"
+msgstr "Dialog"
+
+msgid "Серце (допомога)"
+msgstr "Heart (assistance)"
+
+msgid "Іконка"
+msgstr "Icon"
+
+msgid "Заголовок"
+msgstr "Title"
+
+msgid "Опис"
+msgstr "Description"
+
+msgid "Порядок"
+msgstr "Order"
+
+msgid "Активний"
+msgstr "Active"
+
+msgid "Пріоритет"
+msgstr "Priority"
+
+msgid "Пріоритети"
+msgstr "Priorities"
+
+msgid "Правовий Захист"
+msgstr "Legal Protection"
+
+msgid "Безпека Праці"
+msgstr "Workplace Safety"
+
+msgid "Соціальний Діалог"
+msgstr "Social Dialog"
+
+msgid "Як Ми Допомагаємо"
+msgstr "How We Help"
+
+msgid "ФПУ Відстоює Права Медиків"
+msgstr "FPU Defends Healthcare Workers' Rights"
+
+msgid "Колективні переговори щодо умов праці медичних працівників."
+msgstr "Collective bargaining for healthcare workers' conditions."
+
+msgid "Новий Колективний Договір в Обороні"
+msgstr "New Collective Agreement in Defence Sector"
+
+msgid "Підписано новий галузевий договір для працівників оборонної сфери."
+msgstr "A new industry agreement was signed for defence sector employees."
+
+msgid "Соціальний Діалог: Підсумки Кварталу"
+msgstr "Social Dialog: Quarterly Results"
+
+msgid "Щоквартальні підсумки взаємодії з роботодавцями та урядом."
+msgstr "Quarterly summary of cooperation with employers and government."
+
+msgid "Федерація Профспілок України на Міжнародному Форумі"
+msgstr "Federation of Trade Unions of Ukraine at the International Forum"
+
+msgid "Делегація ФПУ взяла участь у щорічній зустрічі європейських профспілок."
+msgstr "The FPU delegation took part in the annual European trade unions meeting."
+
+msgid "Підтримка Працівників Освіти"
+msgstr "Support for Education Workers"
+
+msgid "Програма матеріальної допомоги педагогам у складних регіонах."
+msgstr "Financial aid programme for teachers in challenging regions."
+
+msgid "Захист Працівників Транспорту"
+msgstr "Protection of Transport Workers"
+
+msgid ""
+"Звернення до уряду щодо умов праці та оплати водіїв громадського транспорту."
+msgstr ""
+"Appeal to the government on conditions and pay for public transport drivers."
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "Короткий опис"
+msgstr "Summary"
+
+msgid "Повний текст"
+msgstr "Full text"
+
+msgid "Зображення"
+msgstr "Image"
+
+msgid "Дата публікації"
+msgstr "Published at"
+
+msgid "Опубліковано"
+msgstr "Published"
+
+msgid "Ручний порядок"
+msgstr "Manual order"
+
+msgid "Новина"
+msgstr "Article"
+
+msgid "Статичні сторінки"
+msgstr "Static pages"
+
+msgid "about/"
+msgstr "about/"
+
+msgid "membership/"
+msgstr "membership/"
+
+msgid "news/"
+msgstr "news/"
+
+msgid "rights/"
+msgstr "rights/"
+
+msgid "resources/"
+msgstr "resources/"
+
+msgid "contacts/"
+msgstr "contacts/"
+
+msgid "login/"
+msgstr "login/"
+
+msgid ""
+"Федерація Профспілок України — захист прав працівників, безпека праці та "
+"соціальний діалог."
+msgstr ""
+"Federation of Trade Unions of Ukraine — protecting workers' rights, "
+"workplace safety and social dialogue."
+
+msgid "Федерація Профспілок України"
+msgstr "Federation of Trade Unions of Ukraine"
+
+msgid "Перейти до основного вмісту"
+msgstr "Skip to main content"
+
+msgid "ФПУ — Захист, Єдність, Сила Працівників"
+msgstr "FPU — Protection, Unity, Strength of Workers"
+
+msgid "ФЕДЕРАЦІЯ ПРОФСПІЛОК УКРАЇНИ: ЗАХИСТ, ЄДНІСТЬ, СИЛА ПРАЦІВНИКІВ!"
+msgstr "FEDERATION OF TRADE UNIONS OF UKRAINE: PROTECTION, UNITY, STRENGTH OF WORKERS!"
+
+msgid ""
+"Відстоюємо твої права, покращуємо умови праці та забезпечуємо соціальну "
+"справедливість для кожного українця."
+msgstr ""
+"We defend your rights, improve working conditions, and ensure social "
+"justice for every Ukrainian."
+
+msgid "ПРИЄДНАТИСЯ ДО ПРОФСПІЛКИ"
+msgstr "JOIN THE UNION"
+
+msgid "АКТУАЛЬНІ НОВИНИ"
+msgstr "LATEST NEWS"
+
+msgid "Попередня новина"
+msgstr "Previous article"
+
+msgid "Наступна новина"
+msgstr "Next article"
+
+msgid ""
+"Цей розділ зараз у розробці. Незабаром тут з'явиться корисна інформація."
+msgstr ""
+"This section is under construction. Useful information will appear here soon."
+
+msgid "Повернутися на головну"
+msgstr "Back to home"
+
+msgid "Шрифт:"
+msgstr "Font:"
+
+msgid "Федерація Профспілок України — на головну"
+msgstr "Federation of Trade Unions of Ukraine — home"
+
+msgid "Основне меню"
+msgstr "Main menu"
+
+msgid "Пошук"
+msgstr "Search"
+
+msgid "Перемикач мови"
+msgstr "Language switch"
+
+msgid "Відкрити меню"
+msgstr "Open menu"
+
+msgid "Мобільне меню"
+msgstr "Mobile menu"
+
+msgid "Наші Пріоритети"
+msgstr "Our Priorities"
+
+msgid "Сайт"
+msgstr "Sitemap"
+
+msgid "Будинок Профспілок"
+msgstr "Trade Unions Building"
+
+msgid "Соціальні мережі"
+msgstr "Social media"

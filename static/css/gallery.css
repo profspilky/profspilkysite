@@ -1,0 +1,312 @@
+/* Фотогалерея — список альбомів, сітка фото, lightbox. */
+
+/* ── Wrap ────────────────────────────────────────────────────────────────── */
+.gallery-wrap {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--sp-40) var(--sp-24) var(--sp-64);
+}
+
+.gallery-desc {
+  font-size: var(--fs-18);
+  color: var(--c-text-muted);
+  margin: 0 0 var(--sp-32);
+  max-width: 72ch;
+}
+
+.gallery-meta {
+  margin: var(--sp-24) 0 0;
+  font-size: var(--fs-14);
+  color: var(--c-text-muted);
+  text-align: right;
+}
+
+/* ── Сітка альбомів ──────────────────────────────────────────────────────── */
+.album-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-24);
+}
+
+/* ── Картка альбому ──────────────────────────────────────────────────────── */
+.album-card__link {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  text-decoration: none;
+  color: var(--c-text);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.album-card__link:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--c-shadow);
+}
+
+.album-card__cover {
+  position: relative;
+  aspect-ratio: 4/3;
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-700) 100%);
+  overflow: hidden;
+}
+
+.album-card__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-med);
+}
+
+.album-card__link:hover .album-card__cover img {
+  transform: scale(1.05);
+}
+
+.album-card__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.album-card__count {
+  position: absolute;
+  bottom: var(--sp-8);
+  right: var(--sp-8);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: var(--fs-12);
+  font-weight: 600;
+  padding: var(--sp-4) var(--sp-8);
+  border-radius: var(--r-pill);
+  backdrop-filter: blur(4px);
+}
+
+.album-card__body {
+  padding: var(--sp-16) var(--sp-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  flex: 1;
+}
+
+.album-card__title {
+  font-size: var(--fs-16);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--c-primary-700);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.album-card__date {
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+}
+
+/* ── Сітка фото (всередині альбому) ─────────────────────────────────────── */
+.photo-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-8);
+}
+
+.photo-grid__item {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  background: var(--c-bg-soft);
+}
+
+.photo-grid__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: zoom-in;
+}
+
+.photo-grid__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-med), opacity var(--transition-fast);
+}
+
+.photo-grid__link:hover .photo-grid__img {
+  transform: scale(1.06);
+  opacity: 0.9;
+}
+
+/* ── Lightbox ─────────────────────────────────────────────────────────────── */
+.lightbox__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: calc(var(--z-modal) - 1);
+  backdrop-filter: blur(4px);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-16);
+  /* iOS: safe areas */
+  padding-top: calc(var(--sp-16) + var(--safe-top));
+  padding-bottom: calc(var(--sp-16) + var(--safe-bottom));
+  padding-left: calc(var(--sp-16) + var(--safe-left));
+  padding-right: calc(var(--sp-16) + var(--safe-right));
+}
+
+.lightbox__stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: 80dvh;
+  object-fit: contain;
+  border-radius: var(--r-sm);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  transition: opacity 200ms ease, transform 200ms ease;
+  user-select: none;
+}
+
+.lightbox__img.is-loading {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+/* Кнопки навігації */
+.lightbox__nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  z-index: 1;
+}
+
+.lightbox__nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lightbox__nav--prev { left: var(--sp-16); }
+.lightbox__nav--next { right: var(--sp-16); }
+
+/* Кнопка закриття */
+.lightbox__close {
+  position: fixed;
+  top: calc(var(--sp-16) + var(--safe-top));
+  right: calc(var(--sp-16) + var(--safe-right));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  z-index: 2;
+}
+
+.lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Footer lightbox */
+.lightbox__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-16);
+  width: 100%;
+  max-width: 860px;
+  padding-top: var(--sp-12);
+}
+
+.lightbox__caption {
+  font-size: var(--fs-14);
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  flex: 1;
+}
+
+.lightbox__counter {
+  font-size: var(--fs-12);
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+/* ── Адаптив ─────────────────────────────────────────────────────────────── */
+@media (max-width: 1180px) {
+  .album-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .gallery-wrap { padding: var(--sp-24) var(--sp-16) var(--sp-48); }
+  .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-16); }
+  .photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-6); }
+
+  .lightbox__nav--prev { left: var(--sp-8); }
+  .lightbox__nav--next { right: var(--sp-8); }
+}
+
+@media (max-width: 480px) {
+  .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-12); }
+  .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+  .album-card__title { font-size: var(--fs-14); }
+  .album-card__body { padding: var(--sp-12); }
+
+  /* На маленьких екранах — кнопки навігації знизу */
+  .lightbox__nav {
+    top: auto;
+    bottom: calc(var(--sp-80) + var(--safe-bottom));
+    transform: none;
+    width: var(--tap-min);
+    height: var(--tap-min);
+  }
+
+  .lightbox__img { max-height: 70dvh; }
+}

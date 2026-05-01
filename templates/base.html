@@ -1,0 +1,76 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f2c66">
+
+  <title>{% block title %}{% if page_meta_title %}{{ page_meta_title }} — {% endif %}{% trans "Федерація Профспілок України" %}{% endblock %}</title>
+
+  <meta name="description" content="{% block meta_description %}{% if page_meta_description %}{{ page_meta_description }}{% else %}{% trans "Федерація Профспілок України — захист прав працівників, безпека праці та соціальний діалог." %}{% endif %}{% endblock %}">
+  {% if page_meta_keywords %}<meta name="keywords" content="{% block meta_keywords %}{{ page_meta_keywords }}{% endblock %}">{% endif %}
+
+  {# Canonical URL — prevents duplicate content issues #}
+  <link rel="canonical" href="{% block canonical %}{% if canonical_url %}{{ canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}">
+
+  {# hreflang for Ukrainian/English versions #}
+  <link rel="alternate" hreflang="uk" href="{{ request.build_absolute_uri }}">
+  <link rel="alternate" hreflang="x-default" href="{{ request.build_absolute_uri }}">
+
+  {# Open Graph #}
+  <meta property="og:site_name" content="{% trans "Федерація Профспілок України" %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{% if page_meta_title %}{{ page_meta_title }}{% else %}{% trans "Федерація Профспілок України" %}{% endif %}{% endblock %}">
+  <meta property="og:description" content="{% if page_meta_description %}{{ page_meta_description }}{% else %}{% trans "Федерація Профспілок України — захист прав працівників." %}{% endif %}">
+  <meta property="og:url" content="{% if canonical_url %}{{ canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}">
+  {% block og_image_tag %}{% if og_image %}<meta property="og:image" content="{{ og_image }}">{% endif %}{% endblock %}
+  <meta property="og:locale" content="uk_UA">
+
+  {# Twitter Card #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if page_meta_title %}{{ page_meta_title }}{% else %}{% trans "Федерація Профспілок України" %}{% endif %}">
+  <meta name="twitter:description" content="{% if page_meta_description %}{{ page_meta_description }}{% else %}{% trans "Федерація Профспілок України — захист прав працівників." %}{% endif %}">
+  {% if og_image %}<meta name="twitter:image" content="{{ og_image }}">{% endif %}
+
+  {# JSON-LD structured data (overridden per page type) #}
+  {% block json_ld %}{% endblock %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap">
+
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/hero.css' %}">
+  <link rel="stylesheet" href="{% static 'css/news_feed.css' %}">
+  <link rel="stylesheet" href="{% static 'css/priorities.css' %}">
+  <link rel="stylesheet" href="{% static 'css/team.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
+  <link rel="stylesheet" href="{% static 'css/static_page.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="page">
+  <a class="skip-link" href="#main">{% trans "Перейти до основного вмісту" %}</a>
+
+  {% include 'partials/header.html' %}
+
+  {% block page_banner %}{% endblock %}
+
+  <div class="site-layout">
+    <main id="main" class="main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {% include 'partials/priorities_panel.html' %}
+
+  {% include 'partials/footer.html' %}
+
+  <script src="{% static 'js/header.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
