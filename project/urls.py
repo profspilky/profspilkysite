@@ -8,6 +8,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
 from django.urls import include, path
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import RedirectView
 
 from apps.news.sitemaps import ArticleSitemap, CategorySitemap
 from apps.pages.sitemaps import StaticPageSitemap
@@ -36,6 +37,8 @@ SITEMAPS = {
 }
 
 urlpatterns = [
+    # Redirect /admin (no slash) → /admin/ before pages catch-all intercepts it
+    path("admin", RedirectView.as_view(url="/admin/", permanent=True)),
     path("healthz/", healthz, name="healthz"),
     path("robots.txt", robots_txt, name="robots_txt"),
     path(

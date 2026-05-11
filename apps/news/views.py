@@ -56,7 +56,13 @@ def category_list(request: HttpRequest, cat_path: str) -> HttpResponse:
     except Exception:
         pass
     # #endregion
-    category = get_object_or_404(Category, path=cat_path.strip("/"), is_active=True)
+    path_clean = cat_path.strip("/")
+    try:
+        category = Category.objects.get(path=path_clean, is_active=True)
+    except Category.DoesNotExist:
+        # No news category — redirect to no-slash URL for StaticPage handling
+        from django.http import HttpResponsePermanentRedirect
+        return HttpResponsePermanentRedirect(f"/{path_clean}")
     articles = (
         Article.objects.filter(category=category, is_published=True)
         .order_by("-published_at")
