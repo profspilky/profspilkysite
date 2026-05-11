@@ -37,7 +37,7 @@ import ijson
 
 from django.core import serializers
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
+from django.db import connection, transaction
 
 
 class Command(BaseCommand):
@@ -69,6 +69,9 @@ class Command(BaseCommand):
             if not items:
                 return 0
             batch_json = json.dumps(items)
+            # Ensure connection is alive before each batch (Render Free Postgres
+            # drops idle SSL connections; close() triggers a fresh reconnect).
+            connection.ensure_connection()
             with transaction.atomic():
                 for obj in serializers.deserialize("json", batch_json):
                     obj.save()

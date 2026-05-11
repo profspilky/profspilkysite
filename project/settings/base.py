@@ -86,6 +86,16 @@ DATABASES = {
     "default": env.db("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
 }
 
+# TCP keepalive prevents Render Free Postgres from dropping SSL connections
+# during long bulk operations (loaddata / load_fixtures with large fixtures).
+if DATABASES["default"].get("ENGINE", "").endswith("psycopg2"):
+    DATABASES["default"].setdefault("OPTIONS", {}).update({
+        "keepalives": 1,
+        "keepalives_idle": 60,
+        "keepalives_interval": 10,
+        "keepalives_count": 5,
+    })
+
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
