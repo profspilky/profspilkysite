@@ -58,23 +58,43 @@
   {% endif %}
 
   {% if photos %}
+    {% static 'img/photo-placeholder.svg' as placeholder_url %}
     <ul class="photo-grid" id="gallery-grid" aria-label="{{ album.title }}">
       {% for photo in photos %}
-        <li class="photo-grid__item">
-          <a class="photo-grid__link"
-             href="{{ photo.image_url }}"
-             data-lightbox="{{ album.slug }}"
-             data-caption="{{ photo.title }}"
-             data-index="{{ forloop.counter0 }}">
-            <img
-              class="photo-grid__img"
-              src="{{ photo.image_url }}"
-              alt="{{ photo.title|default:album.title }}"
-              loading="lazy"
-              width="400"
-              height="300">
-          </a>
-        </li>
+        {% if photo.image %}
+          {% with img_url=photo.image_url %}
+          <li class="photo-grid__item">
+            <a class="photo-grid__link"
+               href="{{ img_url }}"
+               data-lightbox="{{ album.slug }}"
+               data-caption="{{ photo.title }}">
+              <img
+                class="photo-grid__img"
+                src="{{ img_url }}"
+                alt="{{ photo.title|default:album.title }}"
+                loading="lazy"
+                width="400"
+                height="300"
+                onerror="this.onerror=null;this.src='{{ placeholder_url }}';">
+            </a>
+          </li>
+          {% endwith %}
+        {% else %}
+          <li class="photo-grid__item photo-grid__item--no-image">
+            <a class="photo-grid__link photo-grid__link--placeholder"
+               href="{{ placeholder_url }}"
+               data-lightbox="{{ album.slug }}"
+               data-caption="{{ photo.title|default:'Фото недоступне' }}"
+               aria-label="{{ photo.title|default:'Фото недоступне' }}">
+              <div class="photo-grid__no-image" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+        {% endif %}
       {% endfor %}
     </ul>
 

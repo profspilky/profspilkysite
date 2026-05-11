@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
 from .models import Document, DocumentCategory
@@ -15,12 +16,12 @@ def document_index(request: HttpRequest) -> HttpResponse:
     canonical = request.build_absolute_uri("/documents/")
     context = {
         "categories": categories,
-        "page_meta_title": "Документи ФПУ",
-        "page_meta_description": "Офіційні документи Федерації профспілок України: постанови, угоди, статут.",
+        "page_meta_title": _("Документи ФПУ"),
+        "page_meta_description": _("Офіційні документи Федерації профспілок України: постанови, угоди, статут."),
         "canonical_url": canonical,
         "breadcrumbs": [
-            {"title": "Головна", "url": "/"},
-            {"title": "Документи ФПУ", "url": "/documents/"},
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Документи ФПУ"), "url": "/documents/"},
         ],
     }
     return render(request, "documents/document_index.html", context)
@@ -39,8 +40,8 @@ def category_detail(request: HttpRequest, slug: str) -> HttpResponse:
         "page_meta_description": category.description[:160] or f"Документи категорії «{category.title}» — ФПУ",
         "canonical_url": canonical,
         "breadcrumbs": [
-            {"title": "Головна", "url": "/"},
-            {"title": "Документи ФПУ", "url": "/documents/"},
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Документи ФПУ"), "url": "/documents/"},
             {"title": category.title, "url": category.get_absolute_url()},
         ],
     }

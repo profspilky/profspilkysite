@@ -110,7 +110,8 @@ class Command(BaseCommand):
     ) -> None:
         self.stdout.write("Updating Article.body …")
 
-        # Fetch all articles that have a joomla_id and an empty body
+        # Fetch all articles that have a joomla_id — bodies are always refreshed
+        # from the dump (idempotent rewrite), not just empty ones.
         qs = Article.objects.filter(
             joomla_id__isnull=False,
         ).only("id", "joomla_id", "body")

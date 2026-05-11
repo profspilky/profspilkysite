@@ -63,6 +63,24 @@ class Command(BaseCommand):
                     skipped += 1
                     continue
 
+                # Skip Joomla system/admin menu items that have no real public URL.
+                # They are identified by: path starting with a Joomla component name
+                # (e.g. "Banners", "Contacts", "Messaging") or by link pointing to
+                # administration-only components with no front-end page.
+                if (
+                    path.startswith("com_")
+                    or alias.startswith("com_")
+                    or mtype == "separator"
+                    or mtype == "heading"
+                    or (link.startswith("index.php?option=com_") and mtype == "component"
+                        and path.split("/")[0] in {
+                            "Banners", "Contacts", "Messaging", "Tags",
+                            "Smart Search", "Weblinks",
+                        })
+                ):
+                    skipped += 1
+                    continue
+
                 # Determine stored url_path
                 # For Joomla SEF URLs: path = "pro-fpu/istoriya-fpu" → /pro-fpu/istoriya-fpu
                 # We store both plain and .html variants so both URL patterns match

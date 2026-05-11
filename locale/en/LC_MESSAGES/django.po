@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FPU 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-20 16:14+0300\n"
+"POT-Creation-Date: 2026-05-01 15:55+0300\n"
 "PO-Revision-Date: 2026-04-20 16:30+0300\n"
 "Last-Translator: FPU <noreply@fpu.org.ua>\n"
 "Language-Team: English\n"
@@ -12,242 +12,1036 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: apps/accounts/apps.py:10
 msgid "Користувачі"
 msgstr "Users"
 
+#: apps/accounts/views.py:10 templates/partials/header.html:20
+#: templates/partials/header.html:58
 msgid "Увійти"
 msgstr "Sign in"
 
+#: apps/core/apps.py:10
 msgid "Ядро сайту"
 msgstr "Site core"
 
-msgid "Про нас"
-msgstr "About"
+#: apps/core/context_processors.py:31 apps/core/views.py:83
+#: apps/core/views.py:150 apps/documents/views.py:23 apps/documents/views.py:43
+#: apps/gallery/views.py:27 apps/gallery/views.py:49 apps/news/views.py:68
+#: apps/pages/views.py:40 apps/pages/views.py:46 apps/pages/views.py:60
+#: apps/pages/views.py:150 templates/core/contact.html:32
+#: templates/core/search.html:17
+msgid "Головна"
+msgstr "Home"
 
-msgid "Членство"
-msgstr "Membership"
+#: apps/core/context_processors.py:37 apps/gallery/views.py:23
+#: apps/gallery/views.py:28 apps/gallery/views.py:50
+#: templates/gallery/album_detail.html:4 templates/gallery/album_list.html:4
+#: templates/gallery/album_list.html:26 templates/partials/footer.html:36
+#: templates/partials/priorities_panel.html:40
+msgid "Фотогалерея"
+msgstr "Photo Gallery"
 
-msgid "Новини"
-msgstr "News"
+#: apps/core/models.py:12
+msgid "Назва сайту"
+msgstr "Site name"
 
-msgid "Захист Прав"
-msgstr "Rights Protection"
+#: apps/core/models.py:13
+msgid "Слоган"
+msgstr "Slogan"
 
-msgid "Ресурси"
-msgstr "Resources"
+#: apps/core/models.py:14 templates/core/contact.html:69
+msgid "Телефон"
+msgstr "Phone"
 
-msgid "Контакти"
-msgstr "Contacts"
+#: apps/core/models.py:15
+msgid "Гаряча лінія"
+msgstr "Hotline"
 
-msgid "ФПУ"
-msgstr "FPU"
+#: apps/core/models.py:16
+msgid "Email"
+msgstr "Email"
 
+#: apps/core/models.py:18 templates/core/contact.html:55
+msgid "Адреса"
+msgstr "Address"
+
+#: apps/core/models.py:23
+msgid "Facebook"
+msgstr "Facebook"
+
+#: apps/core/models.py:24
+msgid "YouTube"
+msgstr "YouTube"
+
+#: apps/core/models.py:25
+msgid "Telegram"
+msgstr "Telegram"
+
+#: apps/core/models.py:26
+msgid "Текст футера"
+msgstr "Footer text"
+
+#: apps/core/models.py:29 apps/core/models.py:30
+msgid "Налаштування сайту"
+msgstr "Site settings"
+
+#: apps/core/models.py:42
+msgid "Всеукраїнська галузева"
+msgstr "All-Ukrainian sectoral"
+
+#: apps/core/models.py:43
+msgid "Територіальне об'єднання"
+msgstr "Territorial association"
+
+#: apps/core/models.py:47
 msgid "Щит (захист прав)"
 msgstr "Shield (rights protection)"
 
+#: apps/core/models.py:48
 msgid "Каска (безпека праці)"
 msgstr "Hard hat (workplace safety)"
 
+#: apps/core/models.py:49
 msgid "Діалог"
 msgstr "Dialog"
 
+#: apps/core/models.py:50
 msgid "Серце (допомога)"
 msgstr "Heart (assistance)"
 
+#: apps/core/models.py:57
 msgid "Іконка"
 msgstr "Icon"
 
+#: apps/core/models.py:62 apps/news/models.py:43 apps/pages/models.py:17
 msgid "Заголовок"
 msgstr "Title"
 
+#: apps/core/models.py:63 apps/core/models.py:123 apps/documents/models.py:21
+#: apps/documents/models.py:76 apps/gallery/models.py:16
 msgid "Опис"
 msgstr "Description"
 
+#: apps/core/models.py:64 apps/core/models.py:83 apps/core/models.py:124
+#: apps/documents/models.py:22 apps/documents/models.py:79
+#: apps/gallery/models.py:90
 msgid "Порядок"
 msgstr "Order"
 
+#: apps/core/models.py:65 apps/core/models.py:84
 msgid "Активний"
 msgstr "Active"
 
+#: apps/core/models.py:68
 msgid "Пріоритет"
 msgstr "Priority"
 
+#: apps/core/models.py:69 templates/partials/priorities_panel.html:16
 msgid "Пріоритети"
 msgstr "Priorities"
 
-msgid "Правовий Захист"
-msgstr "Legal Protection"
+#: apps/core/models.py:79
+msgid "Повне імʼя"
+msgstr "Full name"
 
-msgid "Безпека Праці"
-msgstr "Workplace Safety"
+#: apps/core/models.py:80
+msgid "Посада"
+msgstr "Position"
 
-msgid "Соціальний Діалог"
-msgstr "Social Dialog"
-
-msgid "Як Ми Допомагаємо"
-msgstr "How We Help"
-
-msgid "ФПУ Відстоює Права Медиків"
-msgstr "FPU Defends Healthcare Workers' Rights"
-
-msgid "Колективні переговори щодо умов праці медичних працівників."
-msgstr "Collective bargaining for healthcare workers' conditions."
-
-msgid "Новий Колективний Договір в Обороні"
-msgstr "New Collective Agreement in Defence Sector"
-
-msgid "Підписано новий галузевий договір для працівників оборонної сфери."
-msgstr "A new industry agreement was signed for defence sector employees."
-
-msgid "Соціальний Діалог: Підсумки Кварталу"
-msgstr "Social Dialog: Quarterly Results"
-
-msgid "Щоквартальні підсумки взаємодії з роботодавцями та урядом."
-msgstr "Quarterly summary of cooperation with employers and government."
-
-msgid "Федерація Профспілок України на Міжнародному Форумі"
-msgstr "Federation of Trade Unions of Ukraine at the International Forum"
-
-msgid "Делегація ФПУ взяла участь у щорічній зустрічі європейських профспілок."
-msgstr "The FPU delegation took part in the annual European trade unions meeting."
-
-msgid "Підтримка Працівників Освіти"
-msgstr "Support for Education Workers"
-
-msgid "Програма матеріальної допомоги педагогам у складних регіонах."
-msgstr "Financial aid programme for teachers in challenging regions."
-
-msgid "Захист Працівників Транспорту"
-msgstr "Protection of Transport Workers"
-
-msgid ""
-"Звернення до уряду щодо умов праці та оплати водіїв громадського транспорту."
-msgstr ""
-"Appeal to the government on conditions and pay for public transport drivers."
-
-msgid "Slug"
-msgstr "Slug"
-
+#: apps/core/models.py:81 apps/news/models.py:45
 msgid "Короткий опис"
 msgstr "Summary"
 
-msgid "Повний текст"
-msgstr "Full text"
+#: apps/core/models.py:82 apps/gallery/models.py:82 apps/gallery/models.py:94
+msgid "Фото"
+msgstr "Photo"
 
-msgid "Зображення"
-msgstr "Image"
+#: apps/core/models.py:87
+msgid "Член команди"
+msgstr "Team member"
 
-msgid "Дата публікації"
-msgstr "Published at"
+#: apps/core/models.py:88
+msgid "Команда"
+msgstr "Team"
 
-msgid "Опубліковано"
-msgstr "Published"
+#: apps/core/models.py:113
+msgid "Тип"
+msgstr "Type"
 
-msgid "Ручний порядок"
-msgstr "Manual order"
+#: apps/core/models.py:118 apps/documents/models.py:19
+#: apps/documents/models.py:51 apps/gallery/models.py:14 apps/news/models.py:15
+msgid "Назва"
+msgstr "Name"
 
-msgid "Новина"
-msgstr "Article"
+#: apps/core/models.py:119 apps/documents/models.py:20
+#: apps/gallery/models.py:15 apps/news/models.py:44
+msgid "Slug"
+msgstr "Slug"
 
-msgid "Статичні сторінки"
-msgstr "Static pages"
+#: apps/core/models.py:120
+msgid "Регіон"
+msgstr "Region"
 
-msgid "about/"
-msgstr "about/"
-
-msgid "membership/"
-msgstr "membership/"
-
-msgid "news/"
-msgstr "news/"
-
-msgid "rights/"
-msgstr "rights/"
-
-msgid "resources/"
-msgstr "resources/"
-
-msgid "contacts/"
-msgstr "contacts/"
-
-msgid "login/"
-msgstr "login/"
-
-msgid ""
-"Федерація Профспілок України — захист прав працівників, безпека праці та "
-"соціальний діалог."
-msgstr ""
-"Federation of Trade Unions of Ukraine — protecting workers' rights, "
-"workplace safety and social dialogue."
-
-msgid "Федерація Профспілок України"
-msgstr "Federation of Trade Unions of Ukraine"
-
-msgid "Перейти до основного вмісту"
-msgstr "Skip to main content"
-
-msgid "ФПУ — Захист, Єдність, Сила Працівників"
-msgstr "FPU — Protection, Unity, Strength of Workers"
-
-msgid "ФЕДЕРАЦІЯ ПРОФСПІЛОК УКРАЇНИ: ЗАХИСТ, ЄДНІСТЬ, СИЛА ПРАЦІВНИКІВ!"
-msgstr "FEDERATION OF TRADE UNIONS OF UKRAINE: PROTECTION, UNITY, STRENGTH OF WORKERS!"
-
-msgid ""
-"Відстоюємо твої права, покращуємо умови праці та забезпечуємо соціальну "
-"справедливість для кожного українця."
-msgstr ""
-"We defend your rights, improve working conditions, and ensure social "
-"justice for every Ukrainian."
-
-msgid "ПРИЄДНАТИСЯ ДО ПРОФСПІЛКИ"
-msgstr "JOIN THE UNION"
-
-msgid "АКТУАЛЬНІ НОВИНИ"
-msgstr "LATEST NEWS"
-
-msgid "Попередня новина"
-msgstr "Previous article"
-
-msgid "Наступна новина"
-msgstr "Next article"
-
-msgid ""
-"Цей розділ зараз у розробці. Незабаром тут з'явиться корисна інформація."
-msgstr ""
-"This section is under construction. Useful information will appear here soon."
-
-msgid "Повернутися на головну"
-msgstr "Back to home"
-
-msgid "Шрифт:"
-msgstr "Font:"
-
-msgid "Федерація Профспілок України — на головну"
-msgstr "Federation of Trade Unions of Ukraine — home"
-
-msgid "Основне меню"
-msgstr "Main menu"
-
-msgid "Пошук"
-msgstr "Search"
-
-msgid "Перемикач мови"
-msgstr "Language switch"
-
-msgid "Відкрити меню"
-msgstr "Open menu"
-
-msgid "Мобільне меню"
-msgstr "Mobile menu"
-
-msgid "Наші Пріоритети"
-msgstr "Our Priorities"
-
+#: apps/core/models.py:121
 msgid "Сайт"
 msgstr "Sitemap"
 
-msgid "Будинок Профспілок"
-msgstr "Trade Unions Building"
+#: apps/core/models.py:122
+msgid "Логотип"
+msgstr "Logo"
 
+#: apps/core/models.py:125 apps/news/models.py:24
+msgid "Активна"
+msgstr "Active"
+
+#: apps/core/models.py:128
+msgid "Членська організація"
+msgstr "Member organisation"
+
+#: apps/core/models.py:129 apps/core/nav.py:17
+#: templates/partials/footer.html:12
+#: templates/partials/priorities_panel.html:38
+msgid "Членські організації"
+msgstr "Member Organisations"
+
+#: apps/core/nav.py:10 templates/partials/footer.html:7
+msgid "Про ФПУ"
+msgstr "About FPU"
+
+#: apps/core/nav.py:13
+msgid "Історія ФПУ"
+msgstr "About"
+
+#: apps/core/nav.py:14
+msgid "Виборні органи ФПУ"
+msgstr "FPU Elected Bodies"
+
+#: apps/core/nav.py:15
+msgid "Керівництво ФПУ"
+msgstr "FPU Leadership"
+
+#: apps/core/nav.py:16
+msgid "Президія"
+msgstr "Presidium"
+
+#: apps/core/nav.py:18
+msgid "Комісії ФПУ"
+msgstr "FPU Commissions"
+
+#: apps/core/nav.py:19
+msgid "Законодавче регулювання діяльності"
+msgstr "Legislative Regulation of Activities"
+
+#: apps/core/nav.py:20
+msgid "Символіка ФПУ"
+msgstr "FPU Symbols"
+
+#: apps/core/nav.py:24
+msgid "Напрями діяльності"
+msgstr "Areas of Activity"
+
+#: apps/core/nav.py:27 templates/partials/footer.html:21
+#: templates/partials/priorities_panel.html:39
+msgid "Правовий захист"
+msgstr "Legal Protection"
+
+#: apps/core/nav.py:28
+msgid "Охорона праці і здоров'я"
+msgstr "Workplace Safety"
+
+#: apps/core/nav.py:29 templates/partials/footer.html:23
+msgid "Соціальний захист"
+msgstr "Social Dialog"
+
+#: apps/core/nav.py:30
+msgid "Виробнича політика та ціноутворення"
+msgstr "Industrial Policy and Pricing"
+
+#: apps/core/nav.py:31
+msgid "Соціальне страхування і пенсійне забезп."
+msgstr "Social Insurance and Pension Provision"
+
+#: apps/core/nav.py:32
+msgid "Соціальний діалог"
+msgstr "Social Dialog"
+
+#: apps/core/nav.py:33
+msgid "Організаційна робота"
+msgstr "Organisational Work"
+
+#: apps/core/nav.py:34 templates/partials/footer.html:25
+msgid "Молодіжна політика"
+msgstr "Youth Policy"
+
+#: apps/core/nav.py:35
+msgid "Інформаційна робота"
+msgstr "Information Activities"
+
+#: apps/core/nav.py:36 templates/partials/footer.html:24
+msgid "Міжнародна робота"
+msgstr "International Activities"
+
+#: apps/core/nav.py:40 apps/documents/views.py:19 apps/documents/views.py:24
+#: apps/documents/views.py:44 templates/documents/category_detail.html:4
+#: templates/documents/document_index.html:4
+#: templates/documents/document_index.html:26
+msgid "Документи ФПУ"
+msgstr "FPU Documents"
+
+#: apps/core/nav.py:43
+msgid "Постанови Ради ФПУ"
+msgstr "Next article"
+
+#: apps/core/nav.py:44
+msgid "Постанови Президії ФПУ"
+msgstr "Next article"
+
+#: apps/core/nav.py:45 templates/partials/footer.html:35
+msgid "Статут ФПУ"
+msgstr "FPU Charter"
+
+#: apps/core/nav.py:49 apps/core/views.py:146 apps/core/views.py:151
+#: templates/core/contact.html:4 templates/core/contact.html:33
+#: templates/core/contact.html:36 templates/partials/footer.html:43
+msgid "Контакти"
+msgstr "Contacts"
+
+#: apps/core/utils.py:43
+msgid "Правовий Захист"
+msgstr "Legal Protection"
+
+#: apps/core/utils.py:44
+msgid "Безпека Праці"
+msgstr "Workplace Safety"
+
+#: apps/core/utils.py:45
+msgid "Соціальний Діалог"
+msgstr "Social Dialog"
+
+#: apps/core/utils.py:46
+msgid "Як Ми Допомагаємо"
+msgstr "How We Help"
+
+#: apps/core/utils.py:53
+msgid "ФПУ Відстоює Права Медиків"
+msgstr "FPU Defends Healthcare Workers' Rights"
+
+#: apps/core/utils.py:54
+msgid "Колективні переговори щодо умов праці медичних працівників."
+msgstr "Collective bargaining for healthcare workers' conditions."
+
+#: apps/core/utils.py:58
+msgid "Новий Колективний Договір в Обороні"
+msgstr "New Collective Agreement in Defence Sector"
+
+#: apps/core/utils.py:59
+msgid "Підписано новий галузевий договір для працівників оборонної сфери."
+msgstr "A new industry agreement was signed for defence sector employees."
+
+#: apps/core/utils.py:63
+msgid "Соціальний Діалог: Підсумки Кварталу"
+msgstr "Social Dialog: Quarterly Results"
+
+#: apps/core/utils.py:64
+msgid "Щоквартальні підсумки взаємодії з роботодавцями та урядом."
+msgstr "Quarterly summary of cooperation with employers and government."
+
+#: apps/core/utils.py:68
+msgid "Федерація Профспілок України на Міжнародному Форумі"
+msgstr "Federation of Trade Unions of Ukraine at the International Forum"
+
+#: apps/core/utils.py:69
+msgid "Делегація ФПУ взяла участь у щорічній зустрічі європейських профспілок."
+msgstr "The FPU delegation took part in the annual European trade unions meeting."
+
+#: apps/core/utils.py:73
+msgid "Підтримка Працівників Освіти"
+msgstr "Support for Education Workers"
+
+#: apps/core/utils.py:74
+msgid "Програма матеріальної допомоги педагогам у складних регіонах."
+msgstr "Financial aid programme for teachers in challenging regions."
+
+#: apps/core/utils.py:78
+msgid "Захист Працівників Транспорту"
+msgstr "Protection of Transport Workers"
+
+#: apps/core/utils.py:79
+msgid "Звернення до уряду щодо умов праці та оплати водіїв громадського транспорту."
+msgstr "Appeal to the government on conditions and pay for public transport drivers."
+
+#: apps/core/utils.py:101
+msgid "Григорій Осовий"
+msgstr "Hryhorii Osovyi"
+
+#: apps/core/utils.py:102
+msgid "Голова Федерації Профспілок України"
+msgstr "Head of the Federation of Trade Unions of Ukraine"
+
+#: apps/core/utils.py:105
+msgid "Катерина Бондаренко"
+msgstr "Kateryna Bondarenko"
+
+#: apps/core/utils.py:106
+msgid "Заступник Голови"
+msgstr "Deputy Head"
+
+#: apps/core/utils.py:109
+msgid "Олексій Мірошниченко"
+msgstr "Oleksii Miroshnychenko"
+
+#: apps/core/utils.py:110
+msgid "Керівник правового відділу"
+msgstr "Head of Legal Department"
+
+#: apps/core/utils.py:113
+msgid "Тетяна Коваль"
+msgstr "Tetiana Koval"
+
+#: apps/core/utils.py:114
+msgid "Начальник відділу охорони праці"
+msgstr "Head of Occupational Safety Department"
+
+#: apps/core/utils.py:117
+msgid "Сергій Захаренко"
+msgstr "Serhii Zakharenko"
+
+#: apps/core/utils.py:118
+msgid "Директор з міжнародних відносин"
+msgstr "Director of International Relations"
+
+#: apps/core/utils.py:121
+msgid "Оксана Петренко"
+msgstr "Oksana Petrenko"
+
+#: apps/core/utils.py:122
+msgid "Прес-секретар ФПУ"
+msgstr "FPU Press Secretary"
+
+#: apps/core/views.py:80 apps/core/views.py:84 templates/core/search.html:4
+#: templates/core/search.html:20 templates/partials/header.html:22
+msgid "Пошук"
+msgstr "Search"
+
+#: apps/core/views.py:106
+msgid "Введіть ваше ім'я"
+msgstr "Please enter your name"
+
+#: apps/core/views.py:108
+msgid "Введіть коректний email"
+msgstr "Please enter a valid email address"
+
+#: apps/core/views.py:110
+msgid "Введіть тему"
+msgstr "Please enter a subject"
+
+#: apps/core/views.py:112
+msgid "Повідомлення надто коротке"
+msgstr "Image"
+
+#: apps/core/views.py:123
+msgid "Забагато запитів. Спробуйте пізніше."
+msgstr "Too many requests. Please try again later."
+
+#: apps/core/views.py:137
+msgid "Помилка відправки. Спробуйте пізніше або зателефонуйте."
+msgstr "Sending error. Please try again later or call us."
+
+#: apps/core/views.py:147
+msgid "Контакти Федерації профспілок України: адреса, телефон, форма зворотного зв'язку."
+msgstr "Federation of Trade Unions of Ukraine at the International Forum"
+
+#: apps/documents/models.py:25
+msgid "Категорія документів"
+msgstr "Document category"
+
+#: apps/documents/models.py:26 templates/documents/document_index.html:35
+msgid "Категорії документів"
+msgstr "Document categories"
+
+#: apps/documents/models.py:54 apps/news/models.py:27 apps/news/models.py:62
+msgid "Категорія"
+msgstr "Category"
+
+#: apps/documents/models.py:61
+msgid "Файл"
+msgstr "File"
+
+#: apps/documents/models.py:66
+msgid "Зовнішнє URL"
+msgstr "External URL"
+
+#: apps/documents/models.py:68
+msgid "Якщо документ зберігається за зовнішнім URL"
+msgstr "If the document is stored at an external URL"
+
+#: apps/documents/models.py:71
+msgid "Тип файлу"
+msgstr "File type"
+
+#: apps/documents/models.py:77 apps/news/models.py:54
+msgid "Дата публікації"
+msgstr "Published at"
+
+#: apps/documents/models.py:78 apps/gallery/models.py:25
+msgid "Опублікований"
+msgstr "Published"
+
+#: apps/documents/models.py:80 apps/gallery/models.py:26
+msgid "Створено"
+msgstr "Created"
+
+#: apps/documents/models.py:83
+msgid "Документ"
+msgstr "Document"
+
+#: apps/documents/models.py:84 templates/partials/footer.html:31
+#: templates/partials/priorities_panel.html:41
+msgid "Документи"
+msgstr "Documents"
+
+#: apps/documents/views.py:20
+msgid "Офіційні документи Федерації профспілок України: постанови, угоди, статут."
+msgstr "Official documents of the Federation of Trade Unions of Ukraine: resolutions, agreements, charter."
+
+#: apps/gallery/models.py:13 apps/gallery/models.py:75 apps/news/models.py:13
+#: apps/news/models.py:59
+msgid "Joomla ID"
+msgstr "Joomla ID"
+
+#: apps/gallery/models.py:17
+msgid "Дата заходу"
+msgstr "Event date"
+
+#: apps/gallery/models.py:18
+msgid "Обкладинка"
+msgstr "Cover"
+
+#: apps/gallery/models.py:20
+msgid "Локальна обкладинка"
+msgstr "Local cover"
+
+#: apps/gallery/models.py:23
+msgid "Шлях у media/joomla_images/"
+msgstr "Path in media/joomla_images/"
+
+#: apps/gallery/models.py:27
+msgid "Оновлено"
+msgstr "Updated"
+
+#: apps/gallery/models.py:30 apps/gallery/models.py:78
+msgid "Альбом"
+msgstr "Album"
+
+#: apps/gallery/models.py:31
+msgid "Альбоми"
+msgstr "Albums"
+
+#: apps/gallery/models.py:84
+msgid "Локальний шлях"
+msgstr "Local path"
+
+#: apps/gallery/models.py:87
+msgid "Відносний шлях у media/joomla_images/"
+msgstr "Relative path in media/joomla_images/"
+
+#: apps/gallery/models.py:89
+msgid "Підпис"
+msgstr "Caption"
+
+#: apps/gallery/models.py:91 apps/pages/models.py:27
+msgid "Опублікована"
+msgstr "Published"
+
+#: apps/gallery/models.py:95
+msgid "Фотографії"
+msgstr "Photos"
+
+#: apps/gallery/views.py:24
+msgid "Фотогалерея Федерації профспілок України — фотозвіти заходів та подій."
+msgstr "Photo gallery of the Federation of Trade Unions of Ukraine — event photo reports."
+
+#: apps/news/apps.py:10 apps/news/models.py:89
+msgid "Новини"
+msgstr "News"
+
+#: apps/news/models.py:14
+msgid "Alias"
+msgstr "Alias"
+
+#: apps/news/models.py:17 apps/pages/models.py:12
+msgid "URL-шлях"
+msgstr "URL path"
+
+#: apps/news/models.py:20
+msgid "Наприклад: materialy або pro-fpu/istoriya"
+msgstr "E.g.: materialy or pro-fpu/istoriya"
+
+#: apps/news/models.py:22 apps/news/models.py:77 apps/pages/models.py:24
+msgid "Meta description"
+msgstr "Meta description"
+
+#: apps/news/models.py:23 apps/news/models.py:82 apps/pages/models.py:25
+msgid "Meta keywords"
+msgstr "Meta keywords"
+
+#: apps/news/models.py:28
+msgid "Категорії"
+msgstr "Categories"
+
+#: apps/news/models.py:46
+msgid "Повний текст"
+msgstr "Full text"
+
+#: apps/news/models.py:47
+msgid "Зображення"
+msgstr "Image"
+
+#: apps/news/models.py:49
+msgid "Локальне зображення"
+msgstr "Local image"
+
+#: apps/news/models.py:52
+msgid "Відносний шлях у media/joomla_images/, напр. images/foo.webp"
+msgstr "Relative path in media/joomla_images/, e.g. images/foo.webp"
+
+#: apps/news/models.py:55
+msgid "Опубліковано"
+msgstr "Published"
+
+#: apps/news/models.py:56
+msgid "Ручний порядок"
+msgstr "Manual order"
+
+#: apps/news/models.py:71
+msgid "SEO заголовок (title)"
+msgstr "SEO title"
+
+#: apps/news/models.py:74
+msgid "Якщо порожньо — використовується поле Заголовок"
+msgstr "If empty — the Title field is used"
+
+#: apps/news/models.py:88
+msgid "Новина"
+msgstr "Article"
+
+#: apps/pages/apps.py:10 apps/pages/models.py:40
+msgid "Статичні сторінки"
+msgstr "Static pages"
+
+#: apps/pages/models.py:15
+msgid "Наприклад: /pro-fpu/istoriya-fpu або /276-cherhovyi-den.html"
+msgstr "E.g.: /pro-fpu/istoriya-fpu or /276-cherhovyi-den.html"
+
+#: apps/pages/models.py:19
+msgid "SEO заголовок"
+msgstr "SEO title (page)"
+
+#: apps/pages/models.py:22
+msgid "Якщо порожньо — використовується Заголовок"
+msgstr "If empty — the Title is used"
+
+#: apps/pages/models.py:26
+msgid "Вміст сторінки"
+msgstr "Page content"
+
+#: apps/pages/models.py:30
+msgid "Joomla menu/article ID"
+msgstr "Joomla menu/article ID"
+
+#: apps/pages/models.py:32
+msgid "Тип Joomla"
+msgstr "Joomla type"
+
+#: apps/pages/models.py:35
+msgid "menu | article"
+msgstr "menu | article"
+
+#: apps/pages/models.py:39
+msgid "Статична сторінка"
+msgstr "Static page"
+
+#: project/urls.py:53
+msgid "login/"
+msgstr "login/"
+
+#: templates/base.html:9 templates/base.html:21 templates/base.html:23
+#: templates/base.html:31 templates/core/contact.html:4
+#: templates/core/search.html:4 templates/documents/category_detail.html:4
+#: templates/documents/document_index.html:4
+#: templates/gallery/album_detail.html:4 templates/gallery/album_list.html:4
+#: templates/news/article_detail.html:4 templates/news/category_list.html:4
+#: templates/pages/static_page.html:4 templates/partials/header.html:6
+msgid "Федерація Профспілок України"
+msgstr "Federation of Trade Unions of Ukraine"
+
+#: templates/base.html:11
+msgid "Федерація Профспілок України — захист прав працівників, безпека праці та соціальний діалог."
+msgstr "Federation of Trade Unions of Ukraine — protecting workers' rights, workplace safety and social dialogue."
+
+#: templates/base.html:24 templates/base.html:32
+msgid "Федерація Профспілок України — захист прав працівників."
+msgstr "Federation of Trade Unions of Ukraine — protecting workers' rights."
+
+#: templates/base.html:56
+msgid "Перейти до основного вмісту"
+msgstr "Skip to main content"
+
+#: templates/core/contact.html:30 templates/core/search.html:14
+#: templates/documents/category_detail.html:13
+#: templates/documents/document_index.html:13
+#: templates/gallery/album_detail.html:30 templates/gallery/album_list.html:13
+#: templates/news/article_detail.html:34 templates/pages/static_page.html:12
+msgid "Навігація"
+msgstr "Navigation"
+
+#: templates/core/contact.html:74
+msgid "Гаряча лінія:"
+msgstr "Hotline:"
+
+#: templates/core/contact.html:101 templates/partials/footer.html:37
+#: templates/partials/footer.html:107
+#: templates/partials/priorities_panel.html:42
+msgid "Написати нам"
+msgstr "Contact us"
+
+#: templates/core/contact.html:108
+msgid "Ваше повідомлення надіслано. Ми відповімо найближчим часом."
+msgstr "Your message has been sent. We will respond shortly."
+
+#: templates/core/contact.html:120
+msgid "Ім'я та прізвище"
+msgstr "Full name"
+
+#: templates/core/contact.html:143
+msgid "Тема"
+msgstr "Subject"
+
+#: templates/core/contact.html:153
+msgid "Повідомлення"
+msgstr "Message"
+
+#: templates/core/contact.html:163
+msgid "Надіслати повідомлення"
+msgstr "Send message"
+
+#: templates/core/home.html:4
+msgid "ФПУ — Захист, Єдність, Сила Працівників"
+msgstr "FPU — Protection, Unity, Strength of Workers"
+
+#: templates/core/home.html:16
+msgid "ФЕДЕРАЦІЯ ПРОФСПІЛОК УКРАЇНИ: ЗАХИСТ, ЄДНІСТЬ, СИЛА ПРАЦІВНИКІВ!"
+msgstr "FEDERATION OF TRADE UNIONS OF UKRAINE: PROTECTION, UNITY, STRENGTH OF WORKERS!"
+
+#: templates/core/home.html:19
+msgid ""
+"Відстоюємо твої права, покращуємо умови праці та забезпечуємо соціальну справедливість для\n"
+"          кожного українця."
+msgstr "We defend your rights, improve working conditions, and ensure social justice for every Ukrainian."
+
+#: templates/core/home.html:23
+msgid "ПРИЄДНАТИСЯ ДО ПРОФСПІЛКИ"
+msgstr "JOIN THE UNION"
+
+#: templates/core/home.html:56
+msgid "Читати далі"
+msgstr "Read more"
+
+#: templates/core/home.html:66
+msgid "Актуальні новини"
+msgstr "Latest news"
+
+#: templates/core/search.html:24
+msgid "Пошук по сайту"
+msgstr "Site search"
+
+#: templates/core/search.html:33
+msgid "Пошуковий запит"
+msgstr "Search query"
+
+#: templates/core/search.html:40
+msgid "Введіть ключове слово…"
+msgstr "Enter a keyword…"
+
+#: templates/core/search.html:48
+msgid "Знайти"
+msgstr "Find"
+
+#: templates/core/search.html:55
+#, python-format
+msgid ""
+"\n"
+"          Знайдено %(count)s результатів для «%(q)s»\n"
+"        "
+msgstr ""
+"\n"
+"Found %(count)s results for «%(q)s»\n"
+"        "
+
+#: templates/core/search.html:60
+msgid "Результати пошуку"
+msgstr "Search results"
+
+#: templates/core/search.html:87 templates/gallery/album_list.html:68
+msgid "Пагінація"
+msgstr "Pagination"
+
+#: templates/core/search.html:106
+#, python-format
+msgid ""
+"\n"
+"          За запитом «%(q)s» нічого не знайдено.\n"
+"        "
+msgstr ""
+"\n"
+"Nothing found for «%(q)s».\n"
+"        "
+
+#: templates/core/search.html:111
+msgid "Спробуйте скоротити запит або переглянути"
+msgstr "Try shortening your query or browse the"
+
+#: templates/core/search.html:112
+msgid "головну сторінку"
+msgstr "home page"
+
+#: templates/documents/category_detail.html:63
+#, python-format
+msgid "Завантажити %(title)s"
+msgstr "Download %(title)s"
+
+#: templates/documents/category_detail.html:70
+msgid "Завантажити"
+msgstr "Download"
+
+#: templates/documents/category_detail.html:77
+msgid "Документи цієї категорії поповнюються."
+msgstr "Documents in this category are being added."
+
+#: templates/documents/document_index.html:51
+msgid "документів"
+msgstr "documents"
+
+#: templates/documents/document_index.html:65
+msgid "Документи поповнюються."
+msgstr "Documents are being added."
+
+#: templates/gallery/album_detail.html:103
+#, python-format
+msgid "%(count)s фотографій"
+msgstr "%(count)s photos"
+
+#: templates/gallery/album_detail.html:107
+msgid "Фотографії до цього альбому ще не додано."
+msgstr "No photos have been added to this album yet."
+
+#: templates/gallery/album_detail.html:112
+msgid "Перегляд фото"
+msgstr "View photo"
+
+#: templates/gallery/album_detail.html:114
+msgid "Закрити"
+msgstr "Close"
+
+#: templates/gallery/album_detail.html:122
+msgid "Попереднє фото"
+msgstr "Previous photo"
+
+#: templates/gallery/album_detail.html:134
+msgid "Наступне фото"
+msgstr "Next photo"
+
+#: templates/gallery/album_list.html:35
+msgid "Список альбомів"
+msgstr "Albums"
+
+#: templates/gallery/album_list.html:51
+msgid "фото"
+msgstr "photos"
+
+#: templates/gallery/album_list.html:71
+msgid "Попередня сторінка"
+msgstr "Previous page"
+
+#: templates/gallery/album_list.html:84
+msgid "Наступна сторінка"
+msgstr "Next page"
+
+#: templates/gallery/album_list.html:90
+msgid "Фотогалерея поповнюється."
+msgstr "Gallery is being updated."
+
+#: templates/news/article_detail.html:75
+msgid "Поділитися:"
+msgstr "Share:"
+
+#: templates/news/article_detail.html:79
+msgid "Поділитися в Facebook"
+msgstr "Share on Facebook"
+
+#: templates/news/article_detail.html:85
+msgid "Поділитися в Telegram"
+msgstr "Share on Telegram"
+
+#: templates/news/article_detail.html:90
+msgid "Скопіювати посилання"
+msgstr "Copy link"
+
+#: templates/news/article_detail.html:91
+msgid "Скопіювати"
+msgstr "Copy"
+
+#: templates/news/category_list.html:46
+msgid "У цій категорії поки немає матеріалів."
+msgstr "No materials in this category yet."
+
+#: templates/pages/static_page.html:45
+msgid "Вміст сторінки оновлюється."
+msgstr "Page content is being updated."
+
+#: templates/pages/static_page.html:50
+msgid "Бокова панель"
+msgstr "Sidebar"
+
+#: templates/pages/static_page.html:55
+msgid "Останні новини"
+msgstr "Recent news"
+
+#: templates/pages/stub.html:4 templates/partials/priorities_panel.html:10
+#: templates/partials/priorities_panel.html:88
+msgid "ФПУ"
+msgstr "FPU"
+
+#: templates/pages/stub.html:10
+msgid "Цей розділ зараз у розробці. Незабаром тут з'явиться корисна інформація."
+msgstr "This section is under construction. Useful information will appear here soon."
+
+#: templates/pages/stub.html:11
+msgid "Повернутися на головну"
+msgstr "Back to home"
+
+#: templates/partials/footer.html:9
+msgid "Історія"
+msgstr "History"
+
+#: templates/partials/footer.html:10
+msgid "Керівництво"
+msgstr "Leadership"
+
+#: templates/partials/footer.html:11
+msgid "Виборні органи"
+msgstr "Elected bodies"
+
+#: templates/partials/footer.html:13
+msgid "Символіка"
+msgstr "Symbols"
+
+#: templates/partials/footer.html:19
+msgid "Напрями"
+msgstr "Directions"
+
+#: templates/partials/footer.html:22
+msgid "Охорона праці"
+msgstr "Workplace Safety"
+
+#: templates/partials/footer.html:33
+msgid "Всі документи"
+msgstr "All documents"
+
+#: templates/partials/footer.html:34
+msgid "Постанови Ради"
+msgstr "Council Resolutions"
+
+#: templates/partials/footer.html:64
+#: templates/partials/priorities_panel.html:68
 msgid "Соціальні мережі"
 msgstr "Social media"
+
+#: templates/partials/footer.html:104
+msgid "Федерація профспілок України"
+msgstr "Federation of Trade Unions of Ukraine"
+
+#: templates/partials/footer.html:106
+msgid "Посилання footer"
+msgstr "Footer links"
+
+#: templates/partials/footer.html:108
+msgid "Карта сайту"
+msgstr "Site map"
+
+#: templates/partials/header.html:4
+msgid "Федерація Профспілок України — на головну"
+msgstr "Federation of Trade Unions of Ukraine — home"
+
+#: templates/partials/header.html:9
+msgid "Основне меню"
+msgstr "Main menu"
+
+#: templates/partials/header.html:27
+msgid "Перемикач мови"
+msgstr "Language switch"
+
+#: templates/partials/header.html:40
+msgid "Відкрити меню"
+msgstr "Open menu"
+
+#: templates/partials/header.html:50
+msgid "Мобільне меню"
+msgstr "Mobile menu"
+
+#: templates/partials/priorities_panel.html:11
+msgid "Наші пріоритети"
+msgstr "Our priorities"
+
+#: templates/partials/priorities_panel.html:35
+msgid "Швидкі посилання"
+msgstr "Quick links"
+
+#: templates/partials/priorities_panel.html:36
+msgid "Швидкий перехід"
+msgstr "Quick navigation"
+
+#: templates/partials/team_panel.html:4
+msgid "Наша команда"
+msgstr "Our team"
+
+#: templates/partials/team_panel.html:5
+msgid "Люди, які щодня відстоюють права українських працівників"
+msgstr "People who defend Ukrainian workers' rights every day"
+
+#~ msgid "Членство"
+#~ msgstr "Membership"
+
+#~ msgid "Захист Прав"
+#~ msgstr "Rights Protection"
+
+#~ msgid "Ресурси"
+#~ msgstr "Resources"
+
+#~ msgid "about/"
+#~ msgstr "about/"
+
+#~ msgid "membership/"
+#~ msgstr "membership/"
+
+#~ msgid "news/"
+#~ msgstr "news/"
+
+#~ msgid "rights/"
+#~ msgstr "rights/"
+
+#~ msgid "resources/"
+#~ msgstr "resources/"
+
+#~ msgid "contacts/"
+#~ msgstr "contacts/"
+
+#~ msgid "АКТУАЛЬНІ НОВИНИ"
+#~ msgstr "LATEST NEWS"
+
+#~ msgid "Шрифт:"
+#~ msgstr "Font:"
+
+#~ msgid "Будинок Профспілок"
+#~ msgstr "Trade Unions Building"

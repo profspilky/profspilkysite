@@ -37,6 +37,9 @@ class FallbackArticle:
     def display_date(self) -> str:
         return self.published_at.strftime("%d.%m.%Y")
 
+    def get_absolute_url(self) -> str:
+        return "#"
+
 
 def default_priorities() -> list[FallbackPriority]:
     return [

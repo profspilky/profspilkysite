@@ -2,7 +2,6 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0f2c66">
 
@@ -14,9 +13,8 @@
   {# Canonical URL — prevents duplicate content issues #}
   <link rel="canonical" href="{% block canonical %}{% if canonical_url %}{{ canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}">
 
-  {# hreflang for Ukrainian/English versions #}
+  {# hreflang — сайт лише українською #}
   <link rel="alternate" hreflang="uk" href="{{ request.build_absolute_uri }}">
-  <link rel="alternate" hreflang="x-default" href="{{ request.build_absolute_uri }}">
 
   {# Open Graph #}
   <meta property="og:site_name" content="{% trans "Федерація Профспілок України" %}">
@@ -51,6 +49,7 @@
   <link rel="stylesheet" href="{% static 'css/footer.css' %}">
   <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
   <link rel="stylesheet" href="{% static 'css/static_page.css' %}">
+  <link rel="stylesheet" href="{% static 'css/prose.css' %}">
   {% block extra_css %}{% endblock %}
 </head>
 <body class="page">

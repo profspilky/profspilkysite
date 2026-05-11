@@ -153,7 +153,41 @@
   opacity: 0.9;
 }
 
+.photo-grid__item--no-image {
+  cursor: default;
+}
+
+.photo-grid__link--placeholder {
+  cursor: zoom-in;
+}
+
+.photo-grid__link--placeholder:hover .photo-grid__no-image {
+  opacity: 0.75;
+}
+
+.photo-grid__no-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--c-bg-soft) 0%, var(--c-border) 100%);
+  color: var(--c-text-muted);
+  transition: opacity var(--transition-fast);
+}
+
+.photo-grid__no-image svg {
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+}
+
 /* ── Lightbox ─────────────────────────────────────────────────────────────── */
+.lightbox[hidden],
+.lightbox__overlay[hidden] {
+  display: none;
+}
+
 .lightbox__overlay {
   position: fixed;
   inset: 0;

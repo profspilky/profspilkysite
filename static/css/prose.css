@@ -1,0 +1,347 @@
+/* Rich content typography — static pages / imported Joomla body content.
+ * Scoped under .static-page__body so it doesn't affect other page types.
+ */
+
+.static-page__body {
+  font-size: var(--fs-16);
+  line-height: 1.8;
+  color: var(--c-text);
+}
+
+/* ── Headings ────────────────────────────────────────────────────────────── */
+
+.static-page__body h2 {
+  font-size: clamp(var(--fs-20), 2.5vw, var(--fs-24));
+  font-weight: 800;
+  color: var(--c-primary-700);
+  margin: var(--sp-40) 0 var(--sp-16);
+  padding-bottom: var(--sp-12);
+  border-bottom: 2px solid var(--c-border);
+  position: relative;
+}
+
+.static-page__body h2::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 48px;
+  height: 2px;
+  background: var(--c-accent);
+  border-radius: 2px;
+}
+
+.static-page__body > h2:first-child,
+.static-page__body > h3:first-child {
+  margin-top: 0;
+}
+
+.static-page__body h3 {
+  font-size: clamp(var(--fs-18), 2vw, var(--fs-20));
+  font-weight: 700;
+  color: var(--c-primary);
+  margin: var(--sp-32) 0 var(--sp-12);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.static-page__body h3::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 1.1em;
+  background: var(--c-accent);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.static-page__body h4 {
+  font-size: var(--fs-16);
+  font-weight: 700;
+  color: var(--c-text);
+  margin: var(--sp-24) 0 var(--sp-8);
+}
+
+/* ── Paragraphs ──────────────────────────────────────────────────────────── */
+
+.static-page__body p {
+  margin: 0 0 var(--sp-20);
+}
+
+.static-page__body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Unordered lists ─────────────────────────────────────────────────────── */
+
+.static-page__body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--sp-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.static-page__body ul li {
+  position: relative;
+  padding: var(--sp-8) var(--sp-12) var(--sp-8) var(--sp-40);
+  background: var(--c-bg-soft);
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--c-border);
+  line-height: 1.6;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.static-page__body ul li:hover {
+  border-left-color: var(--c-accent);
+  background: var(--c-accent-muted);
+}
+
+.static-page__body ul li::before {
+  content: "";
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  border: 2px solid var(--c-primary);
+}
+
+/* Nested ul */
+.static-page__body ul ul {
+  margin: var(--sp-6) 0 0;
+  padding-left: var(--sp-16);
+}
+
+.static-page__body ul ul li {
+  background: transparent;
+  border-left: 2px solid var(--c-border);
+  padding-left: var(--sp-32);
+}
+
+.static-page__body ul ul li::before {
+  width: 6px;
+  height: 6px;
+  background: var(--c-primary);
+  border: 1.5px solid var(--c-primary);
+}
+
+/* ── Ordered lists ───────────────────────────────────────────────────────── */
+
+.static-page__body ol {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--sp-24);
+  counter-reset: prose-ol;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.static-page__body ol li {
+  counter-increment: prose-ol;
+  position: relative;
+  padding: var(--sp-8) var(--sp-12) var(--sp-8) var(--sp-48);
+  background: var(--c-bg-soft);
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--c-border);
+  line-height: 1.6;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.static-page__body ol li:hover {
+  border-left-color: var(--c-primary);
+  background: rgba(19, 58, 124, 0.04);
+}
+
+.static-page__body ol li::before {
+  content: counter(prose-ol);
+  position: absolute;
+  left: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: var(--c-primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: var(--fs-12);
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+}
+
+/* ── Blockquotes ─────────────────────────────────────────────────────────── */
+
+.static-page__body blockquote {
+  margin: var(--sp-32) 0;
+  padding: var(--sp-20) var(--sp-24);
+  background: linear-gradient(135deg, var(--c-bg-soft) 0%, rgba(244, 196, 48, 0.06) 100%);
+  border-left: 4px solid var(--c-accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  position: relative;
+}
+
+.static-page__body blockquote::before {
+  content: "\201C";
+  position: absolute;
+  top: var(--sp-8);
+  left: var(--sp-16);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--c-accent);
+  font-family: Georgia, serif;
+  opacity: 0.5;
+}
+
+.static-page__body blockquote p {
+  font-size: var(--fs-18);
+  color: var(--c-primary-700);
+  font-style: italic;
+  margin: 0;
+  padding-left: var(--sp-32);
+  line-height: 1.6;
+}
+
+/* ── Links ───────────────────────────────────────────────────────────────── */
+
+.static-page__body a {
+  color: var(--c-primary);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+.static-page__body a:hover {
+  color: var(--c-accent-600);
+  text-decoration-color: currentColor;
+}
+
+/* ── Strong / em ─────────────────────────────────────────────────────────── */
+
+.static-page__body strong,
+.static-page__body b {
+  font-weight: 700;
+  color: var(--c-primary-700);
+}
+
+.static-page__body em,
+.static-page__body i {
+  color: var(--c-text-muted);
+}
+
+/* ── Horizontal rule ─────────────────────────────────────────────────────── */
+
+.static-page__body hr {
+  border: none;
+  border-top: 2px solid var(--c-border);
+  margin: var(--sp-40) 0;
+  position: relative;
+}
+
+.static-page__body hr::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: var(--c-accent);
+  border-radius: 2px;
+}
+
+/* ── Tables ──────────────────────────────────────────────────────────────── */
+
+.static-page__body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 var(--sp-32);
+  font-size: var(--fs-14);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--c-shadow-xs);
+}
+
+.static-page__body thead th {
+  background: var(--c-primary-700);
+  color: #fff;
+  font-weight: 700;
+  padding: var(--sp-12) var(--sp-16);
+  text-align: left;
+}
+
+.static-page__body td {
+  padding: var(--sp-12) var(--sp-16);
+  border-bottom: 1px solid var(--c-border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.static-page__body tr:nth-child(even) td {
+  background: var(--c-bg-soft);
+}
+
+.static-page__body tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Images ──────────────────────────────────────────────────────────────── */
+
+.static-page__body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--r-md);
+  margin: var(--sp-20) 0;
+  box-shadow: var(--c-shadow-xs);
+  display: block;
+}
+
+/* ── Адаптив ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .static-page__body h2 {
+    font-size: var(--fs-20);
+  }
+
+  .static-page__body h3 {
+    font-size: var(--fs-18);
+  }
+
+  .static-page__body blockquote p {
+    font-size: var(--fs-16);
+    padding-left: var(--sp-24);
+  }
+
+  .static-page__body table {
+    font-size: var(--fs-12);
+  }
+
+  .static-page__body thead th,
+  .static-page__body td {
+    padding: var(--sp-8) var(--sp-12);
+  }
+}
+
+@media (max-width: 480px) {
+  .static-page__body ul li {
+    padding-left: var(--sp-32);
+  }
+
+  .static-page__body ol li {
+    padding-left: var(--sp-40);
+  }
+
+  /* Таблиці — горизонтальний скрол на маленьких екранах */
+  .static-page__body table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

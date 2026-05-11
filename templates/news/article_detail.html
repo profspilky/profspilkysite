@@ -33,15 +33,13 @@
 <div class="content-wrap">
   <nav class="breadcrumb" aria-label="{% trans 'Навігація' %}">
     <ol class="breadcrumb__list">
+      {# breadcrumbs містить Головна + Категорія — всі є посиланнями #}
       {% for crumb in breadcrumbs %}
       <li class="breadcrumb__item">
-        {% if not forloop.last %}
         <a class="breadcrumb__link" href="{{ crumb.url }}">{{ crumb.title }}</a>
-        {% else %}
-        <span class="breadcrumb__current" aria-current="page">{{ crumb.title }}</span>
-        {% endif %}
       </li>
       {% endfor %}
+      {# Остання крихта — сама стаття, не посилання, aria-current тільки тут #}
       <li class="breadcrumb__item">
         <span class="breadcrumb__current" aria-current="page">{{ article.title }}</span>
       </li>
@@ -89,8 +87,7 @@
       </a>
       <button type="button" class="share-btn share-btn--copy"
               data-copy-url="{{ canonical_url }}"
-              aria-label="{% trans 'Скопіювати посилання' %}"
-              onclick="navigator.clipboard&&navigator.clipboard.writeText(this.dataset.copyUrl).then(()=>{this.textContent='✓ Скопійовано'})">
+              aria-label="{% trans 'Скопіювати посилання' %}">
         {% trans "Скопіювати" %}
       </button>
     </div>

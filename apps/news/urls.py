@@ -22,6 +22,12 @@ urlpatterns = [
         views.article_in_cat,
         name="article_in_cat",
     ),
+    # Fallback for articles without a Joomla ID — /news/<slug>/
+    re_path(
+        r"^news/(?P<slug>[\w-]+)/$",
+        views.article_by_slug,
+        name="article_by_slug",
+    ),
     # Category listing page
     # e.g. /materialy/
     re_path(

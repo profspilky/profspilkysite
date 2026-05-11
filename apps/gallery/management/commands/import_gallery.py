@@ -1,5 +1,11 @@
 """Import gallery albums and photos from JoomGallery JSON dumps.
 
+JoomGallery stores images at: images/stories/{filename}
+So image_local values are written as "images/stories/{filename}",
+which maps to media/joomla_images/images/stories/{filename} on disk.
+
+event_date is taken from the earliest photo date inside the album.
+
 Usage:
     python manage.py import_gallery
     python manage.py import_gallery --cats tools/gallery_cats.json
@@ -9,6 +15,7 @@ Usage:
 from __future__ import annotations
 
 import json
+from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
@@ -32,8 +39,23 @@ def _parse_date(raw: str | None) -> date | None:
 
 def _make_slug(title: str, joomla_id: int) -> str:
     base = slugify(title, allow_unicode=False) or f"album-{joomla_id}"
-    # Обрізаємо до 280 символів
     return base[:280]
+
+
+def _photo_local_path(filename: str) -> str:
+    """
+    JoomGallery saves photos to <joomla_root>/images/stories/<filename>.
+    Our media root is media/joomla_images/, so the local path is:
+        images/stories/<filename>
+    which resolves to:
+        media/joomla_images/images/stories/<filename>
+    """
+    filename = filename.strip()
+    if filename.startswith("images/stories/"):
+        return filename
+    if filename.startswith("stories/"):
+        return f"images/{filename}"
+    return f"images/stories/{filename}"
 
 
 class Command(BaseCommand):
@@ -75,7 +97,7 @@ class Command(BaseCommand):
         cats_data: list[dict] = json.loads(cats_path.read_text(encoding="utf-8"))
         photos_data: list[dict] = json.loads(photos_path.read_text(encoding="utf-8"))
 
-        # Фільтруємо ROOT та неопубліковані категорії
+        # Фільтруємо ROOT та неопубліковані
         cats_data = [c for c in cats_data if c.get("parent_id") != "0" and c.get("published") == "1"]
         photos_data = [p for p in photos_data if p.get("published") == "1"]
 
@@ -86,12 +108,24 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("DRY RUN — no changes written."))
             return
 
+        # Будуємо маппінг catid → найрання дата фото (для event_date альбому)
+        earliest_photo_date: dict[str, date | None] = defaultdict(lambda: None)
+        for photo in photos_data:
+            catid = photo.get("catid", "")
+            raw_date = photo.get("date", "")
+            d = _parse_date(raw_date)
+            if d and (earliest_photo_date[catid] is None or d < earliest_photo_date[catid]):
+                earliest_photo_date[catid] = d
+
         if options["clear"]:
             self.stdout.write(self.style.WARNING("Clearing existing gallery data…"))
-            GalleryPhoto.objects.all().delete()
-            GalleryAlbum.objects.all().delete()
 
         with transaction.atomic():
+            if options["clear"]:
+                GalleryPhoto.objects.all().delete()
+                GalleryAlbum.objects.all().delete()
+                self.stdout.write(self.style.WARNING("Cleared."))
+
             album_map: dict[str, GalleryAlbum] = {}
             created_albums = 0
             updated_albums = 0
@@ -101,15 +135,15 @@ class Command(BaseCommand):
                 title = (cat.get("name") or f"Альбом {jid}").strip()
                 alias = (cat.get("alias") or "").strip()
                 description = (cat.get("description") or "").strip()
-                event_date = _parse_date(None)
 
-                # Формуємо slug
+                # event_date береться з найраннішої дати фото в цьому альбомі
+                event_date = earliest_photo_date.get(cat["id"])
+
                 slug_base = slugify(alias, allow_unicode=False) if alias else _make_slug(title, jid)
                 if not slug_base:
                     slug_base = f"album-{jid}"
                 slug = slug_base[:280]
 
-                # Унікалізуємо slug при колізії
                 counter = 2
                 original_slug = slug
                 while GalleryAlbum.objects.filter(slug=slug).exclude(joomla_id=jid).exists():
@@ -152,8 +186,7 @@ class Command(BaseCommand):
                     skipped_photos += 1
                     continue
 
-                # Шлях у joomla_images/
-                local_path = f"stories/{filename}" if not filename.startswith("stories/") else filename
+                local_path = _photo_local_path(filename)
 
                 GalleryPhoto.objects.update_or_create(
                     joomla_id=jid,
@@ -175,13 +208,20 @@ class Command(BaseCommand):
             f"Photos: {created_photos} imported, {skipped_photos} skipped."
         ))
 
-        # Встановлення обкладинок: перше фото альбому
+        # Обкладинки: перше фото альбому
         self.stdout.write("Setting album covers…")
         cover_count = 0
         for album in GalleryAlbum.objects.all():
             first_photo = album.photos.filter(is_published=True).order_by("order", "id").first()
-            if first_photo and first_photo.image_local and not album.cover_local:
+            if first_photo and first_photo.image_local:
                 album.cover_local = first_photo.image_local
                 album.save(update_fields=["cover_local"])
                 cover_count += 1
         self.stdout.write(self.style.SUCCESS(f"Set covers for {cover_count} albums."))
+
+        self.stdout.write("")
+        self.stdout.write(self.style.WARNING(
+            "NOTE: Gallery images must be at media/joomla_images/images/stories/ on disk.\n"
+            "      If images are missing, copy them from Joomla server:\n"
+            "      scp -r user@server:/path/to/joomla/images/stories/ media/joomla_images/images/stories/"
+        ))

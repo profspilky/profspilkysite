@@ -23,6 +23,12 @@ services:
         fromDatabase:
           name: fpu-db
           property: connectionString
+
+      # ── Cloudinary ──────────────────────────────────────────────────────────
+      # Усі три окремих змінних потрібні для django-cloudinary-storage.
+      # CLOUDINARY_URL потрібна для прямого виклику cloudinary SDK
+      # (import_images, import_body_images management commands).
+      # Формат: cloudinary://<api_key>:<api_secret>@<cloud_name>
       - key: CLOUDINARY_URL
         sync: false
       - key: CLOUDINARY_CLOUD_NAME
@@ -31,14 +37,35 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+
+      # ── Email ────────────────────────────────────────────────────────────────
+      - key: EMAIL_HOST
+        value: "smtp.gmail.com"
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "True"
       - key: EMAIL_HOST_USER
         sync: false
       - key: EMAIL_HOST_PASSWORD
         sync: false
       - key: DEFAULT_FROM_EMAIL
         sync: false
+
+      # ── Monitoring ──────────────────────────────────────────────────────────
+      - key: SENTRY_DSN
+        sync: false
+
+      # ── Security ─────────────────────────────────────────────────────────────
       - key: SECURE_SSL_REDIRECT
         value: "True"
+
+      # ── Cache (Redis) ─────────────────────────────────────────────────────
+      # Потрібний для міжпроцесного rate-limiting контактної форми
+      # (3 gunicorn workers → LocMemCache не підходить).
+      # Підключіть Redis-сервіс Render і вставте fromService або sync: false.
+      - key: REDIS_URL
+        sync: false
 
 databases:
   - name: fpu-db

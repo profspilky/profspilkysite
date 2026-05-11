@@ -18,6 +18,30 @@
     onScroll();
   }
 
+  // ── Панель пріоритетів — підйом над футером (анімація — CSS transition) ────
+  const panel = document.querySelector(".priorities-panel");
+  const siteFooter = document.querySelector(".site-footer");
+
+  if (panel && siteFooter) {
+    const GAP = 8;
+    const PANEL_BOTTOM_GAP = 12;
+    let rafId = 0;
+
+    function adjustPanel() {
+      const overlap = window.innerHeight - siteFooter.getBoundingClientRect().top;
+      panel.style.bottom = overlap > 0 ? (overlap + GAP) + "px" : PANEL_BOTTOM_GAP + "px";
+    }
+
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(adjustPanel);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    adjustPanel();
+  }
+
   // ── Mobile nav ─────────────────────────────────────────────────────────────
   const toggleBtn = document.querySelector("[data-action='toggle-nav']");
   const mobileNav = document.getElementById("mobile-nav");
@@ -42,7 +66,7 @@
     document.body.classList.remove("nav-open");
     document.body.style.top = "";
     // Відновлюємо позицію скролу після position:fixed
-    window.scrollTo({ top: savedScrollY, behavior: "instant" });
+    window.scrollTo({ top: savedScrollY, behavior: "auto" });
     toggleBtn.focus();
   }
 
@@ -66,6 +90,37 @@
   }
 
   // Dropdown прибрано — проста плоска навігація
+
+  // ── Share: copy URL button ─────────────────────────────────────────────────
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-copy-url]");
+    if (!btn) return;
+    const url = btn.dataset.copyUrl;
+    const original = btn.textContent.trim();
+
+    const fallback = () => {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch (_) { return; }
+      document.body.removeChild(ta);
+    };
+
+    const onSuccess = () => {
+      btn.textContent = "✓ Скопійовано";
+      setTimeout(() => { btn.textContent = original; }, 2500);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(onSuccess).catch(fallback);
+    } else {
+      fallback();
+      onSuccess();
+    }
+  });
 
   // ── Search button ──────────────────────────────────────────────────────────
   const searchBtn = document.querySelector("[data-action='open-search']");

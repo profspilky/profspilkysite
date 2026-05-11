@@ -35,13 +35,16 @@ def main() -> None:
 
     print(f"Loading inventory ({inv_path})…")
     with inv_path.open(encoding="utf-8") as f:
-        inventory: list[dict] = json.load(f)
+        inventory: dict = json.load(f)
+
+    # seo_inventory.json is a dict with key "articles" (list of article dicts)
+    articles_list: list[dict] = inventory.get("articles", [])
 
     print(f"Loading bodies ({bodies_path})…")
     with bodies_path.open(encoding="utf-8") as f:
         bodies_raw: list[dict] = json.load(f)
 
-    # Build body map: id → {introtext, fulltext}
+    # Build body map: joomla_id (int) → row
     body_map: dict[int, dict] = {}
     for b in bodies_raw:
         try:
@@ -50,15 +53,16 @@ def main() -> None:
             continue
         body_map[aid] = b
 
-    print(f"Inventory: {len(inventory)}, Bodies: {len(body_map)}")
+    print(f"Inventory articles: {len(articles_list)}, Bodies: {len(body_map)}")
 
     merged = []
     matched = 0
     missing = 0
 
-    for art in inventory:
+    for art in articles_list:
         try:
-            aid = int(art.get("id", 0))
+            # seo_inventory articles use "joomla_id", not "id"
+            aid = int(art.get("joomla_id") or art.get("id") or 0)
         except (ValueError, TypeError):
             merged.append(art)
             missing += 1

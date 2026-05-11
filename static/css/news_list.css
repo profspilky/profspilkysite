@@ -16,7 +16,7 @@
   color: var(--c-text-muted);
 }
 
-.breadcrumb__item + .breadcrumb__item::before {
+.breadcrumb__item+.breadcrumb__item::before {
   content: "/";
   color: var(--c-text-muted);
 }
@@ -31,7 +31,9 @@
   text-decoration: underline;
 }
 
-.breadcrumb__current { color: inherit; }
+.breadcrumb__current {
+  color: inherit;
+}
 
 /* ── Сітка новин ─────────────────────────────────────────────────────────── */
 .news-list {
@@ -45,17 +47,20 @@
 /* ── Картка новини (категорія) ───────────────────────────────────────────── */
 .news-card {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  background: #fff;
+  grid-template-columns: 200px 1fr;
+  background: var(--c-bg-card, #fff);
   border: 1px solid var(--c-border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   overflow: hidden;
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  box-shadow: var(--c-shadow-xs, 0 2px 8px -2px rgba(15, 44, 102, 0.10));
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast),
+              border-color var(--transition-fast);
 }
 
 .news-card:hover {
   box-shadow: var(--c-shadow);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  border-color: var(--c-border-strong, #c8d0e0);
 }
 
 .news-card__img-link {
@@ -155,7 +160,9 @@
     padding: var(--sp-16);
   }
 
-  .news-card__title { font-size: var(--fs-16); }
+  .news-card__title {
+    font-size: var(--fs-16);
+  }
 }
 
 @media (max-width: 560px) {
@@ -178,5 +185,7 @@
     padding: var(--sp-12);
   }
 
-  .news-list { gap: var(--sp-16); }
+  .news-list {
+    gap: var(--sp-16);
+  }
 }

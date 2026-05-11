@@ -1,11 +1,12 @@
-"""Core views — home, search, contact."""
+"""Core views — home, search, contact, joomla legacy redirects."""
 from __future__ import annotations
 
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponsePermanentRedirect
 from django.shortcuts import render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_http_methods
 
 from apps.core.models import Priority, SiteSettings, TeamMember
@@ -33,22 +34,10 @@ def home(request: HttpRequest) -> HttpResponse:
     team_qs = TeamMember.objects.filter(is_active=True).order_by("order")
     team_members = list(team_qs) or default_team_members()
 
-    # Прев'ю галереї (останні 6 альбомів)
-    gallery_preview = []
-    try:
-        from apps.gallery.models import GalleryAlbum
-        gallery_preview = list(
-            GalleryAlbum.objects.filter(is_published=True)
-            .order_by("-event_date", "-created_at")[:6]
-        )
-    except Exception:
-        pass
-
     context = {
         "articles": articles,
         "priorities": priorities,
         "team_members": team_members,
-        "gallery_preview": gallery_preview,
     }
     return render(request, "core/home.html", context)
 
@@ -88,11 +77,11 @@ def search(request: HttpRequest) -> HttpResponse:
         "query": query,
         "results": results,
         "total": total,
-        "page_meta_title": f"Пошук: {query}" if query else "Пошук",
+        "page_meta_title": (_("Пошук") + f": {query}") if query else _("Пошук"),
         "canonical_url": canonical,
         "breadcrumbs": [
-            {"title": "Головна", "url": "/"},
-            {"title": "Пошук", "url": "/search/"},
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Пошук"), "url": "/search/"},
         ],
     }
     return render(request, "core/search.html", context)
@@ -114,13 +103,13 @@ def contact(request: HttpRequest) -> HttpResponse:
 
         # Проста валідація
         if not name:
-            errors["name"] = "Введіть ваше ім'я"
+            errors["name"] = _("Введіть ваше ім'я")
         if not email or "@" not in email:
-            errors["email"] = "Введіть коректний email"
+            errors["email"] = _("Введіть коректний email")
         if not subject:
-            errors["subject"] = "Введіть тему"
+            errors["subject"] = _("Введіть тему")
         if not message or len(message) < 10:
-            errors["message"] = "Повідомлення надто коротке"
+            errors["message"] = _("Повідомлення надто коротке")
 
         form_data = {"name": name, "email": email, "subject": subject, "message": message}
 
@@ -131,7 +120,7 @@ def contact(request: HttpRequest) -> HttpResponse:
             rate_key = f"contact_rate_{ip}"
             count = django_cache.get(rate_key, 0)
             if count >= 5:
-                errors["__all__"] = "Забагато запитів. Спробуйте пізніше."
+                errors["__all__"] = _("Забагато запитів. Спробуйте пізніше.")
             else:
                 django_cache.set(rate_key, count + 1, 3600)
                 try:
@@ -145,7 +134,7 @@ def contact(request: HttpRequest) -> HttpResponse:
                     success = True
                     form_data = {}
                 except Exception:
-                    errors["__all__"] = "Помилка відправки. Спробуйте пізніше або зателефонуйте."
+                    errors["__all__"] = _("Помилка відправки. Спробуйте пізніше або зателефонуйте.")
 
     canonical = request.build_absolute_uri("/contacts/")
     context = {
@@ -154,12 +143,93 @@ def contact(request: HttpRequest) -> HttpResponse:
         "form_general_error": errors.get("__all__", ""),
         "form_data": form_data,
         "site_settings": settings_obj,
-        "page_meta_title": "Контакти",
-        "page_meta_description": "Контакти Федерації профспілок України: адреса, телефон, форма зворотного зв'язку.",
+        "page_meta_title": _("Контакти"),
+        "page_meta_description": _("Контакти Федерації профспілок України: адреса, телефон, форма зворотного зв'язку."),
         "canonical_url": canonical,
         "breadcrumbs": [
-            {"title": "Головна", "url": "/"},
-            {"title": "Контакти", "url": "/contacts/"},
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Контакти"), "url": "/contacts/"},
         ],
     }
     return render(request, "core/contact.html", context)
+
+
+@require_GET
+def joomla_redirect(request: HttpRequest) -> HttpResponsePermanentRedirect:
+    """301-редирект для старих Joomla index.php URL.
+
+    Підтримувані формати:
+      ?option=com_content&view=article&id=118:rada&catid=...  → article
+      ?option=com_content&view=category&...&id=<catid>        → homepage fallback
+      ?option=com_search&...                                   → /search/
+      ?option=com_contact&...                                  → /contacts/
+      все інше                                                 → /
+    """
+    params = request.GET
+    option = params.get("option", "")
+    view   = params.get("view", "")
+
+    # ── com_search → search page ──────────────────────────────────────────────
+    if option == "com_search":
+        q = params.get("searchword", params.get("q", ""))
+        return HttpResponsePermanentRedirect(f"/search/?q={q}" if q else "/search/")
+
+    # ── com_contact → contacts page ───────────────────────────────────────────
+    if option == "com_contact":
+        return HttpResponsePermanentRedirect("/contacts/")
+
+    # ── com_content, view=article ─────────────────────────────────────────────
+    if option == "com_content" and view == "article":
+        raw_id = params.get("id", "")
+        joomla_id = _parse_joomla_id(raw_id)
+        if joomla_id:
+            try:
+                article = Article.objects.get(joomla_id=joomla_id, is_published=True)
+                return HttpResponsePermanentRedirect(article.get_absolute_url())
+            except Article.DoesNotExist:
+                pass
+            # Спробуємо StaticPage по joomla_id у url_path
+            try:
+                page = StaticPage.objects.filter(
+                    url_path__contains=f"{joomla_id}-"
+                ).first()
+                if page:
+                    return HttpResponsePermanentRedirect(page.url_path.removesuffix(".html"))
+            except Exception:
+                pass
+
+    # ── com_content, view=category → спробуємо знайти по префіксу шляху ──────
+    if option == "com_content" and view in ("category", "section"):
+        prefix = _path_prefix(request.path)
+        if prefix:
+            page = StaticPage.objects.filter(
+                url_path__startswith=prefix, is_published=True
+            ).first()
+            if page:
+                url = page.url_path.replace(".html", "")
+                return HttpResponsePermanentRedirect(url)
+
+    # ── fallback — homepage ───────────────────────────────────────────────────
+    return HttpResponsePermanentRedirect("/")
+
+
+def _parse_joomla_id(raw: str) -> int | None:
+    """Parse joomla_id from '118:rada', '118-rada' or '118'."""
+    if not raw:
+        return None
+    for sep in (":", "-"):
+        if sep in raw:
+            try:
+                return int(raw.split(sep)[0])
+            except ValueError:
+                return None
+    try:
+        return int(raw)
+    except ValueError:
+        return None
+
+
+def _path_prefix(path: str) -> str:
+    """Return leading section from path, e.g. '/pro-fpu/index.php' → '/pro-fpu'."""
+    parts = [p for p in path.rstrip("/").split("/") if p and p != "index.php"]
+    return "/" + "/".join(parts) if parts else ""

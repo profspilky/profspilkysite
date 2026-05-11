@@ -17,9 +17,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 X_FRAME_OPTIONS = "DENY"
 
-# Захист від clickjacking та content sniffing
-SECURE_BROWSER_XSS_FILTER = True
-
 # Sentry error tracking (якщо SENTRY_DSN встановлено)
 SENTRY_DSN = env("SENTRY_DSN", default="")
 if SENTRY_DSN:

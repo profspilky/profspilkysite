@@ -13,16 +13,14 @@
       <ol class="breadcrumb__list">
         {% for crumb in breadcrumbs %}
           <li class="breadcrumb__item">
-            {% if not forloop.last %}
-              <a class="breadcrumb__link" href="{{ crumb.url }}">{{ crumb.title }}</a>
-            {% else %}
+            {# Останній елемент breadcrumbs — сама поточна сторінка #}
+            {% if forloop.last %}
               <span class="breadcrumb__current" aria-current="page">{{ crumb.title }}</span>
+            {% else %}
+              <a class="breadcrumb__link" href="{{ crumb.url }}">{{ crumb.title }}</a>
             {% endif %}
           </li>
         {% endfor %}
-        <li class="breadcrumb__item">
-          <span class="breadcrumb__current" aria-current="page">{{ page.title }}</span>
-        </li>
       </ol>
     </nav>
     {% endif %}
@@ -36,8 +34,8 @@
 {# ── Two-column content grid ──────────────────────────────────────────────── #}
 <div class="page-layout">
 
-  {# Main content #}
-  <main class="page-layout__main">
+  {# Main content — не main тег (base.html вже має <main id="main">) #}
+  <div class="page-layout__main">
     {% if page.body %}
       <div class="article__body static-page__body">
         {# body очищається bleach при імпорті (tools/clean_html.py) — safe #}
@@ -46,7 +44,7 @@
     {% else %}
       <p class="page-empty-notice">{% trans "Вміст сторінки оновлюється." %}</p>
     {% endif %}
-  </main>
+  </div>
 
   {# Sticky sidebar #}
   <aside class="page-layout__sidebar" aria-label="{% trans 'Бокова панель' %}">

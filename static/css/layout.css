@@ -1,68 +1,67 @@
 /* ── Global page layout ───────────────────────────────────────────────────── */
 
-/* Ширина фіксованої панелі пріоритетів */
+/*
+  --panel-w    — ширина панелі пріоритетів
+  --panel-side — відступ панелі від правого краю
+*/
 :root {
-  --panel-w: 360px;
-  --panel-gap: var(--sp-40);
+  --panel-w:    260px;
+  --panel-side: var(--sp-16);
 }
 
 /*
   .site-layout — основна зона контенту.
-  Праворуч зарезервовано місце для фіксованої панелі пріоритетів,
-  яка знаходиться поза grid-ом і позиціонується fixed.
+  Правий відступ резервує місце для фіксованої панелі.
 */
 .site-layout {
   max-width: var(--container-max);
   margin-inline: auto;
   padding: var(--sp-32) var(--sp-24) var(--sp-64);
-  /* Правий відступ = ширина панелі + gap + padding контейнера */
-  padding-right: calc(var(--panel-w) + var(--panel-gap) + var(--sp-24));
+  padding-right: calc(var(--panel-w) + var(--panel-side) * 2 + var(--sp-24));
 }
 
 /*
-  Фіксована панель пріоритетів — завжди видима при скролі.
-  Розміщена справа від контенту всередині ширини контейнера.
-  right: max() забезпечує правильну позицію як у вузьких (≤ 1280px),
-  так і у широких вьюпортах (> 1280px).
+  Фіксована панель — завжди видима при скролі.
+  top + bottom замість height, щоб JS міг скорегувати нижній край над
+  футером. Сам перехід — CSS transition, JS лише пише одне значення.
 */
 .priorities-panel {
   position: fixed;
-  top: var(--header-h);
+  top: calc(var(--header-h) + var(--sp-32));
+  bottom: var(--sp-12);
   right: max(
-    var(--sp-24),
-    calc((100vw - var(--container-max)) / 2 + var(--sp-24))
+    var(--panel-side),
+    calc((100vw - var(--container-max)) / 2 + var(--panel-side))
   );
   width: var(--panel-w);
-  height: calc(100dvh - var(--header-h));
   overflow-y: auto;
   overflow-x: hidden;
   z-index: var(--z-priorities);
-  /* Плавний скрол на iOS */
   -webkit-overflow-scrolling: touch;
-  /* Тонка смужка скролу — не заважає дизайну */
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.2) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+  /* CSS-анімація підйому над футером: JS змінює bottom, CSS плавно анімує */
+  transition: bottom 120ms ease-out;
+  will-change: bottom;
 }
 
-/* ── 1180px ────────────────────────────────────────────────────────────────── */
+/* ── 1180px ─────────────────────────────────────────────────────────────────── */
 @media (max-width: 1180px) {
   :root {
-    --panel-w: 320px;
-    --panel-gap: var(--sp-32);
+    --panel-w:    240px;
+    --panel-side: var(--sp-12);
   }
 }
 
-/* ── 1023px (tablet/mobile) — панель ховається ──────────────────────────── */
+/* ── 1023px (tablet/mobile) — панель прихована ──────────────────────────────── */
 @media (max-width: 1023px) {
   .site-layout {
     padding: var(--sp-16) var(--sp-16) var(--sp-48);
-    /* Прибираємо правий відступ — панель прихована */
     padding-right: var(--sp-16);
   }
 
   .priorities-panel {
-    /* На планшеті/мобільному — фіксована панель прихована.
-       Замість неї контакти і пріоритети з'являються у footer. */
     display: none;
   }
 }

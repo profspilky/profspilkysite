@@ -1,6 +1,10 @@
 /* Reset + typography + base buttons. */
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 html {
   -webkit-text-size-adjust: 100%;
@@ -13,7 +17,7 @@ body {
   margin: 0;
   font-family: var(--ff-base);
   font-size: var(--fs-16);
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--c-text);
   background: var(--c-bg);
   padding-top: var(--header-h);
@@ -21,9 +25,13 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* iOS Safari: прибираємо highlight при tap */
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(19, 58, 124, 0.15);
+  color: var(--c-primary-900);
 }
 
 /* Блокування скролу коли відкрито мобільне меню */
@@ -34,26 +42,46 @@ body.nav-open {
   width: 100%;
 }
 
-img, svg, video { display: block; max-width: 100%; }
-img { height: auto; }
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
 /* Inline SVG у flex-контейнерах не повинні бути block */
 .icon-btn svg,
 .brand svg,
 .hamburger svg,
 .contact-block__icon svg,
-.priority-card__icon-wrap svg,
-.social-list svg { display: inline; }
+.social-list svg {
+  display: inline;
+}
 
-ul, ol { margin: 0; padding: 0; list-style: none; }
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
-p { margin: 0 0 var(--sp-12); }
+p {
+  margin: 0 0 var(--sp-12);
+}
 
 a {
   color: var(--c-primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
-a:hover { color: var(--c-primary-700); }
+
+a:hover {
+  color: var(--c-primary-700);
+}
 
 button {
   font-family: inherit;
@@ -63,11 +91,26 @@ button {
   color: inherit;
 }
 
-h1, h2, h3, h4 { margin: 0 0 var(--sp-12); line-height: 1.2; font-weight: 800; }
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 var(--sp-12);
+  line-height: 1.2;
+  font-weight: 800;
+}
 
-h1 { font-size: clamp(var(--fs-24), 4vw, var(--fs-48)); }
-h2 { font-size: clamp(var(--fs-20), 3vw, var(--fs-32)); }
-h3 { font-size: clamp(var(--fs-16), 2vw, var(--fs-20)); }
+h1 {
+  font-size: clamp(var(--fs-24), 4vw, var(--fs-48));
+}
+
+h2 {
+  font-size: clamp(var(--fs-20), 3vw, var(--fs-32));
+}
+
+h3 {
+  font-size: clamp(var(--fs-16), 2vw, var(--fs-20));
+}
 
 :focus-visible {
   outline: 3px solid var(--c-accent);
@@ -85,7 +128,10 @@ h3 { font-size: clamp(var(--fs-16), 2vw, var(--fs-20)); }
   border-radius: var(--r-sm);
   z-index: var(--z-modal);
 }
-.skip-link:focus { left: 8px; }
+
+.skip-link:focus {
+  left: 8px;
+}
 
 .visually-hidden {
   position: absolute;
@@ -113,16 +159,26 @@ h3 { font-size: clamp(var(--fs-16), 2vw, var(--fs-20)); }
   transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
   white-space: nowrap;
 }
-.btn:active { transform: translateY(1px); }
+
+.btn:active {
+  transform: translateY(1px);
+}
 
 .btn--primary {
-  background: var(--c-primary);
+  background: linear-gradient(135deg, #1e4d9b 0%, var(--c-primary-700) 100%);
   color: #fff;
+  box-shadow: 0 2px 8px -2px rgba(15, 44, 102, 0.35);
 }
+
 .btn--primary:hover {
-  background: var(--c-primary-700);
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-900) 100%);
   color: #fff;
-  box-shadow: var(--c-shadow);
+  box-shadow: 0 6px 20px -4px rgba(15, 44, 102, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
 }
 
 .btn--cta {
@@ -133,6 +189,7 @@ h3 { font-size: clamp(var(--fs-16), 2vw, var(--fs-20)); }
   padding: var(--sp-16) var(--sp-32);
   box-shadow: 0 14px 28px -10px rgba(244, 196, 48, 0.55);
 }
+
 .btn--cta:hover {
   background: var(--c-accent-600);
   color: var(--c-primary-900);
@@ -151,12 +208,15 @@ h3 { font-size: clamp(var(--fs-16), 2vw, var(--fs-20)); }
   color: var(--c-primary);
   transition: background var(--transition-fast), color var(--transition-fast);
 }
+
 .icon-btn:hover {
   background: var(--c-bg-soft);
   color: var(--c-primary-700);
 }
 
-.main { display: block; }
+.main {
+  display: block;
+}
 
 /* iOS Safari: font-size < 16px спричиняє авто-зум при фокусі */
 input,
@@ -219,6 +279,7 @@ select {
   body {
     font-size: var(--fs-14);
   }
+
   .btn {
     padding: var(--sp-10, 0.625rem) var(--sp-20);
   }

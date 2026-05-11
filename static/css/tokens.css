@@ -1,11 +1,11 @@
 /* Design tokens — single source of truth for colors, spacing, type, z-index. */
 :root {
   /* Breakpoints (для документування; в CSS використовується у media-queries) */
-  --bp-xs:  375px;
-  --bp-sm:  480px;
-  --bp-md:  768px;
-  --bp-lg:  1024px;
-  --bp-xl:  1280px;
+  --bp-xs: 375px;
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
   --bp-2xl: 1440px;
 
   /* Мінімальний tap-target (Apple HIG 44px) */
@@ -13,25 +13,35 @@
 
   /* Safe area для iOS (home indicator, notch) */
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top:    env(safe-area-inset-top, 0px);
-  --safe-left:   env(safe-area-inset-left, 0px);
-  --safe-right:  env(safe-area-inset-right, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   --c-primary: #133a7c;
   --c-primary-700: #0f2c66;
   --c-primary-900: #0a1f4a;
   --c-accent: #f4c430;
   --c-accent-600: #e3b41a;
+  --c-accent-muted: rgba(244, 196, 48, 0.12);
+
   --c-text: #1a2238;
   --c-text-muted: #5b6378;
+  --c-text-light: #8796b0;
   --c-text-on-dark: #eef3ff;
   --c-text-on-dark-muted: #b6c2da;
-  --c-bg: #ffffff;
-  --c-bg-soft: #f5f7fb;
+
+  /* Фони — легкий блакитно-сірий для body, чистий білий для карток */
+  --c-bg: #f9fafc;
+  --c-bg-card: #ffffff;
+  --c-bg-soft: #f0f3f9;
+
   --c-panel: #0f2c66;
   --c-panel-2: #0a1f4a;
   --c-border: #e3e7f0;
-  --c-shadow: 0 12px 32px -12px rgba(15, 44, 102, 0.25);
-  --c-shadow-lg: 0 24px 48px -16px rgba(15, 44, 102, 0.35);
+  --c-border-strong: #c8d0e0;
+
+  --c-shadow-xs: 0 2px 8px -2px rgba(15, 44, 102, 0.10);
+  --c-shadow: 0 8px 24px -8px rgba(15, 44, 102, 0.18);
+  --c-shadow-lg: 0 20px 48px -16px rgba(15, 44, 102, 0.28);
 
   --ff-base: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 

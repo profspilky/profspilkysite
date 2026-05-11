@@ -4,6 +4,7 @@ from __future__ import annotations
 from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
 from .models import GalleryAlbum, GalleryPhoto
@@ -19,12 +20,12 @@ def album_list(request: HttpRequest) -> HttpResponse:
     canonical = request.build_absolute_uri("/gallery/")
     context = {
         "page_obj": page_obj,
-        "page_meta_title": "Фотогалерея",
-        "page_meta_description": "Фотогалерея Федерації профспілок України — фотозвіти заходів та подій.",
+        "page_meta_title": _("Фотогалерея"),
+        "page_meta_description": _("Фотогалерея Федерації профспілок України — фотозвіти заходів та подій."),
         "canonical_url": canonical,
         "breadcrumbs": [
-            {"title": "Головна", "url": "/"},
-            {"title": "Фотогалерея", "url": "/gallery/"},
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Фотогалерея"), "url": "/gallery/"},
         ],
     }
     return render(request, "gallery/album_list.html", context)
@@ -45,8 +46,8 @@ def album_detail(request: HttpRequest, slug: str) -> HttpResponse:
         "canonical_url": canonical,
         "og_image": album.cover_url,
         "breadcrumbs": [
-            {"title": "Головна", "url": "/"},
-            {"title": "Фотогалерея", "url": "/gallery/"},
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Фотогалерея"), "url": "/gallery/"},
             {"title": album.title, "url": album.get_absolute_url()},
         ],
     }

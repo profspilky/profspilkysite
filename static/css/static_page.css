@@ -7,14 +7,42 @@
 /* ── Page banner ─────────────────────────────────────────────────────────── */
 
 .page-banner {
-  background: var(--c-panel);
+  background: linear-gradient(135deg, var(--c-primary-700) 0%, var(--c-primary-900) 100%);
   color: var(--c-text-on-dark);
-  padding: var(--sp-32) var(--sp-24) var(--sp-40);
+  padding: var(--sp-32) var(--sp-24) var(--sp-32);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Акцентна нижня лінія */
+.page-banner::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--c-accent) 0%, var(--c-accent-600) 50%, transparent 100%);
+}
+
+/* Декоративне коло — глибина */
+.page-banner::after {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  pointer-events: none;
 }
 
 .page-banner__inner {
   max-width: var(--container-max);
   margin-inline: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .page-banner__breadcrumb {
@@ -38,7 +66,7 @@
   color: var(--c-text-on-dark);
 }
 
-.page-banner__breadcrumb .breadcrumb__item + .breadcrumb__item::before {
+.page-banner__breadcrumb .breadcrumb__item+.breadcrumb__item::before {
   color: var(--c-text-on-dark-muted);
 }
 
@@ -54,13 +82,14 @@
 
 .page-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  column-gap: var(--sp-32);
+  /* Sidebar 240px: узгоджено з --panel-w щоб не конфліктувати з правим відступом */
+  grid-template-columns: minmax(0, 1fr) 240px;
+  column-gap: var(--sp-24);
   align-items: start;
   width: 100%;
   max-width: var(--container-max);
   margin-inline: auto;
-  padding: var(--sp-40) var(--sp-24) var(--sp-64);
+  padding: var(--sp-32) var(--sp-24) var(--sp-64);
 }
 
 .page-layout__main {
@@ -78,21 +107,35 @@
 /* ── Sidebar widgets ─────────────────────────────────────────────────────── */
 
 .sidebar-widget {
-  background: var(--c-bg-soft);
+  background: var(--c-bg-card, #fff);
   border-radius: var(--r-lg);
-  padding: var(--sp-20) var(--sp-24);
+  padding: var(--sp-20);
   border: 1px solid var(--c-border);
+  box-shadow: var(--c-shadow-xs, 0 2px 8px -2px rgba(15, 44, 102, 0.1));
 }
 
 .sidebar-widget__title {
-  font-size: var(--fs-14);
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--c-primary);
-  margin: 0 0 var(--sp-16);
-  padding-bottom: var(--sp-12);
-  border-bottom: 2px solid var(--c-border);
+  letter-spacing: 0.08em;
+  color: var(--c-text-light, #8796b0);
+  margin: 0 0 0.875rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.sidebar-widget__title::before {
+  content: "";
+  display: block;
+  width: 3px;
+  height: 14px;
+  background: var(--c-accent);
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 /* ── Sidebar: recent news list ───────────────────────────────────────────── */
@@ -201,8 +244,8 @@
 
 @media (max-width: 1180px) {
   .page-layout {
-    grid-template-columns: minmax(0, 1fr) 320px;
-    column-gap: var(--sp-24);
+    grid-template-columns: minmax(0, 1fr) 200px;
+    column-gap: var(--sp-20);
   }
 }
 

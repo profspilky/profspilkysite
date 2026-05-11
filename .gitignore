@@ -10,3 +10,7 @@ media/
 staticfiles/
 .DS_Store
 *.log
+
+# SQL dumps contain sensitive data — never commit
+tools/*.sql
+tools/*.sql.gz
