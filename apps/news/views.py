@@ -17,11 +17,13 @@ def article_in_cat(
     slug: str,
 ) -> HttpResponse:
     """Article accessed via /<cat_path>/<joomla_id>-<slug>.html."""
-    article = get_object_or_404(
-        Article,
-        joomla_id=int(joomla_id),
-        is_published=True,
-    )
+    try:
+        jid = int(joomla_id)
+    except (ValueError, TypeError):
+        from django.http import Http404
+        raise Http404("Invalid article id")
+
+    article = get_object_or_404(Article, joomla_id=jid, is_published=True)
     # Note: slug mismatch is allowed — the canonical URL in <head> ensures
     # search engines treat the correct URL as authoritative.
 

@@ -14,18 +14,11 @@ python manage.py migrate --noinput
 python manage.py compilemessages
 
 # ── Сідування даних ───────────────────────────────────────────────────────────
-# Якщо задано DATA_ARCHIVE_URL — запускає повний seed_all.sh
-# (скачує архів з даними + статичний сід + import_all).
-#
-# Якщо DATA_ARCHIVE_URL не задано — запускає тільки seed_production
-# (статичні дані: пріоритети, команда, орг-ції, секційні сторінки).
-# Повторні деплої: обидва варіанти ідемпотентні — вже наявні дані пропускаються.
+# seed_all.sh є ідемпотентним:
+#   - якщо є tools/data/fixtures.json.gz (в репо) → одразу завантажує його
+#   - якщо задано DATA_ARCHIVE_URL → спочатку скачує архів, потім завантажує
+#   - якщо дані вже є в БД → пропускає імпорт
 # ─────────────────────────────────────────────────────────────────────────────
-if [[ -n "${DATA_ARCHIVE_URL:-}" ]]; then
-    echo "DATA_ARCHIVE_URL задано — запуск повного seed_all.sh …"
-    chmod +x seed_all.sh
-    ./seed_all.sh
-else
-    echo "DATA_ARCHIVE_URL не задано — запуск seed_production (статичні дані) …"
-    python manage.py seed_production
-fi
+echo "Запуск seed_all.sh …"
+chmod +x seed_all.sh
+./seed_all.sh

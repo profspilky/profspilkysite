@@ -42,7 +42,7 @@ def album_detail(request: HttpRequest, slug: str) -> HttpResponse:
         "album": album,
         "photos": photos,
         "page_meta_title": album.title,
-        "page_meta_description": album.description[:160] if album.description else f"Фотоальбом «{album.title}» — Федерація профспілок України.",
+        "page_meta_description": (album.description or "")[:160] or f"Фотоальбом «{album.title}» — Федерація профспілок України.",
         "canonical_url": canonical,
         "og_image": album.cover_url,
         "breadcrumbs": [
