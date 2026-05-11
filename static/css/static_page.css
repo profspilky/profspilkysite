@@ -78,6 +78,13 @@
   line-height: 1.2;
 }
 
+.page-banner__meta {
+  display: block;
+  margin-top: var(--sp-8);
+  font-size: var(--fs-14);
+  color: var(--c-text-on-dark-muted);
+}
+
 /* ── Page layout grid ────────────────────────────────────────────────────── */
 
 .page-layout {
@@ -216,7 +223,7 @@
 .section-nav li a::before {
   content: "→";
   font-size: var(--fs-16);
-  color: var(--c-accent);
+  color: var(--c-primary-700);
   flex-shrink: 0;
 }
 
@@ -228,7 +235,7 @@
 }
 
 .section-nav li a:hover::before {
-  color: var(--c-accent);
+  color: #fff;
 }
 
 /* ── Empty body notice ───────────────────────────────────────────────────── */

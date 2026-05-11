@@ -6,6 +6,8 @@
   font-size: var(--fs-16);
   line-height: 1.8;
   color: var(--c-text);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* ── Headings ────────────────────────────────────────────────────────────── */

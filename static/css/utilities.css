@@ -1,5 +1,43 @@
 /* Utility helpers — використовувати без зловживань. */
 
+/* ── Breadcrumbs (глобально — використовуються в article, gallery, documents) */
+.breadcrumb {
+  margin-bottom: var(--sp-24);
+}
+
+.breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sp-6);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--c-text-muted);
+}
+
+.breadcrumb__item + .breadcrumb__item::before {
+  content: "/";
+  color: var(--c-text-muted);
+  margin-right: var(--sp-6);
+}
+
+.breadcrumb__link {
+  color: var(--c-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb__link:hover,
+.breadcrumb__link:focus-visible {
+  text-decoration: underline;
+  color: var(--c-primary-700);
+}
+
+.breadcrumb__current {
+  color: inherit;
+}
+
 /* ── Container ───────────────────────────────────────────────────────────── */
 .container {
   width: 100%;

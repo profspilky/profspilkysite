@@ -234,7 +234,7 @@
 }
 
 .news-card__read-more:hover {
-  color: var(--c-accent-600);
+  color: var(--c-primary-700);
 }
 
 /* ── Placeholder ─────────────────────────────────────────────────────── */

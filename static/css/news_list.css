@@ -1,39 +1,5 @@
-/* Сторінка списку новин (category_list.html) + загальні breadcrumbs. */
-
-/* ── Breadcrumbs ─────────────────────────────────────────────────────────── */
-.breadcrumb {
-  margin-bottom: var(--sp-24);
-}
-
-.breadcrumb__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 var(--sp-6);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: var(--fs-14);
-  color: var(--c-text-muted);
-}
-
-.breadcrumb__item+.breadcrumb__item::before {
-  content: "/";
-  color: var(--c-text-muted);
-}
-
-.breadcrumb__link {
-  color: var(--c-primary);
-  text-decoration: none;
-}
-
-.breadcrumb__link:hover,
-.breadcrumb__link:focus-visible {
-  text-decoration: underline;
-}
-
-.breadcrumb__current {
-  color: inherit;
-}
+/* Сторінка списку новин (category_list.html).
+ * Базові стилі .breadcrumb перенесені в utilities.css (глобальні). */
 
 /* ── Сітка новин ─────────────────────────────────────────────────────────── */
 .news-list {

@@ -117,6 +117,20 @@ if [[ -f "$FIXTURES_FILE" ]]; then
     log "Завантаження фікстур (loaddata) …"
     log "Файл: $FIXTURES_FILE ($(du -sh "$FIXTURES_FILE" | cut -f1))"
 
+    # Очищення таблиць, що були попередньо засіяні seed_production і матимуть конфлікт PKs/unique:
+    #   - StaticPage: seed_section_pages pk=1..N, fixture pk=521..1003 → UNIQUE(url_path) конфлікт
+    #   - GalleryAlbum/GalleryPhoto: import_gallery pk=1..62, fixture pk=125..186 → UNIQUE(joomla_id,slug)
+    # DocumentCategory pk=1..10 збігається в обох → UPDATE, очищення не потрібне.
+    log "Очищення конфліктних таблиць перед fixture …"
+    python manage.py shell -c "
+from apps.pages.models import StaticPage
+from apps.gallery.models import GalleryAlbum, GalleryPhoto
+n_gp = GalleryPhoto.objects.all().delete()[0]
+n_ga = GalleryAlbum.objects.all().delete()[0]
+n_sp = StaticPage.objects.all().delete()[0]
+print(f'Cleared: {n_sp} StaticPages, {n_ga} Albums, {n_gp} Photos')
+"
+
     # PostgreSQL не приймає NUL-байти (\u0000) у рядках — очищаємо перед завантаженням
     log "Очистка NUL-байтів …"
     python3 -c "

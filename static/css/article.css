@@ -48,6 +48,8 @@
   font-size: var(--fs-16);
   line-height: 1.75;
   color: var(--c-text);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .article__body h2,

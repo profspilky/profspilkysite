@@ -284,7 +284,7 @@
 
 .pp-footer__copy {
   font-size: var(--fs-11, 0.6875rem);
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
   letter-spacing: 0.04em;
 }
