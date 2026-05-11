@@ -114,6 +114,11 @@ def static_page_no_ext(request: HttpRequest, path: str) -> HttpResponse:
     """Static menu page without .html: /<path>"""
     url_path_html = f"/{path}.html"
     url_path_plain = f"/{path}"
+    # #region agent log
+    _html_row = StaticPage.objects.filter(url_path=url_path_html).values("pk", "is_published").first()
+    _plain_row = StaticPage.objects.filter(url_path=url_path_plain).values("pk", "is_published").first()
+    print(f"[DBG-6e45e3] path={path!r} html={_html_row} plain={_plain_row} total={StaticPage.objects.count()}", flush=True)
+    # #endregion
     try:
         page = StaticPage.objects.get(url_path=url_path_html, is_published=True)
     except StaticPage.DoesNotExist:
