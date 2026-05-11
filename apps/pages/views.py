@@ -114,15 +114,6 @@ def static_page_no_ext(request: HttpRequest, path: str) -> HttpResponse:
     """Static menu page without .html: /<path>"""
     url_path_html = f"/{path}.html"
     url_path_plain = f"/{path}"
-    # #region agent log
-    import json, time
-    _log_path = "/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-6e45e3.log"
-    try:
-        with open(_log_path, "a") as _f:
-            _f.write(json.dumps({"sessionId": "6e45e3", "hypothesisId": "B", "location": "pages/views.py:118", "message": "static_page_no_ext called", "data": {"path": path}, "timestamp": int(time.time() * 1000)}) + "\n")
-    except Exception:
-        pass
-    # #endregion
     try:
         page = StaticPage.objects.get(url_path=url_path_html, is_published=True)
     except StaticPage.DoesNotExist:
