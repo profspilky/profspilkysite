@@ -134,7 +134,7 @@ else:
     print('  NUL-байтів не знайдено')
 " "$FIXTURES_FILE"
 
-    python manage.py loaddata "$FIXTURES_FILE"
+    python manage.py load_fixtures "$FIXTURES_FILE" --batch-size 200
     ok "loaddata завершено"
 
     hr
