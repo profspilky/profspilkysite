@@ -31,12 +31,18 @@ from urllib.parse import unquote
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.db.models import Q
 
 from apps.news.models import Article
 from apps.pages.models import StaticPage
 
 BASE = Path(__file__).resolve().parents[4]
 DEFAULT_MAP = BASE / "tools" / "image_map.json"
+
+
+def _write_out(cmd: BaseCommand, msg: str) -> None:
+    cmd.stdout.write(msg)
+    cmd.stdout.flush()
 
 # Абсолютні URL fpsu (з www або без) + відносні /images/…
 _FPSU_RE = re.compile(
@@ -96,7 +102,7 @@ class Command(BaseCommand):
             )
 
         image_map: dict[str, str] = json.loads(map_path.read_text(encoding="utf-8"))
-        self.stdout.write(f"Image map loaded: {len(image_map)} entries.")
+        _write_out(self, f"Image map loaded: {len(image_map)} entries.")
 
         def _lookup(path_str: str) -> str | None:
             """Look up Cloudinary URL for an images/ relative path (any extension)."""
@@ -122,32 +128,44 @@ class Command(BaseCommand):
             self._update_covers(_lookup, batch, dry_run)
 
         self.stdout.write(self.style.SUCCESS("Done."))
+        self.stdout.flush()
         if dry_run:
             self.stdout.write(self.style.WARNING("DRY RUN — no changes saved."))
+            self.stdout.flush()
 
     def _rewrite_bodies(self, _lookup, batch: int, dry_run: bool) -> None:
-        self.stdout.write("Rewriting Article.body …")
+        _write_out(self, "Rewriting Article.body …")
         arts_updated = self._rewrite_model(Article, "body", _lookup, batch, dry_run)
-        self.stdout.write(f"  → {arts_updated} articles rewritten")
+        _write_out(self, f"  → {arts_updated} articles rewritten")
 
-        self.stdout.write("Rewriting StaticPage.body …")
+        _write_out(self, "Rewriting StaticPage.body …")
         pages_updated = self._rewrite_model(StaticPage, "body", _lookup, batch, dry_run)
-        self.stdout.write(f"  → {pages_updated} pages rewritten")
+        _write_out(self, f"  → {pages_updated} pages rewritten")
 
     def _rewrite_model(self, model, field: str, _lookup, batch: int, dry_run: bool) -> int:
-        qs = model.objects.exclude(**{field: ""}).filter(
-            **{f"{field}__icontains": "fpsu.org.ua/images/"}
+        """Обхід по pk (без OFFSET) + only(id, field) — швидше на PostgreSQL/Render."""
+        base_qs = (
+            model.objects.exclude(**{field: ""})
+            .filter(**{f"{field}__icontains": "fpsu.org.ua/images/"})
+            .order_by("pk")
+            .only("id", field)
         )
-        total = qs.count()
-        self.stdout.write(f"  {model.__name__}: {total} rows to scan …")
 
+        _write_out(
+            self,
+            f"  {model.__name__}: сканування батчами по pk (без COUNT — одразу йде робота) …",
+        )
+
+        last_pk = 0
         updated = 0
-        offset = 0
+        scanned = 0
+
         while True:
-            chunk = list(qs[offset: offset + batch])
+            chunk = list(base_qs.filter(pk__gt=last_pk)[:batch])
             if not chunk:
                 break
-            offset += batch
+            last_pk = chunk[-1].pk
+            scanned += len(chunk)
 
             to_save = []
             for obj in chunk:
@@ -162,17 +180,9 @@ class Command(BaseCommand):
                     model.objects.bulk_update(to_save, [field], batch_size=batch)
             updated += len(to_save)
 
-            if offset > 0 and offset % (batch * 5) == 0:
-                self.stdout.write(
-                    f"    … scanned {min(offset, total)}/{total}, "
-                    f"rewritten so far: {updated}",
-                    flush=True,
-                )
-
-        if total:
-            self.stdout.write(
-                f"    … scanned {total}/{total}, rewritten so far: {updated}",
-                flush=True,
+            _write_out(
+                self,
+                f"    … pk≤{last_pk}, оброблено {scanned}, переписано: {updated}",
             )
 
         return updated
@@ -189,26 +199,29 @@ class Command(BaseCommand):
         return _FPSU_RE.sub(_sub, html)
 
     def _update_covers(self, _lookup, batch: int, dry_run: bool) -> None:
-        self.stdout.write("Updating Article.image (cover) …")
+        _write_out(self, "Updating Article.image (cover) …")
 
-        qs = Article.objects.filter(
-            image__isnull=True,
-            body__icontains="fpsu.org.ua/images/",
-        ) | Article.objects.filter(
-            image="",
-            body__icontains="fpsu.org.ua/images/",
+        base_qs = (
+            Article.objects.filter(
+                Q(image__isnull=True) | Q(image=""),
+                body__icontains="fpsu.org.ua/images/",
+            )
+            .order_by("pk")
+            .only("id", "body", "image")
         )
 
-        total = qs.count()
-        self.stdout.write(f"  Articles without cloudinary cover: {total}")
+        _write_out(self, "  Covers: сканування батчами по pk (без COUNT) …")
 
         updated = 0
-        offset = 0
+        last_pk = 0
+        scanned = 0
+
         while True:
-            chunk = list(qs[offset: offset + batch])
+            chunk = list(base_qs.filter(pk__gt=last_pk)[:batch])
             if not chunk:
                 break
-            offset += batch
+            last_pk = chunk[-1].pk
+            scanned += len(chunk)
 
             to_save = []
             for art in chunk:
@@ -221,10 +234,13 @@ class Command(BaseCommand):
                 with transaction.atomic():
                     Article.objects.bulk_update(to_save, ["image"], batch_size=batch)
             updated += len(to_save)
-            if updated and updated % 1000 == 0:
-                self.stdout.write(f"  … {updated} covers set")
 
-        self.stdout.write(f"  → {updated} article covers set")
+            _write_out(
+                self,
+                f"    … pk≤{last_pk}, оброблено {scanned}, covers: {updated}",
+            )
+
+        _write_out(self, f"  → {updated} article covers set")
 
     def _extract_cover_cdn(self, body: str, _lookup) -> str | None:
         m = _FPSU_RE.search(body)
