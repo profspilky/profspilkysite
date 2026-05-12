@@ -13,9 +13,10 @@ Cross-process safety:
 
 Usage:
     python tools/build_image_paths.py               # build the list first
-    python tools/upload_images_cloudinary.py        # default 12 workers
+    python tools/upload_images_cloudinary.py        # default: 1000 files (тест), 12 workers
+    python tools/upload_images_cloudinary.py --limit 0   # усі файли з image_paths.txt
     python tools/upload_images_cloudinary.py --workers 20
-    python tools/upload_images_cloudinary.py --limit 200 --dry-run
+    python tools/upload_images_cloudinary.py --dry-run
 """
 from __future__ import annotations
 
@@ -141,7 +142,12 @@ def main() -> None:
         default=12,
         help="Parallel upload threads (default 12)",
     )
-    parser.add_argument("--limit", type=int, default=0, help="Max images (0=all)")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=1000,
+        help="Max new uploads this run (default 1000 for tests). Use 0 for all remaining.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -180,13 +186,16 @@ def main() -> None:
         ]
         pending = [p for p in all_paths if p not in image_map]
 
-        if args.limit:
-            pending = pending[: args.limit]
+        limit_run = None if args.limit == 0 else args.limit
+        if limit_run is not None:
+            pending = pending[:limit_run]
 
         total_all = len(all_paths)
         total_pending = len(pending)
+        cap_msg = " (усі)" if limit_run is None else f" (макс. {limit_run} за цей запуск)"
         print(
-            f"Total: {total_all}, in map: {len(image_map)}, to upload: {total_pending}",
+            f"У списку: {total_all}, уже в map: {len(image_map)}, "
+            f"завантажити зараз: {total_pending}{cap_msg}",
             flush=True,
         )
 
@@ -225,10 +234,10 @@ def main() -> None:
                     done = uploaded + failed
                     if done % _SAVE_EVERY == 0:
                         _save()
-                        pct = 100 * len(image_map) // total_all if total_all else 0
+                        run_pct = 100 * done // total_pending if total_pending else 100
                         print(
-                            f"  [{pct}%] {len(image_map)}/{total_all} in map | "
-                            f"+{uploaded} ok, {failed} fail this run",
+                            f"  [run {run_pct}%] +{uploaded}/{total_pending} this run | "
+                            f"map total {len(image_map)}/{total_all} | fail {failed}",
                             flush=True,
                         )
 

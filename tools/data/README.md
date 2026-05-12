@@ -109,11 +109,13 @@ CLOUDINARY_API_KEY=<api_key>
 CLOUDINARY_API_SECRET=<api_secret>
 ```
 
-### Крок C. Завантаж до Cloudinary (локально, ~44к файлів)
+### Крок C. Завантаж до Cloudinary (локально)
 ```bash
 python tools/upload_images_cloudinary.py
-# → tools/image_map.json (зберігається і може бути відновлений після збою)
-# Прогрес зберігається кожні 50 файлів — безпечно переривати та продовжувати
+# За замовчуванням — лише 1000 нових файлів за запуск (тест). Повторні запуски докидають map.
+python tools/upload_images_cloudinary.py --limit 0   # усі залишкові з image_paths.txt
+# → tools/image_map.json (атомарний запис, flock, resume)
+# Довгий запуск: caffeinate -i python tools/upload_images_cloudinary.py --limit 0
 ```
 
 ### Крок D. Застосуй map до БД

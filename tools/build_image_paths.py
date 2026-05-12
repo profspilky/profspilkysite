@@ -6,6 +6,7 @@ Used by upload_images_cloudinary.py.
 
 Usage:
     python tools/build_image_paths.py
+    python tools/build_image_paths.py --limit 1000   # лише перші 1000 шляхів (тест)
     python tools/build_image_paths.py --media-dir media/joomla_images
 """
 from __future__ import annotations
@@ -20,8 +21,12 @@ OUTPUT = Path(__file__).parent / "image_paths.txt"
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--media-dir", default=str(MEDIA_DIR))
-    parser.add_argument("--output", default=str(OUTPUT))
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="Max paths to write (0 = all). Use 1000 for a small test list.",
+    )
     args = parser.parse_args()
 
     media = Path(args.media_dir)
@@ -47,7 +52,9 @@ def main() -> None:
                 paths.append(key)
 
     paths = sorted(set(paths))
-    out.write_text("\n".join(paths), encoding="utf-8")
+    if args.limit and args.limit > 0:
+        paths = paths[: args.limit]
+        print(f"Limit: first {len(paths)} paths (--limit {args.limit})")
     print(f"Found {len(paths)} image files → {out}")
 
 
