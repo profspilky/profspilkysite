@@ -105,20 +105,35 @@ class Command(BaseCommand):
         _write_out(self, f"Image map loaded: {len(image_map)} entries.")
 
         def _lookup(path_str: str) -> str | None:
-            """Look up Cloudinary URL for an images/ relative path (any extension)."""
+            """Look up Cloudinary URL for an images/ relative path (any extension).
+
+            Joomla URLs frequently use double prefix:
+            /images/images/2020/... → map key is images/images/2020/...
+            So we always try both with and without extra images/ prefix.
+            """
             clean = path_str.lstrip("/")
+            # 1. direct
             if clean in image_map:
                 return image_map[clean]
+            # 2. webp variant
             webp = _to_webp(clean)
             if webp in image_map:
                 return image_map[webp]
-            if not clean.startswith("images/"):
-                with_prefix = f"images/{clean}"
-                if with_prefix in image_map:
-                    return image_map[with_prefix]
-                webp2 = _to_webp(with_prefix)
-                if webp2 in image_map:
-                    return image_map[webp2]
+            # 3. with extra images/ prefix (handles double images/images/ paths)
+            with_prefix = f"images/{clean}"
+            if with_prefix in image_map:
+                return image_map[with_prefix]
+            webp2 = _to_webp(with_prefix)
+            if webp2 in image_map:
+                return image_map[webp2]
+            # 4. without images/ prefix (if path starts with images/)
+            if clean.startswith("images/"):
+                no_prefix = clean[len("images/"):]
+                if no_prefix in image_map:
+                    return image_map[no_prefix]
+                webp3 = _to_webp(no_prefix)
+                if webp3 in image_map:
+                    return image_map[webp3]
             return None
 
         # Covers — ДО body rewrite, бо після rewrite body вже не містить fpsu.org.ua
@@ -246,11 +261,11 @@ class Command(BaseCommand):
                 webp_path = path if path.endswith(".webp") else str(__import__("pathlib").Path(path).with_suffix(".webp"))
                 img_path = "images/" + path
                 img_webp = "images/" + webp_path
-                _dbg("H-B","lookup result for first article",{
+                _dbg("H-B","lookup result for first article (post-fix)",{
                     "extracted_path": path,
-                    "lookup_result": lookup_res,
+                    "lookup_result": lookup_res[:60] if lookup_res else None,
+                    "lookup_fixed": lookup_res is not None,
                     "map_len": len(image_map),
-                    "map_sample_keys": list(image_map.keys())[:5],
                     "tried_direct": path in image_map,
                     "tried_webp": webp_path in image_map,
                     "tried_images_prefix": img_path in image_map,
