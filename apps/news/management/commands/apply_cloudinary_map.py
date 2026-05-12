@@ -121,11 +121,12 @@ class Command(BaseCommand):
                     return image_map[webp2]
             return None
 
-        if not skip_body:
-            self._rewrite_bodies(_lookup, batch, dry_run)
-
+        # Covers — ДО body rewrite, бо після rewrite body вже не містить fpsu.org.ua
         if not skip_covers:
             self._update_covers(_lookup, batch, dry_run)
+
+        if not skip_body:
+            self._rewrite_bodies(_lookup, batch, dry_run)
 
         self.stdout.write(self.style.SUCCESS("Done."))
         self.stdout.flush()
