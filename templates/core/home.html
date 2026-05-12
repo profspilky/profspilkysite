@@ -6,6 +6,8 @@
 {% block content %}
 <div class="home-grid">
 
+  {% include 'partials/hotline_bar.html' %}
+
   <div class="hero-stack">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero__media" aria-hidden="true"></div>
@@ -164,6 +166,8 @@
     </div>
   </section>
   {% endif %}
+
+  {% include 'partials/spo_panel.html' %}
 
   {% include 'partials/team_panel.html' %}
 

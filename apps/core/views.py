@@ -34,10 +34,22 @@ def home(request: HttpRequest) -> HttpResponse:
     team_qs = TeamMember.objects.filter(is_active=True).order_by("order")
     team_members = list(team_qs) or default_team_members()
 
+    spo_articles = list(
+        Article.objects.filter(is_published=True)
+        .filter(
+            Q(category__alias__icontains="spo")
+            | Q(category__path__icontains="spo")
+            | Q(category__title__icontains="СПО")
+        )
+        .select_related("category")
+        .order_by("-published_at")[:5]
+    )
+
     context = {
         "articles": articles,
         "priorities": priorities,
         "team_members": team_members,
+        "spo_articles": spo_articles,
     }
     return render(request, "core/home.html", context)
 

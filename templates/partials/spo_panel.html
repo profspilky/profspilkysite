@@ -1,0 +1,45 @@
+{% load i18n %}
+<section class="spo-panel" aria-labelledby="spo-title">
+  <header class="spo-panel__head">
+    <h2 id="spo-title" class="news-feed__title">{% trans "СПО об'єднань профспілок" %}</h2>
+    <a class="spo-panel__all" href="/spo-obiednan-profspilok/">{% trans "Всі матеріали" %} →</a>
+  </header>
+
+  {% if spo_articles %}
+  <ul class="spo-panel__list">
+    {% for article in spo_articles %}
+    <li class="spo-panel__item">
+      <a class="spo-panel__link" href="{{ article.get_absolute_url }}">
+        <span class="spo-panel__date">{{ article.display_date }}</span>
+        <span class="spo-panel__title">{{ article.title }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="spo-panel__promo">
+    <div class="spo-panel__promo-body">
+      <p class="spo-panel__promo-text">
+        {% blocktrans %}
+        Матеріали та рішення Спільного представницького органу сторони профспілок
+        у Національній тристоронній соціально-економічній раді.
+        {% endblocktrans %}
+      </p>
+      <ul class="spo-panel__promo-links">
+        <li><a href="/spo-obiednan-profspilok/postanovi/">{% trans "Постанови та рішення" %}</a></li>
+        <li><a href="/spo-obiednan-profspilok/zvernennya/">{% trans "Звернення та заяви" %}</a></li>
+        <li><a href="/spo-obiednan-profspilok/">{% trans "Усі документи СПО" %}</a></li>
+      </ul>
+    </div>
+    <div class="spo-panel__promo-cta">
+      <a class="spo-panel__btn" href="/spo-obiednan-profspilok/">
+        {% trans "Перейти до розділу" %}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</section>
