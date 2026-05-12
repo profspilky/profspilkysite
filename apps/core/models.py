@@ -6,6 +6,63 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class SectionPage(models.TextChoices):
+    HOME = "home", _("Головна сторінка")
+    ABOUT = "about", _("Про ФПУ")
+    CONTACTS = "contacts", _("Контакти")
+    GALLERY = "gallery", _("Галерея")
+    DOCUMENTS = "documents", _("Документи")
+    SPO = "spo", _("СПО")
+
+
+class SectionType(models.TextChoices):
+    HERO = "hero", _("Hero-банер")
+    ANNOUNCE = "announce", _("Оголошення-рядок")
+    PROMO = "promo", _("Промо-блок")
+    CTA = "cta", _("Заклик до дії")
+
+
+class PageSection(models.Model):
+    """Editable content block for a key page — block constructor."""
+
+    page = models.CharField(
+        _("Сторінка"), max_length=20, choices=SectionPage.choices, default=SectionPage.HOME
+    )
+    section_type = models.CharField(
+        _("Тип блоку"), max_length=20, choices=SectionType.choices, default=SectionType.HERO
+    )
+    title = models.CharField(_("Заголовок"), max_length=300, blank=True)
+    subtitle = models.CharField(_("Підзаголовок / опис"), max_length=600, blank=True)
+    body = models.TextField(_("Повний текст"), blank=True)
+    link_text = models.CharField(_("Текст кнопки"), max_length=120, blank=True)
+    link_url = models.CharField(
+        _("URL кнопки"),
+        max_length=500,
+        blank=True,
+        help_text=_("Відносний /про-фпу/ або повний https://…"),
+    )
+    image = CloudinaryField(_("Фонове зображення"), blank=True, null=True)
+    order = models.PositiveSmallIntegerField(_("Порядок"), default=0)
+    is_active = models.BooleanField(_("Активний"), default=True)
+
+    class Meta:
+        verbose_name = _("Блок сторінки")
+        verbose_name_plural = _("Конструктор сторінок")
+        ordering = ("page", "order", "id")
+
+    def __str__(self) -> str:
+        return f"{self.get_page_display()} — {self.get_section_type_display()}"
+
+    @property
+    def image_url(self) -> str:
+        if self.image:
+            try:
+                return self.image.url
+            except Exception:
+                return ""
+        return ""
+
+
 class SiteSettings(models.Model):
     """Singleton — global site configuration (contacts, socials, footer text)."""
 

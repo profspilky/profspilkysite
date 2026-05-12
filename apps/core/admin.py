@@ -1,4 +1,4 @@
-"""Core admin — SiteSettings (singleton), Priority, TeamMember, MemberOrganization."""
+"""Core admin — SiteSettings (singleton), Priority, TeamMember, MemberOrganization, PageSection."""
 from __future__ import annotations
 
 from django.contrib import admin
@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from unfold.admin import ModelAdmin
 
-from .models import MemberOrganization, Priority, SiteSettings, TeamMember
+from .models import MemberOrganization, PageSection, Priority, SiteSettings, TeamMember
 
 admin.site.site_header = "Адмінпанель ФПУ"
 admin.site.site_title = "ФПУ Admin"
@@ -22,6 +22,15 @@ class PriorityAdmin(ModelAdmin):
     search_fields = ("title", "description")
     ordering = ("order",)
     list_per_page = 25
+
+    fieldsets = (
+        (None, {
+            "fields": ("title", "icon_key", "description"),
+        }),
+        ("Відображення", {
+            "fields": ("order", "is_active"),
+        }),
+    )
 
 
 @admin.register(TeamMember)
@@ -132,4 +141,45 @@ class MemberOrganizationAdmin(ModelAdmin):
                 )
             except Exception:
                 pass
+        return "—"
+
+
+@admin.register(PageSection)
+class PageSectionAdmin(ModelAdmin):
+    list_display = ("__str__", "page", "section_type", "title_short", "order", "is_active")
+    list_editable = ("order", "is_active")
+    list_filter = ("page", "section_type", "is_active")
+    ordering = ("page", "order")
+    readonly_fields = ("get_image_preview",)
+    list_per_page = 30
+
+    fieldsets = (
+        ("Розміщення", {
+            "fields": ("page", "section_type", "order", "is_active"),
+        }),
+        ("Контент", {
+            "fields": ("title", "subtitle", "body"),
+            "description": "Заголовок і підзаголовок відображаються на сторінці. "
+                           "Повний текст — опціонально для блоків із детальним описом.",
+        }),
+        ("Кнопка / посилання", {
+            "fields": ("link_text", "link_url"),
+        }),
+        ("Фонове зображення", {
+            "fields": ("get_image_preview", "image"),
+        }),
+    )
+
+    @admin.display(description="Заголовок")
+    def title_short(self, obj: PageSection) -> str:
+        return obj.title[:60] + "…" if len(obj.title) > 60 else obj.title or "—"
+
+    @admin.display(description="Поточне зображення")
+    def get_image_preview(self, obj: PageSection) -> str:
+        url = obj.image_url
+        if url:
+            return format_html(
+                '<img src="{}" style="max-height:120px;max-width:100%;border-radius:8px;" />',
+                url,
+            )
         return "—"

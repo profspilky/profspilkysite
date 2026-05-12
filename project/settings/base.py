@@ -168,6 +168,18 @@ UNFOLD = {
                 ],
             },
             {
+                "title": "Конструктор сторінок",
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Блоки сторінок",
+                        "icon": "widgets",
+                        "link": "/admin/core/pagesection/",
+                    },
+                ],
+            },
+            {
                 "title": "Доступ",
                 "separator": True,
                 "collapsible": True,

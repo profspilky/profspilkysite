@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_http_methods
 
-from apps.core.models import Priority, SiteSettings, TeamMember
+from apps.core.models import PageSection, Priority, SiteSettings, TeamMember
 from apps.core.utils import default_articles, default_priorities, default_team_members
 from apps.news.models import Article
 from apps.pages.models import StaticPage
@@ -34,6 +34,11 @@ def home(request: HttpRequest) -> HttpResponse:
     team_qs = TeamMember.objects.filter(is_active=True).order_by("order")
     team_members = list(team_qs) or default_team_members()
 
+    home_sections = {
+        s.section_type: s
+        for s in PageSection.objects.filter(page="home", is_active=True).order_by("order")
+    }
+
     spo_articles = list(
         Article.objects.filter(is_published=True)
         .filter(
@@ -50,6 +55,8 @@ def home(request: HttpRequest) -> HttpResponse:
         "priorities": priorities,
         "team_members": team_members,
         "spo_articles": spo_articles,
+        "hero_section": home_sections.get("hero"),
+        "announce_section": home_sections.get("announce"),
     }
     return render(request, "core/home.html", context)
 
@@ -164,6 +171,55 @@ def contact(request: HttpRequest) -> HttpResponse:
         ],
     }
     return render(request, "core/contact.html", context)
+
+
+@require_GET
+def spo_page(request: HttpRequest) -> HttpResponse:
+    """СПО об'єднань профспілок — section page."""
+    # #region agent log
+    import json as _j, time as _t
+    try:
+        with open("/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-fd6f8e.log","a") as _f:
+            _f.write(_j.dumps({"sessionId":"fd6f8e","timestamp":int(_t.time()*1000),"location":"core/views.py:spo_page","message":"spo_page view reached","data":{"path":request.path},"hypothesisId":"FIX","runId":"post-fix-v2"}) + "\n")
+    except Exception: pass
+    # #endregion
+    from apps.documents.models import Document, DocumentCategory
+
+    spo_articles = list(
+        Article.objects.filter(is_published=True)
+        .filter(
+            Q(category__alias__icontains="spo")
+            | Q(category__path__icontains="spo")
+            | Q(category__title__icontains="СПО")
+        )
+        .select_related("category")
+        .order_by("-published_at")[:20]
+    )
+
+    spo_doc_categories = list(
+        DocumentCategory.objects.filter(title__icontains="СПО").order_by("order")
+    )
+    spo_docs = list(
+        Document.objects.filter(
+            is_published=True,
+            category__in=spo_doc_categories,
+        ).order_by("-published_at", "-created_at")[:10]
+    ) if spo_doc_categories else []
+
+    context = {
+        "spo_articles": spo_articles,
+        "spo_docs": spo_docs,
+        "page_meta_title": "СПО об'єднань профспілок",
+        "page_meta_description": (
+            "Матеріали та рішення Спільного представницького органу "
+            "сторони профспілок у Національній тристоронній соціально-економічній раді."
+        ),
+        "breadcrumbs": [
+            {"title": "Головна", "url": "/"},
+            {"title": "СПО об'єднань профспілок", "url": "/spo-obiednan-profspilok"},
+        ],
+    }
+    return render(request, "core/spo.html", context)
 
 
 @require_GET

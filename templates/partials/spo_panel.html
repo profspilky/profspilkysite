@@ -2,7 +2,9 @@
 <section class="spo-panel" aria-labelledby="spo-title">
   <header class="spo-panel__head">
     <h2 id="spo-title" class="news-feed__title">{% trans "СПО об'єднань профспілок" %}</h2>
-    <a class="spo-panel__all" href="/spo-obiednan-profspilok/">{% trans "Всі матеріали" %} →</a>
+    {% if spo_articles %}
+    <a class="spo-panel__all" href="{{ spo_articles.0.category.path|default:'#' }}">{% trans "Всі матеріали" %} →</a>
+    {% endif %}
   </header>
 
   {% if spo_articles %}
@@ -25,15 +27,10 @@
         у Національній тристоронній соціально-економічній раді.
         {% endblocktrans %}
       </p>
-      <ul class="spo-panel__promo-links">
-        <li><a href="/spo-obiednan-profspilok/postanovi/">{% trans "Постанови та рішення" %}</a></li>
-        <li><a href="/spo-obiednan-profspilok/zvernennya/">{% trans "Звернення та заяви" %}</a></li>
-        <li><a href="/spo-obiednan-profspilok/">{% trans "Усі документи СПО" %}</a></li>
-      </ul>
     </div>
     <div class="spo-panel__promo-cta">
-      <a class="spo-panel__btn" href="/spo-obiednan-profspilok/">
-        {% trans "Перейти до розділу" %}
+      <a class="spo-panel__btn" href="/documents/">
+        {% trans "Документи ФПУ" %}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
           <line x1="5" y1="12" x2="19" y2="12"/>
           <polyline points="12 5 19 12 12 19"/>

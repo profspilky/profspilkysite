@@ -55,7 +55,7 @@ class ArticleAdmin(ModelAdmin):
     date_hierarchy = "published_at"
     prepopulated_fields = {"slug": ("title",)}
     ordering = ("-published_at",)
-    raw_id_fields = ("category",)
+    autocomplete_fields = ("category",)
     list_per_page = 50
     list_select_related = ("category",)
     readonly_fields = ("joomla_id", "get_cover_preview_large")

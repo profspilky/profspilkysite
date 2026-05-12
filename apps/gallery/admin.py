@@ -38,7 +38,6 @@ class GalleryAlbumAdmin(ModelAdmin):
     list_editable = ("is_published",)
     search_fields = ("title", "description")
     prepopulated_fields = {"slug": ("title",)}
-    date_hierarchy = "event_date"
     inlines = [GalleryPhotoInline]
     readonly_fields = ("get_cover_preview_large",)
     list_per_page = 30

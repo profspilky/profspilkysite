@@ -10,6 +10,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("search/", views.search, name="search"),
     path("contacts/", views.contact, name="contact"),
+    re_path(r"^spo-ob-?iednan-profspilok/?$", views.spo_page, name="spo"),
 
     # Редиректи для старих Joomla index.php URL (301 Permanent)
     # Матчить: index.php / something/index.php / a/b/c/index.php

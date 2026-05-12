@@ -15,14 +15,26 @@
 
       <div class="hero__content">
         <h1 id="hero-title" class="hero__title">
-          {% blocktrans %}ФЕДЕРАЦІЯ ПРОФСПІЛОК УКРАЇНИ: ЗАХИСТ, ЄДНІСТЬ, СИЛА ПРАЦІВНИКІВ!{% endblocktrans %}
+          {% if hero_section and hero_section.title %}
+            {{ hero_section.title }}
+          {% else %}
+            {% blocktrans %}ФЕДЕРАЦІЯ ПРОФСПІЛОК УКРАЇНИ: ЗАХИСТ, ЄДНІСТЬ, СИЛА ПРАЦІВНИКІВ!{% endblocktrans %}
+          {% endif %}
         </h1>
         <p class="hero__subtitle">
-          {% blocktrans %}Відстоюємо твої права, покращуємо умови праці та забезпечуємо соціальну справедливість для
-          кожного українця.{% endblocktrans %}
+          {% if hero_section and hero_section.subtitle %}
+            {{ hero_section.subtitle }}
+          {% else %}
+            {% blocktrans %}Відстоюємо твої права, покращуємо умови праці та забезпечуємо соціальну справедливість для кожного українця.{% endblocktrans %}
+          {% endif %}
         </p>
-        <a class="btn btn--cta hero__cta" href="/pro-fpu/chlenski-organizatsiji/">
-          {% trans "ПРИЄДНАТИСЯ ДО ПРОФСПІЛКИ" %}
+        <a class="btn btn--cta hero__cta"
+           href="{% if hero_section and hero_section.link_url %}{{ hero_section.link_url }}{% else %}/pro-fpu/chlenski-organizatsiji/{% endif %}">
+          {% if hero_section and hero_section.link_text %}
+            {{ hero_section.link_text }}
+          {% else %}
+            {% trans "ПРИЄДНАТИСЯ ДО ПРОФСПІЛКИ" %}
+          {% endif %}
         </a>
       </div>
 
@@ -30,6 +42,17 @@
         <img src="{% static 'img/logo.png' %}" alt="" width="220" height="220">
       </span>
     </section>
+
+    {% if announce_section and announce_section.title %}
+    <div class="announce-bar" role="note">
+      <span class="announce-bar__text">{{ announce_section.title }}</span>
+      {% if announce_section.link_url %}
+      <a class="announce-bar__link" href="{{ announce_section.link_url }}">
+        {{ announce_section.link_text|default:"Детальніше" }} →
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
 
     {% if articles %}
     {% with article=articles.0 %}
