@@ -85,6 +85,54 @@ python manage.py import_missing_articles --rewrite-images
 python manage.py import_pages
 python manage.py import_bodies --pages --rewrite-images
 python manage.py seed_section_pages
+python manage.py link_article_covers   # потребує articles.tsv
+```
+
+---
+
+## Зображення до Cloudinary (ОБОВ'ЯЗКОВО для Render)
+
+Render має ephemeral filesystem — `media/` не зберігається між деплоями.
+Усі зображення мають бути завантажені до Cloudinary.
+
+### Крок A. Збери список файлів (локально, потрібна папка `media/`)
+```bash
+python tools/build_image_paths.py
+# → tools/image_paths.txt (44к+ шляхів)
+```
+
+### Крок B. Заповни реальні credentials у `.env`
+```
+CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+CLOUDINARY_CLOUD_NAME=<cloud_name>
+CLOUDINARY_API_KEY=<api_key>
+CLOUDINARY_API_SECRET=<api_secret>
+```
+
+### Крок C. Завантаж до Cloudinary (локально, ~44к файлів)
+```bash
+python tools/upload_images_cloudinary.py
+# → tools/image_map.json (зберігається і може бути відновлений після збою)
+# Прогрес зберігається кожні 50 файлів — безпечно переривати та продовжувати
+```
+
+### Крок D. Застосуй map до БД
+```bash
+python manage.py apply_cloudinary_map
+# Оновлює Article.image + переписує body HTML на Cloudinary URLs
+```
+
+### Крок E. Закомітити image_map.json
+```bash
+git add tools/image_map.json
+git commit -m "chore: add Cloudinary image map"
+git push
+```
+
+### На Render після пушу:
+```bash
+# В Render Shell (один раз):
+python manage.py apply_cloudinary_map
 ```
 
 ---

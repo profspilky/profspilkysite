@@ -21,3 +21,6 @@ tools/data/*
 
 # Data archive for deployment (generated locally, uploaded to GitHub Releases)
 fpu_data.tar.gz
+
+# Generated tool artifacts — regeneratable, not needed in git
+tools/image_paths.txt

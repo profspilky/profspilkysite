@@ -126,6 +126,15 @@ class Article(models.Model):
                 pass
         if self.local_image:
             return f"/media/joomla_images/{self.local_image}"
+        # Fallback: extract first inline image from body HTML
+        if self.body:
+            import re as _re
+            m = _re.search(
+                r'src="(https?://(?:www\.)?fpsu\.org\.ua/images/[^"]+)"',
+                self.body,
+            )
+            if m:
+                return m.group(1)
         return ""
 
     def get_absolute_url(self) -> str:

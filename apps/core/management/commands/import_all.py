@@ -14,13 +14,16 @@ Pipeline steps
   5. import_bodies --pages   StaticPage.body for menu→article pages
   6. seed_section_pages      Navigation section pages with hand-crafted HTML
   7. import_gallery          GalleryAlbum + GalleryPhoto
+  8. link_article_covers     Article.local_image from articles.tsv cover images
+  9. apply_cloudinary_map    Apply image_map.json → Article.image + body rewrite
 
 Flags
 ─────
   --dry-run           Pass to every sub-command; no DB writes anywhere.
-  --skip-articles     Skip steps 1–3 (useful when articles are already imported).
-  --skip-pages        Skip steps 4–6 (useful when only articles need refreshing).
+  --skip-articles     Skip steps 1–3.
+  --skip-pages        Skip steps 4–6.
   --skip-gallery      Skip step 7.
+  --skip-images       Skip steps 8–9 (image linking and Cloudinary mapping).
   --no-rewrite-images Disable /images/ → fpsu.org.ua rewriting in bodies
                       (steps 2, 3, 5). Default: rewriting is ON.
 
@@ -29,7 +32,7 @@ Usage
   python manage.py import_all
   python manage.py import_all --dry-run
   python manage.py import_all --skip-articles
-  python manage.py import_all --skip-gallery --dry-run
+  python manage.py import_all --skip-images    # skip image steps only
 """
 from __future__ import annotations
 
@@ -65,6 +68,11 @@ class Command(BaseCommand):
             help="Skip step 7 (import_gallery).",
         )
         parser.add_argument(
+            "--skip-images",
+            action="store_true",
+            help="Skip steps 8–9 (link_article_covers, apply_cloudinary_map).",
+        )
+        parser.add_argument(
             "--no-rewrite-images",
             action="store_true",
             help="Disable /images/ → https://www.fpsu.org.ua/images/ rewriting.",
@@ -94,6 +102,7 @@ class Command(BaseCommand):
         skip_articles: bool = options["skip_articles"]
         skip_pages: bool = options["skip_pages"]
         skip_gallery: bool = options["skip_gallery"]
+        skip_images: bool = options["skip_images"]
         rewrite: bool = not options["no_rewrite_images"]
 
         if dry_run:
@@ -133,6 +142,39 @@ class Command(BaseCommand):
         else:
             self._section("Step 7 — import gallery albums + photos")
             self._run("import_gallery", dry_run=dry_run)
+
+        # ── Steps 8–9: Images ─────────────────────────────────────────────────
+        if skip_images:
+            self.stdout.write("Skipping image steps (--skip-images).")
+        else:
+            from pathlib import Path as _Path
+            arts_tsv = _Path(__file__).resolve().parents[4] / "tools" / "data" / "articles.tsv"
+            image_map = _Path(__file__).resolve().parents[4] / "tools" / "image_map.json"
+
+            if arts_tsv.exists():
+                self._section("Step 8 — link article cover images from articles.tsv")
+                self._run("link_article_covers", dry_run=dry_run)
+            else:
+                self.stdout.write(
+                    self.style.WARNING(
+                        "  tools/data/articles.tsv not found — skipping link_article_covers.\n"
+                        "  Export from MySQL: mysql ... -e 'SELECT id,alias,catid,title,"
+                        "metadesc,metakey,images,publish_up FROM zeki2_content WHERE state=1'"
+                        " > tools/data/articles.tsv"
+                    )
+                )
+
+            if image_map.exists():
+                self._section("Step 9 — apply Cloudinary image map to bodies + covers")
+                self._run("apply_cloudinary_map", dry_run=dry_run)
+            else:
+                self.stdout.write(
+                    self.style.WARNING(
+                        "  tools/image_map.json not found — skipping apply_cloudinary_map.\n"
+                        "  Run: python tools/build_image_paths.py && "
+                        "python tools/upload_images_cloudinary.py"
+                    )
+                )
 
         # ── Summary ───────────────────────────────────────────────────────────
         total = time.monotonic() - total_start

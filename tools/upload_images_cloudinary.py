@@ -1,11 +1,15 @@
-"""Upload Joomla images from image_paths.txt to Cloudinary.
+"""
+Upload Joomla/local images from media/joomla_images/ to Cloudinary.
 
-Reads CLOUDINARY_URL from .env or environment.
-Saves mapping original_path → cloudinary_url to tools/image_map.json.
+Reads image paths from tools/image_paths.txt (built by build_image_paths.py).
+Saves original_rel_path → cloudinary_secure_url mapping to tools/image_map.json.
+Supports resume: skips already-uploaded paths.
 
 Usage:
-    python tools/upload_images_cloudinary.py
-    python tools/upload_images_cloudinary.py --limit 100 --dry-run
+    python tools/build_image_paths.py           # build the list first
+    python tools/upload_images_cloudinary.py    # upload all
+    python tools/upload_images_cloudinary.py --limit 200 --dry-run
+    python tools/upload_images_cloudinary.py --limit 200   # resume-safe
 """
 from __future__ import annotations
 
@@ -17,9 +21,12 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 
+BASE = Path(__file__).parent.parent
+CLOUDINARY_FOLDER = "fpsu/joomla"
+
 
 def load_env() -> None:
-    env_file = Path(__file__).parent.parent / ".env"
+    env_file = BASE / ".env"
     if env_file.exists():
         for line in env_file.read_text().splitlines():
             if "=" in line and not line.startswith("#"):
@@ -27,54 +34,56 @@ def load_env() -> None:
                 os.environ.setdefault(key.strip(), val.strip())
 
 
+def _public_id(rel_path: str) -> str:
+    """Derive stable Cloudinary public_id: folder/path/stem (no extension)."""
+    p = Path(rel_path)
+    stem = p.with_suffix("").as_posix()
+    return f"{CLOUDINARY_FOLDER}/{stem}"
+
+
 def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--paths-file", default="tools/image_paths.txt")
-    parser.add_argument("--media-dir", default="media/joomla_images")
-    parser.add_argument("--output", default="tools/image_map.json")
-    parser.add_argument("--limit", type=int, default=0, help="Max images to upload (0=all)")
+    parser.add_argument("--paths-file", default=str(BASE / "tools" / "image_paths.txt"))
+    parser.add_argument("--media-dir", default=str(BASE / "media" / "joomla_images"))
+    parser.add_argument("--output", default=str(BASE / "tools" / "image_map.json"))
+    parser.add_argument("--limit", type=int, default=0, help="Max images (0=all)")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     load_env()
 
     cloudinary_url = os.environ.get("CLOUDINARY_URL", "")
-    if not cloudinary_url and not args.dry_run:
-        print("ERROR: CLOUDINARY_URL not set in environment.", file=sys.stderr)
-        sys.exit(1)
-
     if cloudinary_url:
         cloudinary.config(from_url=cloudinary_url)
+    elif not args.dry_run:
+        print("ERROR: CLOUDINARY_URL not set.", file=sys.stderr)
+        sys.exit(1)
 
     paths_file = Path(args.paths_file)
     media_dir = Path(args.media_dir)
     output_path = Path(args.output)
 
     if not paths_file.exists():
-        print(f"ERROR: {paths_file} not found.", file=sys.stderr)
+        print(f"ERROR: {paths_file} not found. Run build_image_paths.py first.", file=sys.stderr)
         sys.exit(1)
 
-    # Завантажуємо існуючий маппінг (продовжуємо якщо переривались)
+    # Load existing map (resume support)
     image_map: dict[str, str] = {}
     if output_path.exists():
         image_map = json.loads(output_path.read_text(encoding="utf-8"))
-        print(f"Loaded existing map with {len(image_map)} entries.")
+        print(f"Resuming: {len(image_map)} already uploaded.")
 
     paths = [p.strip() for p in paths_file.read_text(encoding="utf-8").splitlines() if p.strip()]
-
     if args.limit:
         paths = paths[: args.limit]
 
-    print(f"Total paths to process: {len(paths)}")
+    print(f"Total paths: {len(paths)}, to process: {len(paths) - len(image_map)}")
 
-    uploaded = 0
-    skipped = 0
-    failed = 0
+    uploaded = skipped = failed = 0
 
     for idx, rel_path in enumerate(paths):
-        # Пропускаємо вже завантажені
         if rel_path in image_map:
             skipped += 1
             continue
@@ -85,16 +94,17 @@ def main() -> None:
             continue
 
         if args.dry_run:
-            image_map[rel_path] = f"https://cloudinary.example.com/{rel_path}"
+            print(f"  DRY [{idx}] {rel_path} → {_public_id(rel_path)}")
             uploaded += 1
+            if uploaded >= 20:
+                print("  … (dry-run limited to 20)")
+                break
             continue
 
         try:
             result = cloudinary.uploader.upload(
                 str(local_file),
-                folder="fpsu/joomla",
-                use_filename=True,
-                unique_filename=False,
+                public_id=_public_id(rel_path),
                 overwrite=False,
                 resource_type="image",
             )
@@ -104,15 +114,19 @@ def main() -> None:
             print(f"  FAIL [{idx}] {rel_path}: {e}")
             failed += 1
 
-        # Зберігаємо маппінг кожні 50 завантажень (відновлення після збою)
         if (uploaded + failed) % 50 == 0:
-            output_path.write_text(json.dumps(image_map, ensure_ascii=False, indent=None), encoding="utf-8")
+            output_path.write_text(
+                json.dumps(image_map, ensure_ascii=False, separators=(",", ":")),
+                encoding="utf-8",
+            )
             print(f"  Progress: {uploaded} uploaded, {skipped} skipped, {failed} failed")
 
-    # Фінальне збереження
-    output_path.write_text(json.dumps(image_map, ensure_ascii=False, indent=None), encoding="utf-8")
-    print(f"\nDone! Uploaded: {uploaded}, Skipped: {skipped}, Failed: {failed}")
-    print(f"Map saved to {output_path}")
+    output_path.write_text(
+        json.dumps(image_map, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    print(f"\nDone. Uploaded: {uploaded}, Skipped: {skipped}, Failed: {failed}")
+    print(f"Map saved → {output_path}")
 
 
 if __name__ == "__main__":
