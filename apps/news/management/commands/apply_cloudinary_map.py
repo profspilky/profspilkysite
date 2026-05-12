@@ -204,9 +204,10 @@ class Command(BaseCommand):
 
         # #region agent log — H-C: check how many have non-empty image already
         import json as _json, time as _time
-        _log = "/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-6e45e3.log"
         def _dbg(hyp, msg, data):
+            print(f"[DBG:{hyp}] {msg}: {_json.dumps(data, ensure_ascii=False)}", flush=True)
             try:
+                _log = "/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-6e45e3.log"
                 with open(_log, "a") as _f:
                     _f.write(_json.dumps({"sessionId":"6e45e3","hypothesisId":hyp,"location":"apply_cloudinary_map.py","message":msg,"data":data,"timestamp":int(_time.time()*1000)})+"\n")
             except Exception: pass
