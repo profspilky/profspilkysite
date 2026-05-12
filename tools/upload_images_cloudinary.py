@@ -4,18 +4,21 @@ Upload Joomla/local images from media/joomla_images/ to Cloudinary.
 Reads image paths from tools/image_paths.txt (built by build_image_paths.py).
 Saves original_rel_path → cloudinary_secure_url mapping to tools/image_map.json.
 Supports resume: skips already-uploaded paths.
+Supports parallel uploads via --workers.
 
 Usage:
-    python tools/build_image_paths.py           # build the list first
-    python tools/upload_images_cloudinary.py    # upload all
+    python tools/build_image_paths.py               # build the list first
+    python tools/upload_images_cloudinary.py        # upload all (8 workers)
+    python tools/upload_images_cloudinary.py --workers 16
     python tools/upload_images_cloudinary.py --limit 200 --dry-run
-    python tools/upload_images_cloudinary.py --limit 200   # resume-safe
 """
 from __future__ import annotations
 
 import json
 import os
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import cloudinary
@@ -23,6 +26,7 @@ import cloudinary.uploader
 
 BASE = Path(__file__).parent.parent
 CLOUDINARY_FOLDER = "fpsu/joomla"
+_map_lock = threading.Lock()
 
 
 def load_env() -> None:
@@ -31,14 +35,33 @@ def load_env() -> None:
         for line in env_file.read_text().splitlines():
             if "=" in line and not line.startswith("#"):
                 key, _, val = line.partition("=")
-                os.environ.setdefault(key.strip(), val.strip())
+                os.environ[key.strip()] = val.strip()
 
 
 def _public_id(rel_path: str) -> str:
     """Derive stable Cloudinary public_id: folder/path/stem (no extension)."""
-    p = Path(rel_path)
-    stem = p.with_suffix("").as_posix()
+    stem = Path(rel_path).with_suffix("").as_posix()
     return f"{CLOUDINARY_FOLDER}/{stem}"
+
+
+def _upload_one(
+    rel_path: str,
+    media_dir: Path,
+) -> tuple[str, str | None]:
+    """Upload a single file. Returns (rel_path, secure_url_or_None)."""
+    local_file = media_dir / rel_path
+    if not local_file.exists():
+        return rel_path, None
+    try:
+        result = cloudinary.uploader.upload(
+            str(local_file),
+            public_id=_public_id(rel_path),
+            overwrite=False,
+            resource_type="image",
+        )
+        return rel_path, result["secure_url"]
+    except Exception as e:
+        return rel_path, f"__error__:{e}"
 
 
 def main() -> None:
@@ -48,18 +71,16 @@ def main() -> None:
     parser.add_argument("--paths-file", default=str(BASE / "tools" / "image_paths.txt"))
     parser.add_argument("--media-dir", default=str(BASE / "media" / "joomla_images"))
     parser.add_argument("--output", default=str(BASE / "tools" / "image_map.json"))
+    parser.add_argument("--workers", type=int, default=8, help="Parallel upload threads (default 8)")
     parser.add_argument("--limit", type=int, default=0, help="Max images (0=all)")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     load_env()
+    cloudinary.reset_config()
 
-    cloudinary_url = os.environ.get("CLOUDINARY_URL", "")
-    if cloudinary_url:
-        # reset_config() re-reads CLOUDINARY_URL from env after load_env() sets it
-        cloudinary.reset_config()
-    elif not args.dry_run:
-        print("ERROR: CLOUDINARY_URL not set.", file=sys.stderr)
+    if not os.environ.get("CLOUDINARY_URL") and not args.dry_run:
+        print("ERROR: CLOUDINARY_URL not set in .env", file=sys.stderr)
         sys.exit(1)
 
     paths_file = Path(args.paths_file)
@@ -70,63 +91,73 @@ def main() -> None:
         print(f"ERROR: {paths_file} not found. Run build_image_paths.py first.", file=sys.stderr)
         sys.exit(1)
 
-    # Load existing map (resume support)
+    # Resume: load existing map
     image_map: dict[str, str] = {}
     if output_path.exists():
-        image_map = json.loads(output_path.read_text(encoding="utf-8"))
+        try:
+            image_map = json.loads(output_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
         print(f"Resuming: {len(image_map)} already uploaded.")
 
-    paths = [p.strip() for p in paths_file.read_text(encoding="utf-8").splitlines() if p.strip()]
+    all_paths = [p.strip() for p in paths_file.read_text(encoding="utf-8").splitlines() if p.strip()]
+    # Skip already done
+    pending = [p for p in all_paths if p not in image_map]
+
     if args.limit:
-        paths = paths[: args.limit]
+        pending = pending[: args.limit]
 
-    print(f"Total paths: {len(paths)}, to process: {len(paths) - len(image_map)}")
+    total_all = len(all_paths)
+    total_pending = len(pending)
+    print(f"Total: {total_all}, already uploaded: {len(image_map)}, to upload: {total_pending}")
 
-    uploaded = skipped = failed = 0
+    if not pending:
+        print("Nothing to do.")
+        return
 
-    for idx, rel_path in enumerate(paths):
-        if rel_path in image_map:
-            skipped += 1
-            continue
+    if args.dry_run:
+        print(f"DRY RUN ({args.workers} workers) — first 10:")
+        for p in pending[:10]:
+            print(f"  {p} → {_public_id(p)}")
+        return
 
-        local_file = media_dir / rel_path
-        if not local_file.exists():
-            skipped += 1
-            continue
+    print(f"Starting upload with {args.workers} workers …")
 
-        if args.dry_run:
-            print(f"  DRY [{idx}] {rel_path} → {_public_id(rel_path)}")
-            uploaded += 1
-            if uploaded >= 20:
-                print("  … (dry-run limited to 20)")
-                break
-            continue
+    uploaded = failed = 0
 
-        try:
-            result = cloudinary.uploader.upload(
-                str(local_file),
-                public_id=_public_id(rel_path),
-                overwrite=False,
-                resource_type="image",
-            )
-            image_map[rel_path] = result["secure_url"]
-            uploaded += 1
-        except Exception as e:
-            print(f"  FAIL [{idx}] {rel_path}: {e}")
-            failed += 1
+    def _save() -> None:
+        output_path.write_text(
+            json.dumps(image_map, ensure_ascii=False, separators=(",", ":")),
+            encoding="utf-8",
+        )
 
-        if (uploaded + failed) % 50 == 0:
-            output_path.write_text(
-                json.dumps(image_map, ensure_ascii=False, separators=(",", ":")),
-                encoding="utf-8",
-            )
-            print(f"  Progress: {uploaded} uploaded, {skipped} skipped, {failed} failed")
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = {pool.submit(_upload_one, p, media_dir): p for p in pending}
+        for future in as_completed(futures):
+            rel_path, result = future.result()
 
-    output_path.write_text(
-        json.dumps(image_map, ensure_ascii=False, separators=(",", ":")),
-        encoding="utf-8",
-    )
-    print(f"\nDone. Uploaded: {uploaded}, Skipped: {skipped}, Failed: {failed}")
+            with _map_lock:
+                if result and not result.startswith("__error__:"):
+                    image_map[rel_path] = result
+                    uploaded += 1
+                else:
+                    failed += 1
+                    if result:
+                        err = result.replace("__error__:", "")
+                        print(f"  FAIL {rel_path}: {err}")
+
+                done = uploaded + failed
+                if done % 50 == 0:
+                    _save()
+                    pct = 100 * (len(image_map)) // total_all
+                    print(
+                        f"  [{pct}%] {len(image_map)}/{total_all} total | "
+                        f"+{uploaded} uploaded, {failed} failed this run"
+                    )
+
+    _save()
+    print(f"\nDone. Uploaded: {uploaded}, Failed: {failed}")
+    print(f"Total in map: {len(image_map)} / {total_all}")
     print(f"Map saved → {output_path}")
 
 

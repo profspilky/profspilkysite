@@ -27,6 +27,9 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 INSTALLED_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -36,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
 
     "rest_framework",
+    "tinymce",
     "cloudinary",
     "cloudinary_storage",
 
@@ -46,6 +50,143 @@ INSTALLED_APPS = [
     "apps.gallery",
     "apps.documents",
 ]
+
+UNFOLD = {
+    "SITE_TITLE": "Адмінпанель ФПУ",
+    "SITE_HEADER": "Федерація Профспілок України",
+    "SITE_SYMBOL": "shield_person",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "COLORS": {
+        "font": {
+            "subtle-light": "107 114 128",
+            "subtle-dark": "156 163 175",
+            "default-light": "75 85 99",
+            "default-dark": "209 213 219",
+            "important-light": "17 24 39",
+            "important-dark": "243 244 246",
+        },
+        "primary": {
+            "50": "240 249 255",
+            "100": "224 242 254",
+            "200": "186 230 253",
+            "300": "125 211 252",
+            "400": "56 189 248",
+            "500": "14 165 233",
+            "600": "2 132 199",
+            "700": "3 105 161",
+            "800": "7 89 133",
+            "900": "12 74 110",
+            "950": "8 47 73",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Контент",
+                "separator": False,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Новини",
+                        "icon": "newspaper",
+                        "link": "/admin/news/article/",
+                    },
+                    {
+                        "title": "Категорії новин",
+                        "icon": "label",
+                        "link": "/admin/news/category/",
+                    },
+                    {
+                        "title": "Статичні сторінки",
+                        "icon": "article",
+                        "link": "/admin/pages/staticpage/",
+                    },
+                ],
+            },
+            {
+                "title": "Медіа",
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Альбоми",
+                        "icon": "photo_library",
+                        "link": "/admin/gallery/galleryalbum/",
+                    },
+                    {
+                        "title": "Фотографії",
+                        "icon": "image",
+                        "link": "/admin/gallery/galleryphoto/",
+                    },
+                ],
+            },
+            {
+                "title": "Документи",
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Документи",
+                        "icon": "description",
+                        "link": "/admin/documents/document/",
+                    },
+                    {
+                        "title": "Категорії документів",
+                        "icon": "folder",
+                        "link": "/admin/documents/documentcategory/",
+                    },
+                ],
+            },
+            {
+                "title": "Організація",
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Пріоритети",
+                        "icon": "star",
+                        "link": "/admin/core/priority/",
+                    },
+                    {
+                        "title": "Команда",
+                        "icon": "group",
+                        "link": "/admin/core/teammember/",
+                    },
+                    {
+                        "title": "Членські організації",
+                        "icon": "account_balance",
+                        "link": "/admin/core/memberorganization/",
+                    },
+                    {
+                        "title": "Налаштування сайту",
+                        "icon": "settings",
+                        "link": "/admin/core/sitesettings/",
+                    },
+                ],
+            },
+            {
+                "title": "Доступ",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": "Користувачі",
+                        "icon": "person",
+                        "link": "/admin/auth/user/",
+                    },
+                    {
+                        "title": "Групи",
+                        "icon": "groups",
+                        "link": "/admin/auth/group/",
+                    },
+                ],
+            },
+        ],
+    },
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

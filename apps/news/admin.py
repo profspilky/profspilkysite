@@ -1,28 +1,49 @@
+"""News admin — Category and Article with image previews."""
 from __future__ import annotations
 
 from django.contrib import admin
 from django.utils.html import format_html
+from unfold.admin import ModelAdmin
 
 from .models import Article, Category
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("title", "path", "joomla_id", "is_active", "article_count")
+class CategoryAdmin(ModelAdmin):
+    list_display = ("title", "path", "article_count", "joomla_id", "is_active")
     list_filter = ("is_active",)
     list_editable = ("is_active",)
     search_fields = ("title", "alias", "path")
     ordering = ("path",)
+    list_per_page = 50
 
+    fieldsets = (
+        (None, {
+            "fields": ("title", "alias", "path", "is_active"),
+        }),
+        ("SEO", {
+            "fields": ("meta_description", "meta_keywords"),
+            "classes": ("collapse",),
+        }),
+        ("Joomla", {
+            "fields": ("joomla_id",),
+            "classes": ("collapse",),
+        }),
+    )
+
+    @admin.display(description="Статей")
     def article_count(self, obj: Category) -> int:
         return obj.articles.filter(is_published=True).count()
-    article_count.short_description = "Статей"
 
 
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(ModelAdmin):
     list_display = (
-        "title", "category", "published_at", "is_published", "cover_preview"
+        "get_cover_preview",
+        "title",
+        "category",
+        "published_at",
+        "is_published",
     )
     list_filter = (
         "is_published",
@@ -37,14 +58,17 @@ class ArticleAdmin(admin.ModelAdmin):
     raw_id_fields = ("category",)
     list_per_page = 50
     list_select_related = ("category",)
-    readonly_fields = ("joomla_id", "cover_preview_large")
+    readonly_fields = ("joomla_id", "get_cover_preview_large")
 
     fieldsets = (
         (None, {
             "fields": ("title", "slug", "category", "published_at", "is_published"),
         }),
         ("Вміст", {
-            "fields": ("summary", "body", "image", "cover_preview_large"),
+            "fields": ("summary", "body"),
+        }),
+        ("Зображення", {
+            "fields": ("get_cover_preview_large", "image", "local_image"),
         }),
         ("SEO", {
             "fields": ("meta_title", "meta_description", "meta_keywords"),
@@ -56,16 +80,22 @@ class ArticleAdmin(admin.ModelAdmin):
         }),
     )
 
-    @admin.display(description="Обкладинка")
-    def cover_preview(self, obj: Article) -> str:
+    @admin.display(description="")
+    def get_cover_preview(self, obj: Article) -> str:
         url = obj.image_url
         if not url:
             return "—"
-        return format_html('<img src="{}" alt="" height="40" style="border-radius:4px;">', url)
+        return format_html(
+            '<img src="{}" alt="" style="height:44px;width:66px;object-fit:cover;border-radius:4px;" />',
+            url,
+        )
 
-    @admin.display(description="Обкладинка")
-    def cover_preview_large(self, obj: Article) -> str:
+    @admin.display(description="Поточне зображення")
+    def get_cover_preview_large(self, obj: Article) -> str:
         url = obj.image_url
         if not url:
             return "—"
-        return format_html('<img src="{}" alt="" style="max-height:160px;border-radius:8px;">', url)
+        return format_html(
+            '<img src="{}" alt="" style="max-height:200px;max-width:100%;border-radius:8px;" />',
+            url,
+        )
