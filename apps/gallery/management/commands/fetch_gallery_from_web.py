@@ -125,7 +125,7 @@ class Command(BaseCommand):
                 if err:
                     errors += 1
                     if errors <= 5:
-                        self.stdout.write(f"  ERR photo {pk}: {err[:120]}", flush=True)
+                        print(f"  ERR photo {pk}: {err[:120]}", flush=True)
                 elif cdn_url and not dry_run:
                     photo = futures[future]
                     photo.image = cdn_url
@@ -161,7 +161,7 @@ class Command(BaseCommand):
             url = f"{JOOMLA_BASE}/{album.cover_local}"
             pub_id = _public_id(album.cover_local, album.slug)
             if dry_run:
-                self.stdout.write(f"  DRY album {album.pk}: {url}", flush=True)
+                print(f"  DRY album {album.pk}: {url}", flush=True)
                 continue
             try:
                 cdn_url = _upload_url(url, pub_id)
@@ -170,7 +170,7 @@ class Command(BaseCommand):
             except Exception as exc:
                 errors += 1
                 if errors <= 5:
-                    self.stdout.write(f"  ERR album {album.pk}: {str(exc)[:120]}", flush=True)
+                    print(f"  ERR album {album.pk}: {str(exc)[:120]}", flush=True)
 
         self.stdout.write(f"  → {uploaded} album covers uploaded, {errors} errors")
         self.stdout.flush()
