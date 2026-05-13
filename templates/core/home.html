@@ -196,7 +196,7 @@
       <h2 id="home-news-title" class="news-feed__title">{% trans "Популярні новини" %}</h2>
     </header>
     <ul class="home-news-grid__list">
-      {% for article in articles|slice:"6:13" %}
+      {% for article in articles|slice:"6:12" %}
       <li class="home-news-grid__item">
         <article class="news-card--compact">
           <a class="news-card--compact__media" href="{{ article.get_absolute_url }}" tabindex="-1" aria-hidden="true">
