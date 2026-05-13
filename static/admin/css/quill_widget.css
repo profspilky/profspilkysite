@@ -1,0 +1,293 @@
+/* ─── Quill editor widget — light + dark theme for Unfold admin ─────────── */
+
+.quill-wrapper {
+    position: relative;
+    margin-top: 6px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid #d1d5db;
+    background: #ffffff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.quill-wrapper:focus-within {
+    border-color: rgb(14 165 233);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────────────── */
+
+.quill-wrapper .ql-toolbar.ql-snow {
+    border: none;
+    border-bottom: 1.5px solid #e5e7eb;
+    background: #f9fafb;
+    padding: 10px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    align-items: center;
+}
+
+.quill-wrapper .ql-toolbar.ql-snow button {
+    border-radius: 6px;
+    padding: 3px 5px;
+    transition: background 0.1s, color 0.1s;
+}
+
+.quill-wrapper .ql-toolbar.ql-snow button:hover,
+.quill-wrapper .ql-toolbar.ql-snow .ql-active {
+    background: rgba(14, 165, 233, 0.08);
+}
+
+.quill-wrapper .ql-toolbar.ql-snow button:hover .ql-stroke,
+.quill-wrapper .ql-toolbar.ql-snow .ql-active .ql-stroke {
+    stroke: rgb(14 165 233);
+}
+
+.quill-wrapper .ql-toolbar.ql-snow button:hover .ql-fill,
+.quill-wrapper .ql-toolbar.ql-snow .ql-active .ql-fill {
+    fill: rgb(14 165 233);
+}
+
+.quill-wrapper .ql-toolbar.ql-snow .ql-picker-label {
+    color: #374151;
+    border-radius: 6px;
+    padding: 2px 6px;
+    transition: color 0.1s, background 0.1s;
+}
+
+.quill-wrapper .ql-toolbar.ql-snow .ql-picker-label:hover {
+    color: rgb(14 165 233);
+    background: rgba(14, 165, 233, 0.08);
+}
+
+.quill-wrapper .ql-toolbar.ql-snow .ql-picker-options {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 4px;
+}
+
+.quill-wrapper .ql-toolbar.ql-snow .ql-picker-item:hover {
+    color: rgb(14 165 233);
+}
+
+/* ── Editor area ──────────────────────────────────────────────────────── */
+
+.quill-wrapper .ql-container.ql-snow {
+    border: none;
+    font-size: 15px;
+    font-family: 'Open Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    line-height: 1.75;
+}
+
+.quill-wrapper .ql-editor {
+    padding: 18px 22px;
+    min-height: 400px;
+    color: #111827;
+}
+
+.quill-wrapper .ql-editor p {
+    margin-bottom: 14px;
+}
+
+.quill-wrapper .ql-editor h2,
+.quill-wrapper .ql-editor h3,
+.quill-wrapper .ql-editor h4 {
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: #111827;
+    line-height: 1.35;
+}
+
+.quill-wrapper .ql-editor h2 { font-size: 1.35rem; }
+.quill-wrapper .ql-editor h3 { font-size: 1.15rem; }
+.quill-wrapper .ql-editor h4 { font-size: 1rem; }
+
+.quill-wrapper .ql-editor blockquote {
+    border-left: 4px solid rgb(14 165 233);
+    padding: 10px 16px;
+    margin: 16px 0;
+    background: rgba(14, 165, 233, 0.05);
+    border-radius: 0 6px 6px 0;
+    color: #374151;
+    font-style: italic;
+}
+
+.quill-wrapper .ql-editor img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 16px 0;
+    display: block;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.quill-wrapper .ql-editor img:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    transition: box-shadow 0.2s;
+}
+
+.quill-wrapper .ql-editor a {
+    color: rgb(2 132 199);
+    text-decoration: underline;
+}
+
+.quill-wrapper .ql-editor ol,
+.quill-wrapper .ql-editor ul {
+    padding-left: 1.5em;
+    margin-bottom: 14px;
+}
+
+.quill-wrapper .ql-editor li {
+    margin-bottom: 4px;
+}
+
+.quill-wrapper .ql-editor.ql-blank::before {
+    color: #9ca3af;
+    font-style: normal;
+    font-size: 15px;
+    left: 22px;
+}
+
+/* Hidden textarea (actual form value) */
+.quill-textarea {
+    display: none;
+}
+
+/* ── Upload overlay ───────────────────────────────────────────────────── */
+
+.quill-upload-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    z-index: 20;
+    font-size: 14px;
+    color: #374151;
+    font-weight: 500;
+    backdrop-filter: blur(2px);
+}
+
+.quill-upload-overlay--active {
+    display: flex;
+}
+
+.quill-upload-spinner {
+    width: 22px;
+    height: 22px;
+    border: 2.5px solid #e5e7eb;
+    border-top-color: rgb(14 165 233);
+    border-radius: 50%;
+    animation: quill-spin 0.65s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes quill-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Dark mode (Unfold adds .dark to <html>) ──────────────────────────── */
+
+.dark .quill-wrapper {
+    border-color: #374151;
+    background: #1e293b;
+}
+
+.dark .quill-wrapper:focus-within {
+    border-color: rgb(56 189 248);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow {
+    background: #1e293b;
+    border-bottom-color: #334155;
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-stroke {
+    stroke: #94a3b8;
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-fill {
+    fill: #94a3b8;
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow button:hover .ql-stroke,
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-active .ql-stroke {
+    stroke: rgb(56 189 248);
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow button:hover .ql-fill,
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-active .ql-fill {
+    fill: rgb(56 189 248);
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow button:hover,
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-active {
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-picker-label {
+    color: #94a3b8;
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-picker-label:hover {
+    color: rgb(56 189 248);
+    background: rgba(56, 189, 248, 0.1);
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-picker-options {
+    background: #1f2937;
+    border-color: #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-picker-item {
+    color: #d1d5db;
+}
+
+.dark .quill-wrapper .ql-toolbar.ql-snow .ql-picker-item:hover {
+    color: rgb(56 189 248);
+}
+
+.dark .quill-wrapper .ql-container.ql-snow {
+    background: #1e293b;
+}
+
+.dark .quill-wrapper .ql-editor {
+    color: #f1f5f9;
+}
+
+.dark .quill-wrapper .ql-editor h2,
+.dark .quill-wrapper .ql-editor h3,
+.dark .quill-wrapper .ql-editor h4 {
+    color: #f1f5f9;
+}
+
+.dark .quill-wrapper .ql-editor blockquote {
+    border-left-color: rgb(56 189 248);
+    background: rgba(56, 189, 248, 0.07);
+    color: #94a3b8;
+}
+
+.dark .quill-wrapper .ql-editor a {
+    color: rgb(56 189 248);
+}
+
+.dark .quill-wrapper .ql-editor.ql-blank::before {
+    color: #475569;
+}
+
+.dark .quill-upload-overlay {
+    background: rgba(30, 41, 59, 0.88);
+    color: #cbd5e1;
+}
+
+.dark .quill-upload-spinner {
+    border-color: #334155;
+    border-top-color: rgb(56 189 248);
+}

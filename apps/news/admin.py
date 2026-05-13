@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 from django.contrib import admin
+from django.urls import path
 from django.utils.html import format_html
 from unfold.admin import ModelAdmin
 
+from . import views_admin
+from .forms import ArticleAdminForm
 from .models import Article, Category
 
 
@@ -38,6 +41,18 @@ class CategoryAdmin(ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(ModelAdmin):
+    form = ArticleAdminForm
+
+    def get_urls(self):
+        custom = [
+            path(
+                "upload-image/",
+                self.admin_site.admin_view(views_admin.upload_image),
+                name="news_article_upload_image",
+            ),
+        ]
+        return custom + super().get_urls()
+
     list_display = (
         "get_cover_preview",
         "title",
