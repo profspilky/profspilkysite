@@ -277,9 +277,30 @@ class Command(BaseCommand):
 
     def _update_gallery(self, _lookup, batch: int, dry_run: bool) -> None:
         """Set GalleryAlbum.cover_image and GalleryPhoto.image from image_map."""
+        from django.db.models import Q as _Q
+
+        # #region agent log — debug gallery
+        total_albums = GalleryAlbum.objects.count()
+        null_cover = GalleryAlbum.objects.filter(_Q(cover_image__isnull=True) | _Q(cover_image="")).count()
+        sample_albums = list(GalleryAlbum.objects.only("id", "cover_image", "cover_local")[:3])
+        print(f"[DBG:gallery] albums total={total_albums} null_or_empty_cover={null_cover}", flush=True)
+        for a in sample_albums:
+            sample_cdn = _lookup(a.cover_local) if a.cover_local else None
+            print(f"[DBG:gallery]   album pk={a.pk} cover_image={repr(str(a.cover_image))} cover_local={repr(a.cover_local)} lookup={sample_cdn}", flush=True)
+        total_photos = GalleryPhoto.objects.count()
+        null_img = GalleryPhoto.objects.filter(_Q(image__isnull=True) | _Q(image="")).count()
+        sample_photos = list(GalleryPhoto.objects.only("id", "image", "image_local")[:3])
+        print(f"[DBG:gallery] photos total={total_photos} null_or_empty_image={null_img}", flush=True)
+        for p in sample_photos:
+            sample_cdn = _lookup(p.image_local) if p.image_local else None
+            print(f"[DBG:gallery]   photo pk={p.pk} image={repr(str(p.image))} image_local={repr(p.image_local)} lookup={sample_cdn}", flush=True)
+        # #endregion
+
         _write_out(self, "Updating Gallery covers …")
         albums_updated = 0
-        for album in GalleryAlbum.objects.filter(cover_image="").only("id", "cover_local"):
+        for album in GalleryAlbum.objects.filter(
+            _Q(cover_image__isnull=True) | _Q(cover_image="")
+        ).only("id", "cover_local"):
             if not album.cover_local:
                 continue
             cdn = _lookup(album.cover_local)
@@ -294,7 +315,9 @@ class Command(BaseCommand):
         last_pk = 0
         while True:
             chunk = list(
-                GalleryPhoto.objects.filter(image="", pk__gt=last_pk)
+                GalleryPhoto.objects.filter(
+                    _Q(image__isnull=True) | _Q(image=""), pk__gt=last_pk
+                )
                 .order_by("pk")
                 .only("id", "image_local")[:batch]
             )
