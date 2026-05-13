@@ -60,6 +60,14 @@
   color: var(--c-text-muted);
 }
 
+.news-card__cat {
+  font-size: var(--fs-11, 0.6875rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--c-accent-600, #e07b00);
+}
+
 .news-card__title {
   font-size: var(--fs-18);
   font-weight: 700;

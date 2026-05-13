@@ -1,6 +1,7 @@
 """News views — article detail and category listing."""
 from __future__ import annotations
 
+from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext as _
@@ -91,6 +92,28 @@ def article_by_slug(request: HttpRequest, slug: str) -> HttpResponse:
         "breadcrumbs": _build_breadcrumbs(category),
     }
     return render(request, "news/article_detail.html", context)
+
+
+@require_GET
+def all_news(request: HttpRequest) -> HttpResponse:
+    """All published articles with pagination — /novini/"""
+    qs = (
+        Article.objects.filter(is_published=True)
+        .select_related("category")
+        .order_by("-published_at")
+    )
+    paginator = Paginator(qs, 10)
+    page_num = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_num)
+
+    context = {
+        "page_obj": page_obj,
+        "breadcrumbs": [
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Новини"), "url": "/novini/"},
+        ],
+    }
+    return render(request, "news/all_news.html", context)
 
 
 def _build_breadcrumbs(category: Category | None) -> list[dict]:
