@@ -1,4 +1,4 @@
-"""Core admin — SiteSettings (singleton), Priority, TeamMember, MemberOrganization, PageSection."""
+"""Core admin — SiteSettings (singleton), Priority, TeamMember, MemberOrganization, PageSection, MemOrgPage."""
 from __future__ import annotations
 
 from django.contrib import admin
@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from unfold.admin import ModelAdmin
 
-from .models import MemberOrganization, PageSection, Priority, SiteSettings, TeamMember
+from .models import MemOrgPage, MemberOrganization, PageSection, Priority, SiteSettings, TeamMember
 
 admin.site.site_header = "Адмінпанель ФПУ"
 admin.site.site_title = "ФПУ Admin"
@@ -142,6 +142,39 @@ class MemberOrganizationAdmin(ModelAdmin):
             except Exception:
                 pass
         return "—"
+
+
+@admin.register(MemOrgPage)
+class MemOrgPageAdmin(ModelAdmin):
+    list_display = ("title", "short_name", "org_type", "region", "founded_year", "has_website", "is_published")
+    list_editable = ("is_published",)
+    list_filter = ("org_type", "is_published")
+    search_fields = ("title", "short_name", "region", "address", "email")
+    prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("source_url",)
+    list_per_page = 50
+
+    fieldsets = (
+        (None, {
+            "fields": ("title", "short_name", "slug", "org_type", "region"),
+        }),
+        ("Зміст", {
+            "fields": ("description", "meta_description"),
+        }),
+        ("Контакти", {
+            "fields": ("address", "phone", "email", "founded_year", "website_url"),
+        }),
+        ("Логотип та джерело", {
+            "fields": ("logo", "source_url"),
+        }),
+        ("Відображення", {
+            "fields": ("is_published",),
+        }),
+    )
+
+    @admin.display(description="Власний сайт", boolean=True)
+    def has_website(self, obj: MemOrgPage) -> bool:
+        return bool(obj.website_url)
 
 
 @admin.register(PageSection)

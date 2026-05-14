@@ -5,11 +5,11 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, HttpResponsePermanentRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_http_methods
 
-from apps.core.models import PageSection, Priority, SiteSettings, TeamMember
+from apps.core.models import MemOrgPage, PageSection, Priority, SiteSettings, TeamMember
 from apps.core.utils import default_articles, default_priorities, default_team_members
 from apps.news.models import Article
 from apps.pages.models import StaticPage
@@ -176,13 +176,6 @@ def contact(request: HttpRequest) -> HttpResponse:
 @require_GET
 def spo_page(request: HttpRequest) -> HttpResponse:
     """СПО об'єднань профспілок — section page."""
-    # #region agent log
-    import json as _j, time as _t
-    try:
-        with open("/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-fd6f8e.log","a") as _f:
-            _f.write(_j.dumps({"sessionId":"fd6f8e","timestamp":int(_t.time()*1000),"location":"core/views.py:spo_page","message":"spo_page view reached","data":{"path":request.path},"hypothesisId":"FIX","runId":"post-fix-v2"}) + "\n")
-    except Exception: pass
-    # #endregion
     from apps.documents.models import Document, DocumentCategory
 
     spo_articles = list(
@@ -223,7 +216,7 @@ def spo_page(request: HttpRequest) -> HttpResponse:
 
 
 _BASE = "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"
-_GALUZEVI: list[dict] = [
+_GALUZEVI_LEGACY: list[dict] = [
     {"name": "Професійна спілка працівників авіабудування та машинобудування України",
      "url": f"{_BASE}/195-profspilka-aviabudivnikiv-ukrajini.html"},
     {"name": "Профспілка авіапрацівників України",
@@ -351,10 +344,16 @@ _TERYTORIALNI: list[dict] = [
 
 @require_GET
 def member_sites_page(request: HttpRequest) -> HttpResponse:
-    """Сайти членських організацій ФПУ."""
+    """Сайти членських організацій ФПУ — дані з MemOrgPage (БД)."""
+    galuzevi = list(
+        MemOrgPage.objects.filter(org_type="sectoral", is_published=True).order_by("title")
+    )
+    terytorialni = list(
+        MemOrgPage.objects.filter(org_type="regional", is_published=True).order_by("region", "title")
+    )
     context = {
-        "galuzevi": _GALUZEVI,
-        "terytorialni": _TERYTORIALNI,
+        "galuzevi": galuzevi,
+        "terytorialni": terytorialni,
         "page_meta_title": _("Сайти членських організацій"),
         "page_meta_description": _(
             "Всеукраїнські галузеві профспілки та територіальні об'єднання "
@@ -366,6 +365,24 @@ def member_sites_page(request: HttpRequest) -> HttpResponse:
         ],
     }
     return render(request, "core/member_sites.html", context)
+
+
+@require_GET
+def mem_org_detail(request: HttpRequest, slug: str) -> HttpResponse:
+    """Детальна сторінка членської організації."""
+    org = get_object_or_404(MemOrgPage, slug=slug, is_published=True)
+    context = {
+        "org": org,
+        "page_meta_title": org.title,
+        "page_meta_description": org.meta_description or org.description[:160],
+        "canonical_url": request.build_absolute_uri(org.get_absolute_url()),
+        "breadcrumbs": [
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Членські організації"), "url": "/sajty-chlenskykh-orhanizatsii/"},
+            {"title": org.short_name or org.title, "url": org.get_absolute_url()},
+        ],
+    }
+    return render(request, "core/mem_org_detail.html", context)
 
 
 @require_GET

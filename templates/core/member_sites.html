@@ -37,10 +37,18 @@
         <ol class="ms-orgs-list">
           {% for org in galuzevi %}
           <li class="ms-orgs-list__item">
-            <a class="ms-orgs-list__link" href="{{ org.url }}" target="_blank" rel="noopener noreferrer">
-              {{ org.name }}
+            {% if org.website_url and not org.source_url %}
+            <a class="ms-orgs-list__link" href="{{ org.website_url }}" target="_blank" rel="noopener noreferrer">
+              {{ org.title }}
             </a>
+            {% else %}
+            <a class="ms-orgs-list__link" href="{{ org.get_absolute_url }}">
+              {{ org.title }}
+            </a>
+            {% endif %}
           </li>
+          {% empty %}
+          <li class="ms-orgs-list__item ms-orgs-list__item--empty">{% trans "Список порожній" %}</li>
           {% endfor %}
         </ol>
       </section>
@@ -50,10 +58,18 @@
         <ol class="ms-orgs-list">
           {% for org in terytorialni %}
           <li class="ms-orgs-list__item">
-            <a class="ms-orgs-list__link" href="{{ org.url }}" target="_blank" rel="noopener noreferrer">
-              {{ org.name }}
+            {% if org.website_url and not org.source_url %}
+            <a class="ms-orgs-list__link" href="{{ org.website_url }}" target="_blank" rel="noopener noreferrer">
+              {{ org.title }}
             </a>
+            {% else %}
+            <a class="ms-orgs-list__link" href="{{ org.get_absolute_url }}">
+              {{ org.title }}
+            </a>
+            {% endif %}
           </li>
+          {% empty %}
+          <li class="ms-orgs-list__item ms-orgs-list__item--empty">{% trans "Список порожній" %}</li>
           {% endfor %}
         </ol>
       </section>

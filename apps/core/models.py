@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from cloudinary.models import CloudinaryField
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -197,6 +198,60 @@ class MemberOrganization(models.Model):
             i = 2
             while MemberOrganization.objects.filter(slug=slug).exclude(pk=self.pk).exists():
                 slug = f"{base[:270]}-{i}"
+                i += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+
+class MemOrgPage(models.Model):
+    """Detailed page for a member organization — scraped from fpsu.org.ua."""
+
+    title       = models.CharField(_("Назва"), max_length=500)
+    short_name  = models.CharField(_("Коротка назва / абревіатура"), max_length=200, blank=True)
+    slug        = models.SlugField(_("Slug"), max_length=400, unique=True, allow_unicode=True)
+    org_type    = models.CharField(
+        _("Тип"),
+        max_length=12,
+        choices=OrgType.choices,
+        default=OrgType.SECTORAL,
+    )
+    region      = models.CharField(_("Регіон"), max_length=100, blank=True,
+                                   help_text=_("Для територіальних об'єднань"))
+    description = models.TextField(_("Опис (повний текст)"), blank=True)
+    address     = models.CharField(_("Адреса"), max_length=400, blank=True)
+    phone       = models.CharField(_("Телефон"), max_length=150, blank=True)
+    email       = models.EmailField(_("Email"), blank=True)
+    founded_year = models.PositiveSmallIntegerField(_("Рік заснування"), null=True, blank=True)
+    website_url  = models.URLField(_("Власний сайт організації"), blank=True)
+    logo         = CloudinaryField(_("Логотип"), blank=True, null=True)
+    source_url   = models.URLField(_("Джерело fpsu.org.ua"), max_length=800, blank=True,
+                                   help_text=_("Оригінальна URL-адреса на старому сайті"))
+    meta_description = models.CharField(_("Meta description"), max_length=300, blank=True)
+    is_published = models.BooleanField(_("Опублікована"), default=True)
+
+    class Meta:
+        verbose_name = _("Сторінка членської організації")
+        verbose_name_plural = _("Сторінки членських організацій")
+        ordering = ("org_type", "title")
+        indexes = [
+            models.Index(fields=["org_type", "is_published"]),
+            models.Index(fields=["slug"]),
+        ]
+
+    def __str__(self) -> str:
+        return self.title
+
+    def get_absolute_url(self) -> str:
+        return reverse("core:mem_org_detail", kwargs={"slug": self.slug})
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.slug:
+            from django.utils.text import slugify
+            base = slugify(self.title, allow_unicode=False) or f"org-{self.pk or 0}"
+            slug = base[:380]
+            i = 2
+            while MemOrgPage.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base[:370]}-{i}"
                 i += 1
             self.slug = slug
         super().save(*args, **kwargs)
