@@ -1,5 +1,7 @@
 {% load i18n static %}
 <header class="site-header" data-sticky-header>
+
+  {# ── Рядок 1: Бренд + дії ───────────────────────────────────────────────── #}
   <div class="site-header__inner">
     <a class="brand" href="/" aria-label="{% trans 'Федерація Профспілок України — на головну' %}">
       <img
@@ -11,8 +13,44 @@
         loading="eager"
         decoding="async"
       >
+      <span class="brand__text">
+        <strong>{% trans "Федерація профспілок України" %}</strong>
+        <span>{% trans "Офіційний веб-сайт" %}</span>
+      </span>
     </a>
 
+    <div class="header-actions">
+      <a class="btn btn--primary header-actions__cta" href="{% url 'accounts:login' %}">{% trans "Увійти" %}</a>
+
+      <button type="button" class="icon-btn" data-action="open-search" aria-label="{% trans 'Пошук' %}">
+        {% include 'partials/icons/search.svg' %}
+      </button>
+
+      <form action="{% url 'set_language' %}" method="post" class="lang-switch"
+        aria-label="{% trans 'Перемикач мови' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ lang_switch_next }}">
+        {% for code, name in site_languages %}
+        <button type="submit" name="language" value="{{ code }}"
+          class="lang-switch__btn {% if LANGUAGE_CODE == code %}is-active{% endif %}"
+          aria-pressed="{% if LANGUAGE_CODE == code %}true{% else %}false{% endif %}"
+          {% if LANGUAGE_CODE == code %}disabled aria-disabled="true"{% endif %}>
+          {{ code|upper }}
+        </button>
+        {% endfor %}
+      </form>
+
+      <button type="button" class="hamburger" data-action="toggle-nav" aria-label="{% trans 'Відкрити меню' %}"
+        aria-expanded="false" aria-controls="mobile-nav">
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+      </button>
+    </div>
+  </div>
+
+  {# ── Рядок 2: Навігація (тільки десктоп) ──────────────────────────────── #}
+  <div class="site-header__nav-bar">
     <nav class="primary-nav" aria-label="{% trans 'Основне меню' %}">
       <ul class="primary-nav__list">
         {% for item in site_nav_items %}
@@ -43,35 +81,6 @@
         {% endfor %}
       </ul>
     </nav>
-
-    <div class="header-actions">
-      <a class="btn btn--primary header-actions__cta" href="{% url 'accounts:login' %}">{% trans "Увійти" %}</a>
-
-      <button type="button" class="icon-btn" data-action="open-search" aria-label="{% trans 'Пошук' %}">
-        {% include 'partials/icons/search.svg' %}
-      </button>
-
-      <form action="{% url 'set_language' %}" method="post" class="lang-switch"
-        aria-label="{% trans 'Перемикач мови' %}">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ lang_switch_next }}">
-        {% for code, name in site_languages %}
-        <button type="submit" name="language" value="{{ code }}"
-          class="lang-switch__btn {% if LANGUAGE_CODE == code %}is-active{% endif %}"
-          aria-pressed="{% if LANGUAGE_CODE == code %}true{% else %}false{% endif %}"
-          {% if LANGUAGE_CODE == code %}disabled aria-disabled="true"{% endif %}>
-          {{ code|upper }}
-        </button>
-        {% endfor %}
-      </form>
-
-      <button type="button" class="hamburger" data-action="toggle-nav" aria-label="{% trans 'Відкрити меню' %}"
-        aria-expanded="false" aria-controls="mobile-nav">
-        <span class="hamburger__line"></span>
-        <span class="hamburger__line"></span>
-        <span class="hamburger__line"></span>
-      </button>
-    </div>
   </div>
 
 </header>
