@@ -352,6 +352,12 @@ _TERYTORIALNI: list[dict] = [
 @require_GET
 def member_sites_page(request: HttpRequest) -> HttpResponse:
     """Сайти членських організацій ФПУ."""
+    # #region agent log
+    import json, time
+    _log_path = "/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-8dffc0.log"
+    with open(_log_path, "a") as _lf:
+        _lf.write(json.dumps({"sessionId":"8dffc0","hypothesisId":"A","location":"core/views.py:member_sites_page","message":"VIEW CALLED","data":{"galuzevi_len":len(_GALUZEVI),"terytorialni_len":len(_TERYTORIALNI),"path":request.path},"timestamp":int(time.time()*1000)}) + "\n")
+    # #endregion
     context = {
         "galuzevi": _GALUZEVI,
         "terytorialni": _TERYTORIALNI,
@@ -365,6 +371,10 @@ def member_sites_page(request: HttpRequest) -> HttpResponse:
             {"title": _("Сайти членських організацій"), "url": "/sajty-chlenskykh-orhanizatsii/"},
         ],
     }
+    # #region agent log
+    with open(_log_path, "a") as _lf:
+        _lf.write(json.dumps({"sessionId":"8dffc0","hypothesisId":"B","location":"core/views.py:member_sites_page","message":"CONTEXT BUILT - rendering template","data":{"template":"core/member_sites.html","galuzevi_sample":_GALUZEVI[0]["name"] if _GALUZEVI else "EMPTY"},"timestamp":int(time.time()*1000)}) + "\n")
+    # #endregion
     return render(request, "core/member_sites.html", context)
 
 

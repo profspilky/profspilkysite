@@ -115,6 +115,12 @@ def static_page(request: HttpRequest, path: str) -> HttpResponse:
 @require_GET
 def static_page_no_ext(request: HttpRequest, path: str) -> HttpResponse:
     """Static menu page without .html: /<path>"""
+    # #region agent log
+    import json, time
+    _log_path = "/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-8dffc0.log"
+    with open(_log_path, "a") as _lf:
+        _lf.write(json.dumps({"sessionId":"8dffc0","hypothesisId":"A","location":"pages/views.py:static_page_no_ext","message":"PAGES VIEW HIT","data":{"path":path,"full_path":request.path},"timestamp":int(time.time()*1000)}) + "\n")
+    # #endregion
     url_path_html = f"/{path}.html"
     url_path_plain = f"/{path}"
     try:
