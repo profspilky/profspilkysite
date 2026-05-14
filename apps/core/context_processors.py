@@ -38,7 +38,6 @@ def site_chrome(request):
     raw_items = [
         {"label": _("Головна"), "url": "/", "children": []},
         *NAV_SECTIONS,
-        {"label": _("Фотогалерея"), "url": "/gallery/", "children": []},
     ]
 
     nav_items = []

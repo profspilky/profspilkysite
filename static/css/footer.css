@@ -59,6 +59,25 @@
   margin-left: var(--sp-16);
 }
 
+.footer-dev-credit {
+  font-size: var(--fs-12);
+  color: var(--c-text-on-dark-muted);
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.footer-dev-credit:hover {
+  opacity: 1;
+  color: var(--c-text-on-dark);
+}
+
+.footer-dev-credit strong {
+  font-weight: 700;
+  color: var(--c-accent);
+}
+
 .footer-contact-icon {
   display: flex;
   align-items: center;

@@ -222,6 +222,102 @@ def spo_page(request: HttpRequest) -> HttpResponse:
     return render(request, "core/spo.html", context)
 
 
+_GALUZEVI: list[dict] = [
+    {"name": "Професійна спілка працівників авіабудування та машинобудування України",          "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/195-profspilka-aviabudivnikiv-ukrajini.html"},
+    {"name": "Профспілка авіапрацівників України",                                              "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/194-profspilka-aviapratsivnikiv-ukrajini.html"},
+    {"name": "Профспілка працівників автомобільного транспорту та шляхового господарства України", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/193-profspilka-pratsivnikiv-avtomobilnogo-transportu-ta-shlyakhovogo-gospodarstva-ukrajini.html"},
+    {"name": "Профспілка працівників автомобільного та сільськогосподарського машинобудування України", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/192-profspilka-pratsivnikiv-avtomobilnogo-ta-silskogospodarskogo-mashinobuduvannya-ukrajini.html"},
+    {"name": "Профспілка працівників агропромислового комплексу України",                       "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/191-profspilka-pratsivnikiv-agropromislovogo-kompleksu-ukrajini.html"},
+    {"name": "Всеукраїнська профспілка адвокатів України",                                      "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/25246-vseukrainska-profspilka-advokativ-ukrainy.html"},
+    {"name": "Професійна спілка працівників атомної енергетики та промисловості України",       "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/190-profesijna-spilka-pratsivnikiv-atomnoji-energetiki-ta-promislovosti-ukrajini.html"},
+    {"name": "Професійна спілка працівників будівництва і промисловості будівельних матеріалів України", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/189-profesijna-spilka-pratsivnikiv-budivnitstva-i-promislovosti-budivelnikh-materialiv-ukrajini.html"},
+    {"name": "Всеукраїнська професійна спілка працівників банківських і фінансових установ",    "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/25247-vseukrainska-profesiina-spilka-pratsivnykiv-bankivskykh-i-finansovykh-ustanov.html"},
+    {"name": "Всеукраїнська профспілка виробничників, підприємців та трудових мігрантів",       "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/188-vseukrajinska-profspilka-virobnichnikiv-i-pidpriemtsiv-ukrajini.html"},
+    {"name": "Профспілка працівників вугільної промисловості України",                         "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/187-profspilka-pratsivnikiv-vugilnoji-promislovosti-ukrajini.html"},
+    {"name": "Профспілка працівників газових господарств України",                             "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/186-profspilka-pratsivnikiv-gazovikh-gospodarstv-ukrajini.html"},
+    {"name": "Професійна спілка працівників геології, геодезії та картографії України",        "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20/185-profesijna-spilka-pratsivnikiv-geologiji-geodeziji-ta-kartografiji-ukrajini.html"},
+    {"name": "Професійна спілка працівників державних установ України",                        "url": "http://ppdu-ua.org/"},
+    {"name": "Професійна спілка працівників енергетики та електротехнічної промисловості України (УКРЕЛЕКТРОПРОФСПІЛКА)", "url": "http://ukrelectroprofspilka.org.ua"},
+    {"name": "Профспілка працівників житлово-комунального господарства, місцевої промисловості, побутового обслуговування населення України", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників зв'язку України",                                  "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Всеукраїнська профспілка працівників інноваційних і малих підприємств",           "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників космічного та загального машинобудування України",  "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників культури України",                                 "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників лісових галузей України",                                 "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників лісового господарства України",                    "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка машинобудівників та приладобудівників України",                       "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників машинобудування та металообробки України",         "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка трудящих металургійної і гірничодобувної промисловості України", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка робітників морського транспорту України",                      "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників нафтової і газової промисловості України",                "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників оборонної промисловості України",                        "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників освіти і науки України",                                 "url": "https://pon.org.ua/"},
+    {"name": "Профспілка працівників охорони здоров'я України",                               "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників Пенсійного фонду України",                        "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників радіоелектроніки та машинобудування України",      "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників рибного господарства України",                           "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Українська професійна спілка працівників річкового транспорту",                  "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників соціальної сфери України",                               "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників споживчої кооперації України",                           "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Всеукраїнська профспілка захисників України, спортсменів та працівників сфери обслуговування", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Професійна спілка працівників суднобудування України",                          "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників текстильної та легкої промисловості України",             "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Всеукраїнська профспілка працівників торгівлі, громадського харчування та послуг", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Всеукраїнська незалежна профспілка працівників транспорту",                     "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Всеукраїнська професійна спілка «Футбол України»",                              "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+    {"name": "Профспілка працівників хімічних та нафтохімічних галузей промисловості України", "url": "https://www.fpsu.org.ua/sajty-chlenskikh-organizatsij-2/2012-12-10-16-02-20"},
+]
+
+_TERYTORIALNI: list[dict] = [
+    {"name": "Федерація профспілок Вінницької області",                   "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/222-federatsiya-profspilok-vinnitskoji-oblasti.html"},
+    {"name": "Федерація профспілок Волинської області",                   "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/221-federatsiya-profspilok-volinskoji-oblasti.html"},
+    {"name": "Дніпропетровське обласне об'єднання профспілок",            "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/220-dnipropetrovske-oblasne-ob-ednannya-profspilok.html"},
+    {"name": "Донецька обласна рада професійних спілок",                  "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/219-donetska-oblasna-rada-profesijnikh-spilok.html"},
+    {"name": "Федерація профспілок Житомирської області",                 "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/218-federatsiya-profspilok-zhitomirskoji-oblasti.html"},
+    {"name": "Закарпатська обласна рада профспілок",                      "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/217-zakarpatska-oblasna-rada-profspilok.html"},
+    {"name": "Запорізька обласна рада профспілок",                        "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/216-zaporizka-oblasna-rada-profspilok.html"},
+    {"name": "Рада профспілок Івано-Франківської області",                "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/215-rada-profspilok-ivano-frankivskoji-oblasti.html"},
+    {"name": "Київська міська рада профспілок",                           "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/214-kijivska-miska-rada-profspilok.html"},
+    {"name": "Київська обласна рада професійних спілок",                  "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/213-kijivska-oblasna-rada-profesijnikh-spilok.html"},
+    {"name": "Федерація профспілок Кіровоградської області",              "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/212-federatsiya-profspilok-kirovogradskoji-oblasti.html"},
+    {"name": "Федерація незалежних профспілок Криму",                     "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/211-federatsiya-nezalezhnikh-profspilok-krimu.html"},
+    {"name": "Федерація профспілок Луганської області",                   "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/210-federatsiya-profspilok-luganskoji-oblasti.html"},
+    {"name": "Об'єднання профспілок Львівщини",                           "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/209-ob-ednannya-profspilok-lvivshchini.html"},
+    {"name": "Миколаївська обласна рада профспілок",                      "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/208-mikolajivska-oblasna-rada-profspilok.html"},
+    {"name": "Федерація профспілок Одеської області",                     "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/207-federatsiya-profspilok-odeskoji-oblasti.html"},
+    {"name": "Полтавська обласна рада профспілок",                        "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/206-poltavska-oblasna-rada-profspilok.html"},
+    {"name": "Федерація профспілок Рівненської області",                  "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/205-federatsiya-profspilok-rivnenskoji-oblasti.html"},
+    {"name": "Сумська обласна рада професійних спілок",                   "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/204-sumska-oblasna-rada-profesijnikh-spilok.html"},
+    {"name": "Тернопільська обласна рада профспілок",                     "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/203-ternopilska-oblasna-rada-profspilok.html"},
+    {"name": "Об'єднання профспілок Харківської області",                 "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/202-ob-ednannya-profspilok-kharkivskoji-oblasti.html"},
+    {"name": "Херсонська обласна міжгалузева рада профспілок",            "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/201-khersonska-oblasna-mizhgaluzeva-rada-profspilok.html"},
+    {"name": "Федерація профспілок Хмельницької області",                 "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/200-federatsiya-profspilok-khmelnitskoji-oblasti.html"},
+    {"name": "Федерація профспілок Черкаської області",                   "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/199-federatsiya-profspilok-cherkaskoji-oblasti.html"},
+    {"name": "Чернівецька обласна рада профспілок",                       "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/198-chernivetska-oblasna-rada-profspilok.html"},
+    {"name": "Федерація профспілкових організацій Чернігівської області", "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/197-federatsiya-profspilkovikh-organizatsij-chernigivskoji-oblasti.html"},
+    {"name": "Севастопольська міська рада профспілок",                    "url": "https://www.fpsu.org.ua/pro-fpu/chlenski-organizatsiji/teritorialni-ob-ednannya-organizatsij-profspilok/196-sevastopolska-miska-rada-profspilok.html"},
+]
+
+
+@require_GET
+def member_sites_page(request: HttpRequest) -> HttpResponse:
+    """Сайти членських організацій ФПУ."""
+    context = {
+        "galuzevi": _GALUZEVI,
+        "terytorialni": _TERYTORIALNI,
+        "page_meta_title": _("Сайти членських організацій"),
+        "page_meta_description": _(
+            "Всеукраїнські галузеві профспілки та територіальні об'єднання "
+            "організацій профспілок — членські організації Федерації профспілок України."
+        ),
+        "breadcrumbs": [
+            {"title": _("Головна"), "url": "/"},
+            {"title": _("Сайти членських організацій"), "url": "/sajty-chlenskykh-orhanizatsii/"},
+        ],
+    }
+    return render(request, "core/member_sites.html", context)
+
+
 @require_GET
 def joomla_redirect(request: HttpRequest) -> HttpResponsePermanentRedirect:
     """301-редирект для старих Joomla index.php URL.

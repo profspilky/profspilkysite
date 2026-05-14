@@ -62,6 +62,16 @@ NAV_SECTIONS: list[dict] = [
         "children": [],
     },
     {
+        "label": _("Стратегія діяльності ФПУ"),
+        "url": "/documents/strategiya-diyalnosti-fpu/",
+        "children": [],
+    },
+    {
+        "label": _("Фотовиставка"),
+        "url": "/gallery/",
+        "children": [],
+    },
+    {
         "label": _("СПО об'єднань профспілок"),
         "url": "/spo-ob-iednan-profspilok/",
         "children": [],

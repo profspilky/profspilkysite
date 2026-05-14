@@ -31,8 +31,9 @@ def _find_page_ji_fallback(url_html: str, url_plain: str) -> StaticPage | None:
             pass
     return None
 
-# Breadcrumb lookup побудований з NAV_SECTIONS (єдине джерело навігації).
+# Breadcrumb lookup і labels побудовані з NAV_SECTIONS (єдине джерело навігації).
 _URL_CRUMB: dict[str, list[dict]] = {}
+_NAV_URL_LABELS: dict[str, str] = {}
 
 for _section in NAV_SECTIONS:
     _surl = _section["url"].rstrip("/")
@@ -40,6 +41,7 @@ for _section in NAV_SECTIONS:
         {"title": _("Головна"), "url": "/"},
         {"title": _section["label"], "url": _section["url"]},
     ]
+    _NAV_URL_LABELS[_surl] = str(_section["label"])
     for _child in _section.get("children", []):
         _curl = _child["url"].rstrip("/")
         _URL_CRUMB[_curl] = [
@@ -47,6 +49,7 @@ for _section in NAV_SECTIONS:
             {"title": _section["label"], "url": _section["url"]},
             {"title": _child["label"], "url": _child["url"]},
         ]
+        _NAV_URL_LABELS[_curl] = str(_child["label"])
 
 
 def _build_breadcrumbs(url_path: str) -> list[dict]:
@@ -120,12 +123,20 @@ def static_page_no_ext(request: HttpRequest, path: str) -> HttpResponse:
         try:
             page = StaticPage.objects.get(url_path=url_path_plain, is_published=True)
         except StaticPage.DoesNotExist:
-            # Fallback: ji-транслітерація — 301 на канонічний URL
+            # Fallback 1: ji-транслітерація — 301 на канонічний URL
             page = _find_page_ji_fallback(url_path_html, url_path_plain)
-            if page is None:
-                raise Http404
-            canonical_path = page.url_path.removesuffix(".html")
-            return HttpResponsePermanentRedirect(canonical_path)
+            if page is not None:
+                canonical_path = page.url_path.removesuffix(".html")
+                return HttpResponsePermanentRedirect(canonical_path)
+            # Fallback 2: відомий nav-URL без контенту → stub «В розробці»
+            clean = url_path_plain.rstrip("/")
+            title = _NAV_URL_LABELS.get(clean)
+            if title:
+                return render(request, "pages/stub.html", {
+                    "page_title": title,
+                    "breadcrumbs": _build_breadcrumbs(path),
+                })
+            raise Http404
     return _render_static(request, page)
 
 
