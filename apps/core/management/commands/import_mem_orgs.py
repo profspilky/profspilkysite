@@ -243,9 +243,14 @@ def _extract_title_from_html(html: str) -> str:
     return ""
 
 
+def _sanitize(s: str) -> str:
+    """Strip NUL bytes and other control characters that PostgreSQL rejects."""
+    return s.replace("\x00", "").replace("\u0000", "")
+
+
 def _clean_text(raw: str) -> str:
     text = re.sub(r"\s+", " ", raw).strip()
-    return text
+    return _sanitize(text)
 
 
 def _parse_address(text: str) -> str:
@@ -368,17 +373,17 @@ def _scrape_org(entry: dict) -> dict:
     meta_desc = meta_m.group(1).strip() if meta_m else ""
 
     return {
-        "title": title or entry["name"],
+        "title": _sanitize(title or entry["name"]),
         "org_type": entry["org_type"],
         "region": entry.get("region", ""),
         "source_url": url,
-        "website_url": _parse_website(raw_text),
-        "description": raw_text[:5000],
-        "address": _parse_address(raw_text),
-        "phone": _parse_phone(raw_text),
-        "email": _parse_email(raw_text),
+        "website_url": _sanitize(_parse_website(raw_text)),
+        "description": _sanitize(raw_text[:5000]),
+        "address": _sanitize(_parse_address(raw_text)),
+        "phone": _sanitize(_parse_phone(raw_text)),
+        "email": _sanitize(_parse_email(raw_text)),
         "founded_year": _parse_founded(raw_text),
-        "meta_description": meta_desc[:300],
+        "meta_description": _sanitize(meta_desc[:300]),
     }
 
 

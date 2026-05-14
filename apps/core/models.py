@@ -78,6 +78,16 @@ class SiteSettings(models.Model):
         blank=True,
         default="01024, м. Київ, майдан Незалежності, 2 (Будинок Профспілок)",
     )
+    write_us_label = models.CharField(
+        _("Кнопка «Написати нам» — текст"), max_length=60, blank=True,
+        default="Написати нам",
+        help_text=_("Текст CTA-кнопки у шапці сайту. Залиште порожнім, щоб приховати кнопку."),
+    )
+    write_us_url = models.CharField(
+        _("Кнопка «Написати нам» — посилання"), max_length=300, blank=True,
+        default="/contacts/",
+        help_text=_("URL або mailto:, напр. /contacts/ або mailto:fpsu@fpsu.org.ua"),
+    )
     facebook_url = models.URLField(_("Facebook"), blank=True)
     youtube_url = models.URLField(_("YouTube"), blank=True)
     telegram_url = models.URLField(_("Telegram"), blank=True)

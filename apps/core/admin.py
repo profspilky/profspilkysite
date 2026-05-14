@@ -81,6 +81,11 @@ class SiteSettingsAdmin(ModelAdmin):
         ("Контакти", {
             "fields": ("contact_phone", "hotline_phone", "contact_email", "address"),
         }),
+        ("Кнопка «Написати нам»", {
+            "fields": ("write_us_label", "write_us_url"),
+            "description": "CTA-кнопка у шапці сайту поруч з логотипом. "
+                           "Залиште текст порожнім, щоб повністю приховати кнопку.",
+        }),
         ("Соціальні мережі", {
             "fields": ("facebook_url", "youtube_url", "telegram_url"),
         }),

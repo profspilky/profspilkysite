@@ -20,7 +20,11 @@
     </a>
 
     <div class="header-actions">
-      <a class="btn btn--primary header-actions__cta" href="{% url 'accounts:login' %}">{% trans "Увійти" %}</a>
+      {% if site_settings.write_us_label %}
+      <a class="btn btn--primary header-actions__cta" href="{{ site_settings.write_us_url|default:'/contacts/' }}">
+        {{ site_settings.write_us_label }}
+      </a>
+      {% endif %}
 
       <button type="button" class="icon-btn" data-action="open-search" aria-label="{% trans 'Пошук' %}">
         {% include 'partials/icons/search.svg' %}
@@ -116,8 +120,12 @@
       {% endif %}
     </li>
     {% endfor %}
+    {% if site_settings.write_us_label %}
     <li class="mobile-nav__item">
-      <a class="mobile-nav__link mobile-nav__link--cta" href="{% url 'accounts:login' %}">{% trans "Увійти" %}</a>
+      <a class="mobile-nav__link mobile-nav__link--cta" href="{{ site_settings.write_us_url|default:'/contacts/' }}">
+        {{ site_settings.write_us_label }}
+      </a>
     </li>
+    {% endif %}
   </ul>
 </nav>
