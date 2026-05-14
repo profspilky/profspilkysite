@@ -40,6 +40,15 @@ def site_chrome(request):
         *NAV_SECTIONS,
     ]
 
+    # #region agent log
+    import json as _j, time as _t
+    try:
+        napryamky = next((i for i in raw_items if "/napryamki" in i.get("url", "")), None)
+        with open("/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-8dffc0.log", "a") as _f:
+            _f.write(_j.dumps({"sessionId": "8dffc0", "timestamp": int(_t.time() * 1000), "location": "context_processors.py:site_chrome", "message": "nav children for Напрями", "data": {"count": len(napryamky["children"]) if napryamky else 0, "labels": [c["label"] for c in napryamky["children"]] if napryamky else []}, "hypothesisId": "H4_H5", "runId": "run2"}) + "\n")
+    except Exception as _e:
+        pass
+    # #endregion
     nav_items = []
     for item in raw_items:
         children_with_active = [

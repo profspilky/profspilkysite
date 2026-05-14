@@ -377,6 +377,13 @@ def member_sites_page(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET", "POST"])
 def join_request_page(request: HttpRequest) -> HttpResponse:
     """Форма «Стати членом профспілки»."""
+    # #region agent log
+    import json as _j, time as _t
+    try:
+        with open("/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-8dffc0.log", "a") as _f:
+            _f.write(_j.dumps({"sessionId": "8dffc0", "timestamp": int(_t.time() * 1000), "location": "core/views.py:join_request_page", "message": "view reached", "data": {"method": request.method, "path": request.path}, "hypothesisId": "H1_H3", "runId": "run1"}) + "\n")
+    except Exception: pass
+    # #endregion
     success = False
     errors: dict[str, str] = {}
     form_data: dict = {}

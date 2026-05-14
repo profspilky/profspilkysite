@@ -9,6 +9,14 @@ from unfold.admin import ModelAdmin
 
 from .models import ContactMessage, JoinRequest, MemOrgPage, MemberOrganization, PageSection, Priority, SiteSettings, TeamMember
 
+# #region agent log
+import json as _j, time as _t
+try:
+    with open("/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-8dffc0.log", "a") as _f:
+        _f.write(_j.dumps({"sessionId": "8dffc0", "timestamp": int(_t.time() * 1000), "location": "core/admin.py:module_load", "message": "admin module loaded", "data": {"JoinRequest_registered": True}, "hypothesisId": "H2", "runId": "run1"}) + "\n")
+except Exception: pass
+# #endregion
+
 admin.site.site_header = "Адмінпанель ФПУ"
 admin.site.site_title = "ФПУ Admin"
 admin.site.index_title = "Управління сайтом"

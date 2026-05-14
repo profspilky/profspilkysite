@@ -6,6 +6,14 @@ from django.views.generic import RedirectView
 from . import views
 from apps.news import views as news_views
 
+# #region agent log
+import json as _j, time as _t
+try:
+    with open("/Users/olegbonislavskyi/Sites/Профспілки/.cursor/debug-8dffc0.log", "a") as _f:
+        _f.write(_j.dumps({"sessionId": "8dffc0", "timestamp": int(_t.time() * 1000), "location": "core/urls.py:module_load", "message": "urls module loaded, join_request_page present", "data": {"has_join_view": hasattr(views, "join_request_page")}, "hypothesisId": "H1_H3", "runId": "run1"}) + "\n")
+except Exception: pass
+# #endregion
+
 app_name = "core"
 
 urlpatterns = [
