@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_http_methods
 
-from apps.core.models import MemOrgPage, PageSection, Priority, SiteSettings, TeamMember
+from apps.core.models import ContactMessage, MemOrgPage, PageSection, Priority, SiteSettings, TeamMember
 from apps.core.utils import default_articles, default_priorities, default_team_members
 from apps.news.models import Article
 from apps.pages.models import StaticPage
@@ -143,12 +143,19 @@ def contact(request: HttpRequest) -> HttpResponse:
             else:
                 django_cache.set(rate_key, count + 1, 3600)
                 try:
+                    ContactMessage.objects.create(
+                        name=name,
+                        email=email,
+                        subject=subject,
+                        message=message,
+                        ip_address=ip or None,
+                    )
                     send_mail(
                         subject=f"[ФПУ] {subject} — від {name}",
                         message=f"Від: {name} <{email}>\n\n{message}",
                         from_email=settings_obj.contact_email or "noreply@fpsu.org.ua",
                         recipient_list=[settings_obj.contact_email or "fpsu@fpsu.org.ua"],
-                        fail_silently=False,
+                        fail_silently=True,
                     )
                     success = True
                     form_data = {}

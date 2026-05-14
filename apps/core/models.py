@@ -213,6 +213,26 @@ class MemberOrganization(models.Model):
         super().save(*args, **kwargs)
 
 
+class ContactMessage(models.Model):
+    """Incoming message from the contact form — stored for admin review."""
+
+    name       = models.CharField(_("Ім'я"), max_length=120)
+    email      = models.EmailField(_("Email"))
+    subject    = models.CharField(_("Тема"), max_length=200)
+    message    = models.TextField(_("Повідомлення"))
+    ip_address = models.GenericIPAddressField(_("IP-адреса"), null=True, blank=True)
+    is_read    = models.BooleanField(_("Прочитано"), default=False)
+    created_at = models.DateTimeField(_("Дата"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Повідомлення")
+        verbose_name_plural = _("Повідомлення з контактної форми")
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return f"{self.name} <{self.email}> — {self.subject[:60]}"
+
+
 class MemOrgPage(models.Model):
     """Detailed page for a member organization — scraped from fpsu.org.ua."""
 
