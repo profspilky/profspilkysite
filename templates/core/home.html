@@ -193,7 +193,7 @@
   {% if articles|length > 6 %}
   <section class="home-news-grid" aria-labelledby="home-news-title">
     <header class="home-news-grid__head">
-      <h2 id="home-news-title" class="news-feed__title">{% trans "Популярні новини" %}</h2>
+      <h2 id="home-news-title" class="news-feed__title">{% trans "Останні новини" %}</h2>
     </header>
     <ul class="home-news-grid__list">
       {% for article in articles|slice:"6:12" %}
@@ -223,7 +223,7 @@
       {% endfor %}
     </ul>
     <div class="home-news-grid__footer">
-      <a class="btn btn--outline home-news-grid__all" href="/novini/">
+      <a class="btn btn--outline home-news-grid__all" href="{% url 'core:all_news' %}">
         {% trans "Усі новини" %}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
           <line x1="5" y1="12" x2="19" y2="12"/>

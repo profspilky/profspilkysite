@@ -31,7 +31,6 @@
   color: var(--c-text-on-dark-muted);
 }
 
-.site-footer__brand,
 .site-footer__copy { margin: 0; }
 
 .footer-brand {

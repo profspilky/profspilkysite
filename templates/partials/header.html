@@ -16,8 +16,29 @@
     <nav class="primary-nav" aria-label="{% trans 'Основне меню' %}">
       <ul class="primary-nav__list">
         {% for item in site_nav_items %}
-        <li class="primary-nav__item">
-          <a class="primary-nav__link" href="{{ item.url }}">{{ item.label }}</a>
+        <li class="primary-nav__item{% if item.children %} has-dropdown{% endif %}">
+          <a class="primary-nav__link{% if item.is_active %} is-active{% endif %}"
+             href="{{ item.url }}"
+             {% if item.children %}aria-haspopup="true" aria-expanded="false"{% endif %}>
+            {{ item.label }}
+            {% if item.children %}
+            <svg class="primary-nav__chevron" viewBox="0 0 16 16" fill="none"
+                 stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <polyline points="4 6 8 10 12 6"/>
+            </svg>
+            {% endif %}
+          </a>
+          {% if item.children %}
+          <ul class="dropdown" role="menu">
+            {% for child in item.children %}
+            <li class="dropdown__item" role="none">
+              <a class="dropdown__link{% if child.is_active %} is-active{% endif %}"
+                 href="{{ child.url }}" role="menuitem">{{ child.label }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
         </li>
         {% endfor %}
       </ul>
@@ -61,8 +82,29 @@
 <nav id="mobile-nav" class="mobile-nav" aria-label="{% trans 'Мобільне меню' %}" hidden>
   <ul class="mobile-nav__list">
     {% for item in site_nav_items %}
-    <li class="mobile-nav__item">
-      <a class="mobile-nav__link" href="{{ item.url }}">{{ item.label }}</a>
+    <li class="mobile-nav__item{% if item.children %} has-children{% endif %}">
+      {% if item.children %}
+      <div class="mobile-nav__row">
+        <a class="mobile-nav__link{% if item.is_active %} is-active{% endif %}" href="{{ item.url }}">{{ item.label }}</a>
+        <button type="button" class="mobile-nav__toggle" aria-expanded="false"
+                aria-label="{% trans 'Розгорнути підменю' %} {{ item.label }}">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <polyline points="4 6 8 10 12 6"/>
+          </svg>
+        </button>
+      </div>
+      <ul class="mobile-nav__sub" hidden>
+        {% for child in item.children %}
+        <li>
+          <a class="mobile-nav__sub-link{% if child.is_active %} is-active{% endif %}"
+             href="{{ child.url }}">{{ child.label }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <a class="mobile-nav__link{% if item.is_active %} is-active{% endif %}" href="{{ item.url }}">{{ item.label }}</a>
+      {% endif %}
     </li>
     {% endfor %}
     <li class="mobile-nav__item">

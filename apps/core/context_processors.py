@@ -25,20 +25,32 @@ def _strip_lang_prefix(path: str) -> str:
     return path
 
 
+def _is_nav_active(url: str, path: str) -> bool:
+    """Return True if the given nav URL matches the current request path."""
+    if url == "/":
+        return path in ("/", "")
+    return path == url or path.startswith(url)
+
+
 def site_chrome(request):
-    nav_items = [
-        {
-            "label": _("Головна"),
-            "url": "/",
-            "children": [],
-        },
+    current_path = _strip_lang_prefix(request.path)
+
+    raw_items = [
+        {"label": _("Головна"), "url": "/", "children": []},
         *NAV_SECTIONS,
-        {
-            "label": _("Фотогалерея"),
-            "url": "/gallery/",
-            "children": [],
-        },
+        {"label": _("Фотогалерея"), "url": "/gallery/", "children": []},
     ]
+
+    nav_items = []
+    for item in raw_items:
+        children_with_active = [
+            {**child, "is_active": _is_nav_active(child["url"], current_path)}
+            for child in item.get("children", [])
+        ]
+        is_active = _is_nav_active(item["url"], current_path) or any(
+            c["is_active"] for c in children_with_active
+        )
+        nav_items.append({**item, "children": children_with_active, "is_active": is_active})
 
     # SiteSettings — кешуємо на 5 хв, щоб не бити в БД на кожен запит
     site_settings = cache.get("site_settings")

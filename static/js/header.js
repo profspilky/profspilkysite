@@ -89,7 +89,67 @@
     });
   }
 
-  // Dropdown прибрано — проста плоска навігація
+  // ── Desktop dropdown: keyboard navigation ─────────────────────────────────
+  document.querySelectorAll(".has-dropdown").forEach((item) => {
+    const trigger = item.querySelector(".primary-nav__link");
+    const dropdown = item.querySelector(".dropdown");
+    if (!trigger || !dropdown) return;
+
+    function openDropdown() {
+      trigger.setAttribute("aria-expanded", "true");
+    }
+    function closeDropdown() {
+      trigger.setAttribute("aria-expanded", "false");
+    }
+
+    // Sync aria-expanded with CSS hover/focus state via :focus-within
+    trigger.addEventListener("focus", openDropdown);
+    item.addEventListener("focusout", (e) => {
+      if (!item.contains(e.relatedTarget)) closeDropdown();
+    });
+
+    // Enter/Space on trigger link opens dropdown; arrow keys navigate items
+    trigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+        e.preventDefault();
+        openDropdown();
+        const first = dropdown.querySelector(".dropdown__link");
+        if (first) first.focus();
+      }
+    });
+
+    dropdown.addEventListener("keydown", (e) => {
+      const links = [...dropdown.querySelectorAll(".dropdown__link")];
+      const idx = links.indexOf(document.activeElement);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        links[(idx + 1) % links.length]?.focus();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        links[(idx - 1 + links.length) % links.length]?.focus();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        closeDropdown();
+        trigger.focus();
+      }
+    });
+  });
+
+  // ── Mobile submenu accordions ──────────────────────────────────────────────
+  document.querySelectorAll(".mobile-nav__toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest(".mobile-nav__item");
+      const sub = item?.querySelector(".mobile-nav__sub");
+      if (!sub) return;
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      if (expanded) {
+        sub.setAttribute("hidden", "");
+      } else {
+        sub.removeAttribute("hidden");
+      }
+    });
+  });
 
   // ── Share: copy URL button ─────────────────────────────────────────────────
   document.addEventListener("click", (e) => {
